@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Connected Files</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <body>
+    <!-- <br><br><br><br> -->
+    <script id="replace_with_navbar" src="../../navbar/nav.js"></script>
+  </body>
+</head>
+
+<body>
+  <!-- <h1>Hello, World!</h1> -->
+  <!-- <p>This is a basic web page with connected HTML, CSS, and JavaScript files.</p> -->
+  <h3 id="theGameWinner"></h3>
+  <!-- <div>
+    <input type="radio" id="huey" name="drone" value="huey" checked />
+    <label for="huey">AI Auto OFF</label>
+  </div>
+  <div>
+    <input type="radio" id="dewey" name="drone" value="dewey" />
+    <label for="dewey">AI Auto ON</label>
+  </div> -->
+  <button onclick="AIautomaticalyMakesMove()">Toogle AI ON/OFF</button>
+  <div id="auto_ai" style="font-size: xx-large;"></div>
+  <button onclick="newGame()">New Game?</button>
+  <button onclick="AIMakesMove()">Computer Makes ONE Random Move!</button>
+  <div>Next Player Move: </div>
+  <div id="variableDisplay" style="font-size: xx-large;"></div>
+  <!-- <div class="game_field" onclick="updateContent('cell1')" id="cell1">.</div> -->
+  <script src="script.js"></script>
+</body>
+
+</html>

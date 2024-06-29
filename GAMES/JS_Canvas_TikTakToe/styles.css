@@ -1,0 +1,36 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  color: #333;
+}
+
+p {
+  color: #666;
+}
+
+.p1Color {
+  color: red;
+  font-size: xx-large;
+}
+
+.p2Color {
+  color: blue;
+  font-size: xx-large;
+}
+
+#myCanvas {
+  border:  solid 3px black;
+  /* background-color: #ada9a9; */
+  /* position: absolute; */
+  /* top: 50%;
+  left: 50%; */
+  /* transform: translate(-50%, -50%); */
+  max-width: 100%;
+  max-height: 100%;
+}

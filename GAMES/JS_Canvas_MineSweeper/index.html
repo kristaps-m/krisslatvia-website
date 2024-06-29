@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Connected Files</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <body>
+      <!-- <br><br><br><br> -->
+      <script id="replace_with_navbar" src="../../navbar/nav.js"></script>
+    </body>
+  </head>
+
+  <body>
+    <div>
+      <h2>Totaly Not Minesweeper!</h2>
+      <div style="white-space: nowrap">
+        <div style="display: inline-block">
+          <h3>H</h3>
+          <input type="number" id="theHeight" value="9" style="width: 2rem" />
+        </div>
+        <div style="display: inline-block">
+          <h3>W</h3>
+          <input type="number" id="theWidth" value="9" style="width: 2rem" />
+        </div>
+        <div style="display: inline-block">
+          <h3>M</h3>
+          <input type="number" id="minesCount" value="10" style="width: 2.5rem" />
+        </div>
+      </div>
+      <br>
+      <div>
+        <div style="margin-right: 20px; white-space: nowrap">
+          <label for="difficulty">Difficulty:</label>
+          <select
+            name="difficulty"
+            id="difficulty"
+            onchange="setGameSettingsFromDropDownMenu(); newGame()"
+          >
+            <option value="7 7 5">Casual</option>
+            <option value="9 9 10">Beginner</option>
+            <option value="16 16 40">Intermediate</option>
+            <option value="16 30 99">Expert</option>
+            <option value="20 20 50">Challenging</option>
+            <option value="30 30 150">Insane</option>
+          </select>
+          <button style="background-color: greenyellow; display: inline-block; margin-left: 1rem;" onclick="newGame()">
+            NEW GAME!
+          </button>
+        </div>
+      </div>
+      <br />
+      <div style="white-space: nowrap">
+        <button
+          onclick="toggleIsFirstClickMine()"
+          style="display: inline-block"
+        >
+          Can 1st Cell Be Mine?
+        </button>
+        <div
+          id="isFirstClickMine"
+          style="font-size: x-large; display: inline-block"
+        >
+          false
+        </div>
+      </div>
+      <div style="white-space: nowrap">
+        <h2 style="display: inline-block; padding-right: 10;">Mines left:</h2>
+        <h1 id="minesLeft" style="display: inline-block">:)</h2>
+      </div>
+      <canvas
+        id="theTimer"
+        width="100"
+        height="30"
+        style="border: solid green 3px"
+      ></canvas
+      ><br />
+    <canvas id="minesweeper" width="500" height="500"></canvas>
+    <script type="text/javascript" src="gameMinesHandler.js"></script>
+    <script type="text/javascript" src="mineSweeperCellsHander.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+  </body>
+</html>

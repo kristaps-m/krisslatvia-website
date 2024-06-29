@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+head,body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: black;
+}
+
+h1 {
+  color: #ffffff;
+}
+
+p {
+  color: #ffffff;
+}
+
+#mainStage{
+  border: solid gray 3px;
+  background: white;
+}

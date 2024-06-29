@@ -1,0 +1,14 @@
+*{
+    margin: 0;
+    padding: 0;
+    background-color: black;
+}
+
+body{
+    text-align: center;    
+}
+
+#candyGame{
+    background-color: white;
+    border: solid black 3px;
+}

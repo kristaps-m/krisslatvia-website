@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>JS Canvas Snake Game</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <body>
+    <!-- <br><br><br><br> -->
+    <script id="replace_with_navbar" src="../../navbar/nav.js"></script>
+  </body>
+</head>
+
+<body>
+  <h1>Hello, Snake!</h1>
+  <!-- Start score is equal to snake and its head lenght -->
+  <h2 id="scoreDisplay">4</h2>
+  <div class="button-row">
+    <button id="toggleGirdOnOff" style="width: 70px;">Grid?</button>
+    <button id="newGame" style="width: 70px; margin-bottom: 0px;">New Game!</button>
+    <label for="squareSize">squareSize:</label>
+    <select
+    name="squareSize"
+    id="squareSize"
+  >
+    <option value="10">10</option>
+    <option value="20">20</option>
+    <option value="25">25</option>
+    <option value="50">50</option>
+    <option value="100">100</option>
+  </select>
+    <button id="togglePauseGame" style="width: 70px;">Pause?</button>
+  </div>
+  <canvas id="snake_canvas" width="500" height="400"></canvas>
+  <script type="module" src="draw.js"></script>
+</body>
+
+</html>
