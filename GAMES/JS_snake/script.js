@@ -70,18 +70,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var cell = document.getElementById(cellId);
         cell.className = "snake-head";
     });
-    // Display current player
-    // updateVariableDisplay();
-    // var variableDisplay = document.getElementById('variableDisplay');
-    // variableDisplay.textContent = currentPlayer;
-    // auto_ai.textContent = `${AIautoMove}`;
 });
 
-
-
-// node.addEventListener('keydown', function(event) {
-//     const key = event.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
-// });
 function reset3Directions() {
     return ":)";
 }
@@ -89,14 +79,7 @@ function reset3Directions() {
 document.addEventListener('keydown', function (event) {
 
         console.log(snakeBodyCords,`HC = ${snakeHeadCords}`, snakeBodyCords.length);
-    // if (event.key === 'ArrowDown') {
-    //     // Do something when the arrow down key is pressed
-    //     console.log('Arrow Down pressed!');
 
-    //     // Example: Move a hypothetical player down
-    //     //movePlayerDown();
-    //     snakeMovementDirection.down = 1;
-    // }
     switch (event.key) {
             case "ArrowLeft":
                 snakeMovementDirection.up = 0;
@@ -157,9 +140,6 @@ async function startTheGame() {
             foodCell.className = "snake-head";
             foodOnField = 1;
         }
-        // snakeHeadCords = [row, col]
-        // snakeBodyCords.push(snakeHeadCords)
-        // let startSnakeHeadCords = snakeBodyCords[snakeBodyCords.length - 1]; // [0,3]
         snakeHeadCords[0] -= snakeMovementDirection.up;
         snakeHeadCords[0] += snakeMovementDirection.down; // if u press down arrow
         snakeHeadCords[1] -= snakeMovementDirection.left;
@@ -171,29 +151,6 @@ async function startTheGame() {
         cell.className = "snake-head";
         // console.log(snakeHeadCords);
         snakeBodyCords.push(theTest);
-
-        // afer this snakeHeadCords changes?
-        // console.log(startSnakeHeadCords, snakeHeadCords);
-        // if(startSnakeHeadCords != snakeHeadCords){ // startSnakeHeadCords != snakeHeadCords
-        //     snakeBodyCords.push(snakeHeadCords);
-        //     const cellHeadId = `cell-id-${snakeHeadCords[0]}-${snakeHeadCords[1]}`
-        //     // console.log(cellId);
-        //     var cell = document.getElementById(cellHeadId);
-        //     // -------------------
-        //     // let cellId = `cell-id-${element[0]}-${element[1]}`
-        //     // var cell = document.getElementById(cellId);
-        //     // cell.className = "snake-head";
-        //     //---------------------------
-
-        //     cell.className = "snake-head";
-        // }
-        // if(startSnakeHeadCords != snakeHeadCords){ // startSnakeHeadCords != snakeHeadCords
-        //     const lastSnakeElement = snakeBodyCords.shift(); // removes first element
-        //     const cellLastId = `cell-id-${lastSnakeElement[0]}-${lastSnakeElement[1]}`
-        //     // console.log(cellId);
-        //     var cellLast = document.getElementById(cellLastId);
-        //     cellLast.className = "grid-item";
-        // }
 
         const lastSnakeElement = snakeBodyCords.shift();
         const cellLastId = `cell-id-${lastSnakeElement[0]}-${lastSnakeElement[1]}`;
@@ -212,20 +169,5 @@ async function startTheGame() {
         }
 
         updateVariableDisplay();
-        // [0,0] to right = (0,1)(0,2)(0,3)...
-        //snakeHeadCords[1]++;
-        // for (let row = 0; row < gameHeight; row++) {
-        //     for (let col = 0; col < gameWidth; col++) {
-        //         snakeHeadCords = [row, col]
-        //         const cellId = `cell-id-${snakeHeadCords[0]}-${snakeHeadCords[1]}`
-        //         // console.log(cellId);
-        //         var cell = document.getElementById(cellId);
-        //         cell.className = "snake-head";
-        //         await sleep(sleepSetTimeout_ctrl);
-        //         cell.className = "grid-item";
-        //     }
-        // }
-
-        // safety--;
     }
 }
