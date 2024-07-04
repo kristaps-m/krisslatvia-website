@@ -2,7 +2,7 @@ const gameHeight = 20;
 const gameWidth = 30;
 let snakeField = [];
 // let test = [...snakeHeadCords];
-let snakeBodyCords = [[0,0], [0,1],[0,2],[0,3]]
+let snakeBodyCords = [[0,0], [0,1],[0,2],[0,3],[0,4]]
 let snakeHeadCords = snakeBodyCords[snakeBodyCords.length - 1];
 var sleepSetTimeout_ctrl = 300;
 let safety = Math.pow(gameHeight * gameHeight, 2);
@@ -18,16 +18,16 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function changeColorTest() {
-    for (let row = 0; row < gameWidth; row++) {
-        const cellId = `cell-id-${0}-${row}`
-        console.log(cellId);
-        var cell = document.getElementById(cellId);
-        cell.className = "snake-head";
-        await sleep(sleepSetTimeout_ctrl);
-        cell.className = "grid-item";
-    }
-}
+// async function changeColorTest() {
+//     for (let row = 0; row < gameWidth; row++) {
+//         const cellId = `cell-id-${0}-${row}`
+//         console.log(cellId);
+//         var cell = document.getElementById(cellId);
+//         cell.className = "snake-head";
+//         await sleep(sleepSetTimeout_ctrl);
+//         cell.className = "grid-item";
+//     }
+// }
 
 function updateContent(cellId){
     var cell = document.getElementById(cellId);
@@ -61,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
         snakeField.push(tempRow);
     }
 
-
     // Append the new paragraph to the body of the document
     document.body.appendChild(newParagraph);
 
@@ -72,13 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-function reset3Directions() {
-    return ":)";
-}
-
 document.addEventListener('keydown', function (event) {
 
-        console.log(snakeBodyCords,`HC = ${snakeHeadCords}`, snakeBodyCords.length);
+    console.log(snakeBodyCords,`HC = ${snakeHeadCords}`, snakeBodyCords.length);
 
     switch (event.key) {
             case "ArrowLeft":
@@ -99,19 +94,18 @@ document.addEventListener('keydown', function (event) {
                 snakeMovementDirection.down = 0;
                 snakeMovementDirection.up = 1;
                 break;
-                case "ArrowDown":
+            case "ArrowDown":
                 snakeMovementDirection.up = 0;
                 snakeMovementDirection.left = 0;
                 snakeMovementDirection.right = 0;
                 snakeMovementDirection.down = 1;
                 break;
+            case 'v':
+                console.log('SUP LADIEs!');
+                snakeBodyCords.unshift(snakeBodyCords[0]);
         }
     // Add additional conditions for other arrow keys if needed
 });
-function movePlayerDown() {
-    // Your logic for moving the player down goes here
-    // For example, update player's position or trigger some action
-}
 
 function createSnakeFood() {
     let isFoodInsideSnake = true;
@@ -149,14 +143,12 @@ async function startTheGame() {
         const cellHeadId = `cell-id-${snakeHeadCords[0]}-${snakeHeadCords[1]}`
         var cell = document.getElementById(cellHeadId);
         cell.className = "snake-head";
-        // console.log(snakeHeadCords);
         snakeBodyCords.push(theTest);
 
         const lastSnakeElement = snakeBodyCords.shift();
         const cellLastId = `cell-id-${lastSnakeElement[0]}-${lastSnakeElement[1]}`;
         var cellLast = document.getElementById(cellLastId);
         cellLast.className = "grid-item";
-        //console.log(snakeHeadCords, `random r & c${createSnakeFood()}`);
         await sleep(sleepSetTimeout_ctrl);
 
         //console.log(foodCords[0] === snakeHeadCords[0] && foodCords[1] === snakeHeadCords[1], foodCords, snakeHeadCords);
