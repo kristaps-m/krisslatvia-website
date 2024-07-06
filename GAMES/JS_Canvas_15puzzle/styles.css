@@ -1,9 +1,12 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: Arial, sans-serif;
   background-color: #f0f0f0;
   text-align: center;
-  margin: 0;
-  padding: 0;
 }
 
 h1 {
@@ -14,6 +17,6 @@ p {
   color: #666;
 }
 
-#puzzleField{
+#puzzleField {
   border: solid black 2px;
 }

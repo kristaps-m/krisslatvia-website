@@ -1,7 +1,7 @@
 const CANVAS = document.getElementById("puzzleField");
 const CTX = CANVAS.getContext("2d");
-const W = 400;
-const H = 400;
+const W = 500;
+const H = 500;
 const SQUARE_OFF_SET = 10;
 CANVAS.width = W;
 CANVAS.height = H;
@@ -18,6 +18,19 @@ const elemTop = CANVAS.offsetTop;
 let gameFieldElements = [];
 let userClickedTwoNumbers = [];
 const DEFAULT_GRAY = "#8c8382";
+
+function newGame() {
+  gameFieldElements = [];
+  userClickedTwoNumbers = [];
+  game_side_size = document.getElementById("fieldSize")?.value;
+  gameField = [];
+  finishedGF = [];
+  initGameFieldWithSizedArray(parseInt(game_side_size));
+  gameField = shuffle(gameField);
+  create15PuzzleClickableElements();
+  // Render elements.
+  renderElements();
+}
 
 // Add event listener for `click` events.
 CANVAS.addEventListener(
@@ -79,6 +92,7 @@ create15PuzzleClickableElements();
 // Render elements.
 renderElements();
 function renderElements() {
+  CTX.clearRect(0, 0, W, H);
   gameFieldElements.forEach(function (element) {
     CTX.fillStyle = element.colour;
     CTX.fillRect(element.left, element.top, element.width, element.height);
