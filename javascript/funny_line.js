@@ -21,7 +21,7 @@ ctx3.closePath();
 
 //----
 var canvas=document.getElementById("myCanvas2");
-var ctx=canvas.getContext("2d");    
+var ctx=canvas.getContext("2d");
 ctx.strokeStyle ="#000000";
 ctx.lineWidth = "2";
 
@@ -68,16 +68,15 @@ $endY.addEventListener("keyup", function(){
 //-----------------
 function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillRect(startX,startY,endX,endY);
-
-
+    ctx.fillRect(startX,startY,Math.abs(endX-startX),Math.abs(endY-startY));
 }
 
 function draw2(){
     ctx.beginPath();
-    ctx.moveTo(startX,startY);  
+    ctx.moveTo(startX,startY);
     // ctx.lineTo(endX+startX, endY+startY);
-    ctx.lineTo(endX+startX, endY);
+    ctx.lineTo(endX, endY);
     ctx.strokeStyle ="#ffffff"
     ctx.stroke();
+    console.log(startX, startY, endX, endY);
 }
