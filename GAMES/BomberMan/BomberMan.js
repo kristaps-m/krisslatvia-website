@@ -153,6 +153,9 @@ class BomberMan {
         const c_S_M_F_Y = Math.floor(this.y / bManRadius);
         isBombPlaced = true;
         firstTestGameField[c_S_M_F_Y][currentSquareMoveForX] = 3;
+      case "f":
+        listOfBombs.ListOfBombs.push(new Bomb(this.x, this.y, bManRadius));
+        console.log(listOfBombs.ListOfBombs);
       default:
         console.log("NOT direction", direction);
         break;

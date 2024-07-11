@@ -14,6 +14,8 @@ const bomberMan = new BomberMan({
   size: bManRadius - 2,
 });
 
+let listOfBombs = new ListOfBombs();
+
 const enemy = new Enemy(
   bManRadius * 12 + 2,
   bManRadius * 12 + 2,
@@ -36,15 +38,15 @@ function BMgameLoop() {
   bomberMan.update();
   bomberMan.draw();
   enemy.draw();
-   if(isBombPlaced){
-    if(theGameFrame > 400){
+  listOfBombs.drawBombs();
+  if (isBombPlaced) {
+    if (theGameFrame > 400) {
       for (let i = 0; i < firstTestGameField.length; i++) {
         for (let j = 0; j < firstTestGameField[0].length; j++) {
-          if(firstTestGameField[i][j] === 3){
-            firstTestGameField[i][j] = 0
+          if (firstTestGameField[i][j] === 3) {
+            firstTestGameField[i][j] = 0;
           }
         }
-
       }
       theGameFrame = 0;
       isBombPlaced = false;

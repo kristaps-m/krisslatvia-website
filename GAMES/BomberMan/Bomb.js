@@ -3,7 +3,13 @@ class Bomb {
     this.x = x;
     this.y = y;
     this.size = size;
+    this.bombPlacedTime = new Date();
     this.bombSize; // 2
+  }
+
+  drawOneBomb() {
+    CTX.fillStyle = "orange";
+    CTX.fillRect(this.x, this.y, this.size, this.size);
   }
 
   draw() {
