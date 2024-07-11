@@ -33,25 +33,25 @@ console.log(firstTestGameField.length, firstTestGameField[0].length, "len' s");
 let theGameFrame = 0;
 let isBombPlaced = false;
 function BMgameLoop() {
-  CTX.clearRect(0, 0, W, H);
+  //CTX.clearRect(0, 0, W, H);
   theGameField.draw();
   bomberMan.update();
   bomberMan.draw();
   enemy.draw();
   listOfBombs.drawBombs();
-  if (isBombPlaced) {
-    if (theGameFrame > 400) {
-      for (let i = 0; i < firstTestGameField.length; i++) {
-        for (let j = 0; j < firstTestGameField[0].length; j++) {
-          if (firstTestGameField[i][j] === 3) {
-            firstTestGameField[i][j] = 0;
-          }
-        }
-      }
-      theGameFrame = 0;
-      isBombPlaced = false;
-    }
-  }
+  // if (isBombPlaced) {
+  //   if (theGameFrame > 400) {
+  //     for (let i = 0; i < firstTestGameField.length; i++) {
+  //       for (let j = 0; j < firstTestGameField[0].length; j++) {
+  //         if (firstTestGameField[i][j] === 3) {
+  //           firstTestGameField[i][j] = 0;
+  //         }
+  //       }
+  //     }
+  //     theGameFrame = 0;
+  //     isBombPlaced = false;
+  //   }
+  // }
   if (
     bomberMan.x + bomberMan.size > enemy.x &&
     bomberMan.y + bomberMan.size > enemy.y &&
