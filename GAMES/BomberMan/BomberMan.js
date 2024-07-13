@@ -85,9 +85,9 @@ class BomberMan {
           this.y -= bManMovementSpeed;
         }
       }
-      console.log(
-        "Collision detected. Movement blocked." + ` ${this.x}-${this.y}`
-      );
+      // console.log(
+      //   "Collision detected. Movement blocked." + ` ${this.x}-${this.y}`
+      // );
     }
   }
 
