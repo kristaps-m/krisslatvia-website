@@ -35,6 +35,12 @@ class ListOfExplosions{
               bManRadius,
               bManRadius
             );
+            listOfEnemies.forEach((e,i) => {
+              if(e.x < squareX && e.y < squareY){
+                console.log("enemy Inside Explosion!");
+                listOfEnemies.splice(i,1);
+              }
+            });
           }
         }
       }

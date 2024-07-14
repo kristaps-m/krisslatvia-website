@@ -16,12 +16,15 @@ const bomberMan = new BomberMan({
 
 let listOfBombs = new ListOfBombs();
 let listOfExplosions = new ListOfExplosions();
-
-const enemy = new Enemy(
+let listOfEnemies = [new Enemy(
   bManRadius * 12 + 2,
   bManRadius * 12 + 2,
   bManRadius - 5
-);
+),new Enemy(
+  bManRadius * 6 + 2,
+  bManRadius * 16 + 2,
+  bManRadius - 5
+)];
 
 let isGameOver = false;
 let vxl = 0; // velocity x left
@@ -30,7 +33,7 @@ let vyu = 0; // v y up
 let vyd = 0; // v y down
 
 let theGameField = new GameField(firstTestGameField);
-console.log(firstTestGameField.length, firstTestGameField[0].length, "len' s");
+// console.log(firstTestGameField.length, firstTestGameField[0].length, "len' s");
 let theGameFrame = 0;
 let isBombPlaced = false;
 function BMgameLoop() {
@@ -38,30 +41,19 @@ function BMgameLoop() {
   theGameField.draw();
   bomberMan.update();
   bomberMan.draw();
-  enemy.draw();
+  listOfEnemies.forEach(badMan => {
+    badMan.draw();
+  });
   listOfBombs.drawBombs();
   listOfExplosions.drawExplosions();
-  // if (isBombPlaced) {
-  //   if (theGameFrame > 400) {
-  //     for (let i = 0; i < firstTestGameField.length; i++) {
-  //       for (let j = 0; j < firstTestGameField[0].length; j++) {
-  //         if (firstTestGameField[i][j] === 3) {
-  //           firstTestGameField[i][j] = 0;
-  //         }
-  //       }
-  //     }
-  //     theGameFrame = 0;
-  //     isBombPlaced = false;
-  //   }
+  // if (
+  //   bomberMan.x + bomberMan.size > enemy.x &&
+  //   bomberMan.y + bomberMan.size > enemy.y &&
+  //   bomberMan.y < enemy.y + enemy.size &&
+  //   bomberMan.x < enemy.x + enemy.size
+  // ) {
+  //   console.log("GAME OVER?!?!?!");
   // }
-  if (
-    bomberMan.x + bomberMan.size > enemy.x &&
-    bomberMan.y + bomberMan.size > enemy.y &&
-    bomberMan.y < enemy.y + enemy.size &&
-    bomberMan.x < enemy.x + enemy.size
-  ) {
-    console.log("GAME OVER?!?!?!");
-  }
   if (!isGameOver) {
     requestAnimationFrame(BMgameLoop);
   } else {

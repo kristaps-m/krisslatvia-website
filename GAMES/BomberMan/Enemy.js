@@ -9,4 +9,12 @@ class Enemy {
     CTX.fillStyle = "red";
     CTX.fillRect(this.x, this.y, this.size, this.size);
   }
+
+  // someKindOfKaboomFunction(){
+  //   listOfExplosions.ListOfExplosions.forEach((e,i) => {
+  //     if(e.){
+
+  //     }
+  //   })
+  // }
 }
