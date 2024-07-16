@@ -14,7 +14,11 @@ class GameField {
           CTX.fillStyle = "black";
           CTX.fillRect(squareX, squareY, bManRadius, bManRadius);
           // CTX.fillText(`${col}-${row}`, squareX, squareY);
-        }else if(fieldSquare === 3){
+        } else if (fieldSquare === 5){
+          CTX.fillStyle = "lightblue";
+          CTX.fillRect(squareX, squareY,bManRadius, bManRadius);
+        }
+        else if(fieldSquare === 3){
           CTX.fillStyle = "yellow";
           CTX.fillRect(squareX, squareY, bManRadius, bManRadius);
         }

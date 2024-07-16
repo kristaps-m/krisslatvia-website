@@ -8,7 +8,7 @@ class BomberMan {
   }
 
   isNotZero(n) {
-    return n !== 0 ? bManMovementSpeed + 2 : n;
+    return n !== 0 ? bManMovementSpeed : n;
   }
 
   update() {
@@ -39,7 +39,8 @@ class BomberMan {
       this.x += vxr;
       this.y += vyu;
       this.y += vyd;
-    } else {
+    }
+    else {
       if (
         this.checkCollision(
           this.x + this.isNotZero(vxl) + this.isNotZero(vxr),

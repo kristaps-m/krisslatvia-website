@@ -11,7 +11,7 @@ const bManRadius = 25; //25;
 const bomberMan = new BomberMan({
   x: 0 + 1,
   y: 0 + 1,
-  size: bManRadius - 2,
+  size: bManRadius - 4,
 });
 
 let listOfBombs = new ListOfBombs();
@@ -25,6 +25,7 @@ let listOfEnemies = [new Enemy(
   bManRadius * 16 + 2,
   bManRadius - 5
 )];
+let listOfWalls = [new Wall(bManRadius*2 + 1, bManRadius + 1, bManRadius - 2), new Wall(bManRadius + 1, bManRadius*2 + 1, bManRadius - 2)];
 
 let isGameOver = false;
 let vxl = 0; // velocity x left
@@ -44,6 +45,9 @@ function BMgameLoop() {
   listOfEnemies.forEach(badMan => {
     badMan.draw();
   });
+  listOfWalls.forEach((oneWall) => {
+    oneWall.draw();
+  })
   listOfBombs.drawBombs();
   listOfExplosions.drawExplosions();
   // if (
