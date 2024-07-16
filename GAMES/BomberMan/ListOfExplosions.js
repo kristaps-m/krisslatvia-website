@@ -33,13 +33,15 @@ class ListOfExplosions {
             CTX.fillRect(squareX, squareY, bManRadius, bManRadius);
             // list of enemies? if in explosion then delete?
             listOfEnemies.forEach((oneEnemy, i) => {
+              /**
+               * -5 is taken to get enemy inside explosion area
+               */
               if (
-                oneEnemy.x > squareX &&
-                oneEnemy.y > squareY &&
+                oneEnemy.x > squareX - 5 &&
+                oneEnemy.y > squareY  - 5 &&
                 oneEnemy.x + bManRadius - 5 <= squareX + bManRadius &&
                 oneEnemy.y + bManRadius - 5 <= squareY + bManRadius
               ) {
-                // oneEnemy.x < squareX && oneEnemy.y < squareY
                 console.log("enemy Inside Explosion!");
                 listOfEnemies.splice(i, 1);
               }

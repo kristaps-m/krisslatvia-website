@@ -56,7 +56,7 @@ class BomberMan {
          */
         const currentSquareMoveForX = Math.floor(this.x / bManRadius);
         const c_S_M_F_Y = Math.floor(this.y / bManRadius);
-        console.log(this.x, currentSquareMoveForX);
+        // console.log(this.x, currentSquareMoveForX);
         if (
           (vyd > 0 || vyu < 0) &&
           currentSquareMoveForX % 2 !== 0 &&
@@ -147,15 +147,17 @@ class BomberMan {
         this.moveDir = "right";
         break;
       case "v":
-        console.log(this.x, this.y);
-      // case "x":
-      //   const currentSquareMoveForX = Math.floor(this.x / bManRadius);
-      //   const c_S_M_F_Y = Math.floor(this.y / bManRadius);
-      //   isBombPlaced = true;
-      //   firstTestGameField[c_S_M_F_Y][currentSquareMoveForX] = 3;
+        console.log(`x-${this.x},y-${this.y} ${this.x + bManRadius / 2} ${this.y + bManRadius / 2}`);
+        break;
       case "f":
-        listOfBombs.ListOfBombs.push(new Bomb(this.x, this.y, bManRadius));
+        /**
+         * So we need to put bomb precisely in crossection of row and colums
+         */
+        const preciseBomb_X_Position = Math.floor((this.x + bManRadius / 2) / bManRadius) * bManRadius;
+        const preciseBomb_Y_Position = Math.floor((this.y + bManRadius / 2) / bManRadius) * bManRadius;
+        listOfBombs.ListOfBombs.push(new Bomb(preciseBomb_X_Position, preciseBomb_Y_Position, bManRadius));
         console.log(listOfBombs.ListOfBombs);
+        break;
       default:
         console.log("NOT direction", direction);
         break;
