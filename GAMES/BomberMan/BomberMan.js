@@ -7,8 +7,11 @@ class BomberMan {
     this.moveDir = "";
   }
 
-  isNotZero(n) {
-    return n !== 0 ? bManMovementSpeed : n;
+  // isNotZero(n) {
+  //   return n !== 0 ? Math.abs(bManMovementSpeed) + 10 : Math.abs(n);
+  // }
+    isNotZero(a,b) {
+    return a === 0 ? b : a;
   }
 
   update() {
@@ -28,8 +31,8 @@ class BomberMan {
 
     if (
       !this.checkCollision(
-        this.x + this.isNotZero(vxl) + this.isNotZero(vxr),
-        this.y + this.isNotZero(vyu) + this.isNotZero(vyd),
+        this.x + this.isNotZero(vxl,vxr),//vxl,//this.isNotZero(vxl) + this.isNotZero(vxr),
+        this.y + this.isNotZero(vyu,vyd),//vyu,//this.isNotZero(vyu),// + this.isNotZero(vyd),
         firstTestGameField
       )
     ) {
@@ -41,13 +44,13 @@ class BomberMan {
       this.y += vyd;
     }
     else {
-      if (
-        this.checkCollision(
-          this.x + this.isNotZero(vxl) + this.isNotZero(vxr),
-          this.y + this.isNotZero(vyu) + this.isNotZero(vyd),
-          firstTestGameField
-        )
-      ) {
+      // if (
+      //   this.checkCollision(
+      //     this.x + this.isNotZero(vxl) + this.isNotZero(vxr),
+      //     this.y + this.isNotZero(vyu) + this.isNotZero(vyd),
+      //     firstTestGameField
+      //   )
+      // ) {
         /** If collision is detected
          * and BomberMan is past middle point of square
          * code below helps him move where he wants to.
@@ -85,7 +88,7 @@ class BomberMan {
         ) {
           this.y -= bManMovementSpeed;
         }
-      }
+      // }
       // console.log(
       //   "Collision detected. Movement blocked." + ` ${this.x}-${this.y}`
       // );
@@ -103,7 +106,7 @@ class BomberMan {
     for (let row = 0; row < Math.floor(W / bManRadius) - 1; row++) {
       for (let col = 0; col < Math.floor(H / bManRadius) - 1; col++) {
         const fieldSquare = gameField[col][row];
-        if (fieldSquare === 1) {
+        if (fieldSquare === 1 || fieldSquare === 5) {
           // Black square
           const squareX = row * bManRadius;
           const squareY = col * bManRadius;
