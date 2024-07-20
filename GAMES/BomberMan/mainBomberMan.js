@@ -3,11 +3,13 @@ const CTX = CANVAS.getContext("2d");
 // field = 23 * 23
 const W = 575,
   H = 575;
-const bManMovementSpeed = 3;
+const bManMovementSpeed = 2;
 CANVAS.width = W;
 CANVAS.height = H;
 
 const bManRadius = 25; //25;
+const explosionAnimationTime = 2000; // MS
+const bombExlpoldesDelayTIme = 1000; // MS
 const bomberMan = new BomberMan({
   x: 0 + 1,
   y: 0 + 1,
@@ -16,16 +18,17 @@ const bomberMan = new BomberMan({
 
 let listOfBombs = new ListOfBombs();
 let listOfExplosions = new ListOfExplosions();
-let listOfEnemies = [new Enemy(
-  bManRadius * 12 + 2,
-  bManRadius * 12 + 2,
-  bManRadius - 5
-),new Enemy(
-  bManRadius * 6 + 2,
-  bManRadius * 16 + 2,
-  bManRadius - 5
-)];
-let listOfWalls = [new Wall(bManRadius*2 + 1, bManRadius + 1, bManRadius - 2), new Wall(bManRadius + 1, bManRadius*2 + 1, bManRadius - 2)];
+let listOfEnemies = [
+  new Enemy(bManRadius * 12 + 2, bManRadius * 12 + 2, bManRadius - 5),
+  new Enemy(bManRadius * 6 + 2, bManRadius * 16 + 2, bManRadius - 5),
+];
+let listOfWalls = [
+  // new Wall(bManRadius * 2 + 1, bManRadius + 1, bManRadius - 2),
+  // new Wall(bManRadius + 1, bManRadius * 2 + 1, bManRadius - 2),
+];
+// firstTestGameField add random walls :)
+addRandomWallsToMainGameField();
+// countWalls();
 
 let isGameOver = false;
 let vxl = 0; // velocity x left
@@ -42,28 +45,31 @@ function BMgameLoop() {
   theGameField.draw();
   bomberMan.update();
   bomberMan.draw();
-  listOfEnemies.forEach(badMan => {
+  listOfEnemies.forEach((badMan) => {
     badMan.draw();
+    if (
+      bomberMan.x + bomberMan.size > badMan.x &&
+      bomberMan.y + bomberMan.size > badMan.y &&
+      bomberMan.y < badMan.y + badMan.size &&
+      bomberMan.x < badMan.x + badMan.size
+    ) {
+      console.log("GAME OVER?!?!?!");
+      isGameOver = true;
+    }
   });
   listOfWalls.forEach((oneWall) => {
     oneWall.draw();
-  })
+  });
   listOfBombs.drawBombs();
   listOfExplosions.drawExplosions();
-  // if (
-  //   bomberMan.x + bomberMan.size > enemy.x &&
-  //   bomberMan.y + bomberMan.size > enemy.y &&
-  //   bomberMan.y < enemy.y + enemy.size &&
-  //   bomberMan.x < enemy.x + enemy.size
-  // ) {
-  //   console.log("GAME OVER?!?!?!");
-  // }
+
   if (!isGameOver) {
     requestAnimationFrame(BMgameLoop);
   } else {
     let fSize = 55;
     CTX.font = `italic bold ${fSize}px Comic Sans MS`;
-    CTX.fillText("GAME OVER", W / 2, H / 2);
+    CTX.fillStyle = "#25B420";
+    CTX.fillText("GAME OVER", W / 4, H / 2);
   }
   // console.log(theGameFrame);
   theGameFrame++;

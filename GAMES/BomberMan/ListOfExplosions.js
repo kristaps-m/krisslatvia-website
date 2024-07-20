@@ -9,7 +9,7 @@ class ListOfExplosions {
     let dateNow = new Date();
     for (let i = 0; i < this.ListOfExplosions.length; i++) {
       const e = this.ListOfExplosions[i];
-      if (Date.parse(e.d) + 2000 <= Date.parse(dateNow)) {
+      if (Date.parse(e.d) + explosionAnimationTime <= Date.parse(dateNow)) {
         this.ListOfExplosions.splice(i, 1);
         console.log("DELETE?? Exp");
       }
@@ -38,7 +38,7 @@ class ListOfExplosions {
                */
               if (
                 oneEnemy.x > squareX - 5 &&
-                oneEnemy.y > squareY  - 5 &&
+                oneEnemy.y > squareY - 5 &&
                 oneEnemy.x + bManRadius - 5 <= squareX + bManRadius &&
                 oneEnemy.y + bManRadius - 5 <= squareY + bManRadius
               ) {
@@ -51,18 +51,18 @@ class ListOfExplosions {
               for (let row = 0; row < firstTestGameField.length; row++) {
                 for (let col = 0; col < firstTestGameField[0].length; col++) {
                   const fieldSquare = firstTestGameField[col][row];
-                  if(fieldSquare === 5){
+                  if (fieldSquare === 5) {
                     const wallx = row * bManRadius;
                     const wally = col * bManRadius;
-                    if(wallx > squareX - 5 &&
-                        wally > squareY  - 5 &&
-                        wallx + bManRadius - 5 <= squareX + bManRadius &&
-                        wally + bManRadius - 5 <= squareY + bManRadius
-                      ){
-                        console.log("Wall inside explosion!!!");
-                        firstTestGameField[col][row] = 0;
+                    if (
+                      wallx > squareX - 5 &&
+                      wally > squareY - 5 &&
+                      wallx + bManRadius - 5 <= squareX + bManRadius &&
+                      wally + bManRadius - 5 <= squareY + bManRadius
+                    ) {
+                      console.log("Wall inside explosion!!!");
+                      firstTestGameField[col][row] = 0;
                     }
-
                   }
                 }
               }

@@ -13,8 +13,16 @@ class ListOfBombs {
     let dateNow = new Date();
     for (let i = 0; i < this.ListOfBombs.length; i++) {
       const b = this.ListOfBombs[i];
-      if (Date.parse(b.bombPlacedTime) + 4000 <= Date.parse(dateNow)) {
-        listOfExplosions.ListOfExplosions.push({x:b.x,y:b.y,s:b.size,d:new Date()});
+      if (
+        Date.parse(b.bombPlacedTime) + bombExlpoldesDelayTIme <=
+        Date.parse(dateNow)
+      ) {
+        listOfExplosions.ListOfExplosions.push({
+          x: b.x,
+          y: b.y,
+          s: b.size,
+          d: new Date(),
+        });
         this.ListOfBombs.splice(i, 1);
         console.log("DELETE??");
       }
