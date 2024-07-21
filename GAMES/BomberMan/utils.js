@@ -35,11 +35,11 @@ let bombExlosion_2 = [
 
 let noWalls = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]; // 16
 
-// add random walls
 function addRandomWallsToMainGameField() {
   // field 23 * 23, lets make n walls?
-  let randomWallsCount = 130;
+  let randomWallsCount = 200;
   let howManyWallsAdded = 1;
+
   while (howManyWallsAdded <= randomWallsCount) {
     const randRow = Math.floor(Math.random() * 23);
     const randCol = Math.floor(Math.random() * 23);
@@ -48,9 +48,10 @@ function addRandomWallsToMainGameField() {
       firstTestGameField[randRow][randCol] !== 1 &&
       randRow >= 1 &&
       randCol >= 1 &&
-      !noWalls.includes(randCol) &&
-      randRow !== 16
+      randRow !== 16 &&
+      randCol !== 12
     ) {
+      randomXandYforLevelexit = {x:randRow, y:randCol};
       firstTestGameField[randRow][randCol] = 5;
       howManyWallsAdded++;
     }
@@ -68,4 +69,52 @@ function countWalls() {
   }
 
   console.log(result);
+}
+
+function isPlayerInLevelexit(player, lExit){
+  if(player.x > lExit.x &&
+    player.x + bManRadius - 5 <= lExit.x + bManRadius &&
+    player.y > lExit.y &&
+    player.y + bManRadius - 5 <= lExit.y + bManRadius
+  ){
+    return true;
+  }
+
+  return false;
+}
+
+function randomLevelexitPosition(){
+  // let xP = Math.floor(Math.random() * 20);
+  // let yP = Math.floor(Math.random() * 20);
+  let randRow = Math.floor(Math.random() * 23);
+  let randCol = Math.floor(Math.random() * 23);
+  console.log("1",randRow,randCol);
+  while (firstTestGameField[randRow][randCol] === 1){ // xP % 2 !== 0 && yP % 2 !== 0 &&
+    randRow = Math.floor(Math.random() * 23);
+    randCol = Math.floor(Math.random() * 23);
+  console.log("2",randRow,randCol);
+
+  }
+  if(firstTestGameField[randRow][randCol] !== 1){
+    return {x:randRow,y:randCol};
+
+  }
+
+  // console.log("3",xP,yP);
+  // let result  = {x:0, y:0};
+  // firstTestGameField.forEach((row, rI) => {
+  //   row.forEach((elem, cI) =>{
+  //     let xP = Math.floor(Math.random() * 22);
+  //     let yP = Math.floor(Math.random() * 22);
+  //     if(elem !== 1){
+  //       console.log(elem);
+  //       if(rI < xP && cI < yP){
+  //         result = {x:rI, y:cI};
+  //         return;
+  //       }
+  //     }
+  //   })
+  // })
+
+  // return result;
 }

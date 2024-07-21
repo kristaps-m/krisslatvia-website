@@ -8,26 +8,32 @@ CANVAS.width = W;
 CANVAS.height = H;
 
 const bManRadius = 25; //25;
-const explosionAnimationTime = 2000; // MS
-const bombExlpoldesDelayTIme = 1000; // MS
+const explosionAnimationTime = 1000; // MS
+const bombExlpoldesDelayTIme = 2000; // MS
 const bomberMan = new BomberMan({
   x: 0 + 1,
   y: 0 + 1,
   size: bManRadius - 4,
 });
+let randomXandYforLevelexit = {};
 
 let listOfBombs = new ListOfBombs();
 let listOfExplosions = new ListOfExplosions();
 let listOfEnemies = [
-  new Enemy(bManRadius * 12 + 2, bManRadius * 12 + 2, bManRadius - 5),
-  new Enemy(bManRadius * 6 + 2, bManRadius * 16 + 2, bManRadius - 5),
+  new Enemy({x:bManRadius * 12 + 2, y:bManRadius * 12 + 2, size:bManRadius - 5, enemyMovement:"v"}),
+  new Enemy({x:bManRadius * 6 + 2, y: bManRadius * 16 + 2, size: bManRadius - 5, enemyMovement: "h"}),
+  new Enemy({x:bManRadius * 3 + 2, y:bManRadius * 22 + 2, size:bManRadius - 5, enemyMovement:"h", start:bManRadius * 3, end:bManRadius * 12}),
+  new Enemy({x:bManRadius * 22 + 2, y:bManRadius * 5 + 2, size:bManRadius - 5, enemyMovement:"v", start:bManRadius * 5, end:bManRadius * 17}),
+  new Enemy({x: bManRadius * 22 + 2, y: bManRadius * 22 + 2, size: bManRadius - 5}),
+  // SUPER ENEMY ?! :)
+  new Enemy({x:bManRadius * 6 + 2, y:bManRadius * 8 + 2, size:bManRadius - 5, enemyMovement:"h", speed:10}),
 ];
-let listOfWalls = [
-  // new Wall(bManRadius * 2 + 1, bManRadius + 1, bManRadius - 2),
-  // new Wall(bManRadius + 1, bManRadius * 2 + 1, bManRadius - 2),
-];
+
 // firstTestGameField add random walls :)
 addRandomWallsToMainGameField();
+// console.log(randomXandYforLevelexit);
+// adds LevelExit (green square) behind random wall;
+const levelExit = new LevelExit(bManRadius * randomXandYforLevelexit.y, bManRadius * randomXandYforLevelexit.x);
 // countWalls();
 
 let isGameOver = false;
@@ -42,10 +48,12 @@ let theGameFrame = 0;
 let isBombPlaced = false;
 function BMgameLoop() {
   CTX.clearRect(0, 0, W, H);
+  levelExit.draw();
   theGameField.draw();
   bomberMan.update();
   bomberMan.draw();
   listOfEnemies.forEach((badMan) => {
+    badMan.update();
     badMan.draw();
     if (
       bomberMan.x + bomberMan.size > badMan.x &&
@@ -57,11 +65,17 @@ function BMgameLoop() {
       isGameOver = true;
     }
   });
-  listOfWalls.forEach((oneWall) => {
-    oneWall.draw();
-  });
   listOfBombs.drawBombs();
   listOfExplosions.drawExplosions();
+
+  if(!isGameOver && listOfEnemies.length === 0 && isPlayerInLevelexit(bomberMan, levelExit)){
+    let fSize = 65;
+    CTX.font = `italic bold ${fSize}px Comic Sans MS`;
+    CTX.fillStyle = "#25B420";
+    CTX.fillText("VICTORY", 50, H / 2);
+    CTX.fillText("Teleporting to....", 50, H / 2 + 75);
+    CTX.fillText("Next level", 50, H / 2 + 150);
+  }
 
   if (!isGameOver) {
     requestAnimationFrame(BMgameLoop);

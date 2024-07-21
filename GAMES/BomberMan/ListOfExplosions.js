@@ -11,7 +11,6 @@ class ListOfExplosions {
       const e = this.ListOfExplosions[i];
       if (Date.parse(e.d) + explosionAnimationTime <= Date.parse(dateNow)) {
         this.ListOfExplosions.splice(i, 1);
-        console.log("DELETE?? Exp");
       }
     }
   }

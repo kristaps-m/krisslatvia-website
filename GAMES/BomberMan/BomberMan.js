@@ -1,7 +1,6 @@
-class BomberMan {
+class BomberMan extends Position{
   constructor({ x, y, size }) {
-    this.x = x;
-    this.y = y;
+    super(x,y);
     this.size = size;
     this.color = "pink";
     this.moveDir = "";
@@ -189,6 +188,12 @@ class BomberMan {
       case "ArrowRight":
         vxr = 0;
         this.moveDir = "";
+        break;
+      case 'p':
+        listOfEnemies = [];
+        break;
+      case 'o':
+        console.log(levelExit);
         break;
     }
   }

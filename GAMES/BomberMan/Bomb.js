@@ -1,7 +1,6 @@
-class Bomb {
+class Bomb extends Position{
   constructor(x, y, size) {
-    this.x = x;
-    this.y = y;
+    super(x,y);
     this.size = size;
     this.bombPlacedTime = new Date();
     this.bombSize; // 2

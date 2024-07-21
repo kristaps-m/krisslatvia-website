@@ -24,7 +24,6 @@ class ListOfBombs {
           d: new Date(),
         });
         this.ListOfBombs.splice(i, 1);
-        console.log("DELETE??");
       }
     }
   }
