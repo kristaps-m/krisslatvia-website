@@ -30,6 +30,18 @@ class ListOfExplosions {
           if (explFieldSquare === 1) {
             // Black square
             CTX.fillRect(squareX, squareY, bManRadius, bManRadius);
+            /**
+             * So if Player inside explosion :( = GamE OveR
+             */
+            if(
+              bomberMan.x > squareX - 5 &&
+              bomberMan.y > squareY - 5 &&
+              bomberMan.x + bManRadius - 5 <= squareX + bManRadius &&
+              bomberMan.y + bManRadius - 5 <= squareY + bManRadius
+            ){
+              isGameOver = true;
+            }
+
             // list of enemies? if in explosion then delete?
             listOfEnemies.forEach((oneEnemy, i) => {
               /**
@@ -44,28 +56,32 @@ class ListOfExplosions {
                 console.log("enemy Inside Explosion!");
                 listOfEnemies.splice(i, 1);
               }
-              /**
-               * Lets try destroy walls
-               */
-              for (let row = 0; row < firstTestGameField.length; row++) {
-                for (let col = 0; col < firstTestGameField[0].length; col++) {
-                  const fieldSquare = firstTestGameField[col][row];
-                  if (fieldSquare === 5) {
-                    const wallx = row * bManRadius;
-                    const wally = col * bManRadius;
-                    if (
-                      wallx > squareX - 5 &&
-                      wally > squareY - 5 &&
-                      wallx + bManRadius - 5 <= squareX + bManRadius &&
-                      wally + bManRadius - 5 <= squareY + bManRadius
-                    ) {
-                      console.log("Wall inside explosion!!!");
-                      firstTestGameField[col][row] = 0;
-                    }
+            });
+            /**
+             * Lets try destroy walls
+             */
+            for (let row = 0; row < firstTestGameField.length; row++) {
+              for (let col = 0; col < firstTestGameField[0].length; col++) {
+                const fieldSquare = firstTestGameField[col][row];
+                if (fieldSquare === 5) {
+                  const wallx = row * bManRadius;
+                  const wally = col * bManRadius;
+                  // console.log(wallx > squareX - 5 &&
+                  //   wally > squareY - 5 &&
+                  //   wallx + bManRadius - 5 <= squareX + bManRadius &&
+                  //   wally + bManRadius - 5 <= squareY + bManRadius)
+                  if (
+                    wallx > squareX - 5 &&
+                    wally > squareY - 5 &&
+                    wallx + bManRadius - 5 <= squareX + bManRadius &&
+                    wally + bManRadius - 5 <= squareY + bManRadius
+                  ) {
+                    console.log("Wall inside explosion!!!");
+                    firstTestGameField[col][row] = 0;
                   }
                 }
               }
-            });
+            }
 
             // console.log(e);
           }

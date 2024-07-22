@@ -6,9 +6,6 @@ class BomberMan extends Position{
     this.moveDir = "";
   }
 
-  // isNotZero(n) {
-  //   return n !== 0 ? Math.abs(bManMovementSpeed) + 10 : Math.abs(n);
-  // }
     isNotZero(a,b) {
     return a === 0 ? b : a;
   }
@@ -43,13 +40,6 @@ class BomberMan extends Position{
       this.y += vyd;
     }
     else {
-      // if (
-      //   this.checkCollision(
-      //     this.x + this.isNotZero(vxl) + this.isNotZero(vxr),
-      //     this.y + this.isNotZero(vyu) + this.isNotZero(vyd),
-      //     firstTestGameField
-      //   )
-      // ) {
         /** If collision is detected
          * and BomberMan is past middle point of square
          * code below helps him move where he wants to.
@@ -87,7 +77,6 @@ class BomberMan extends Position{
         ) {
           this.y -= bManMovementSpeed;
         }
-      // }
       // console.log(
       //   "Collision detected. Movement blocked." + ` ${this.x}-${this.y}`
       // );
@@ -158,8 +147,10 @@ class BomberMan extends Position{
          */
         const preciseBomb_X_Position = Math.floor((this.x + bManRadius / 2) / bManRadius) * bManRadius;
         const preciseBomb_Y_Position = Math.floor((this.y + bManRadius / 2) / bManRadius) * bManRadius;
-        listOfBombs.ListOfBombs.push(new Bomb(preciseBomb_X_Position, preciseBomb_Y_Position, bManRadius));
-        console.log(listOfBombs.ListOfBombs);
+        if(listOfBombs.ListOfBombs.length === 0){
+          listOfBombs.ListOfBombs.push(new Bomb(preciseBomb_X_Position, preciseBomb_Y_Position, bManRadius));
+        }
+        // console.log(listOfBombs.ListOfBombs);
         break;
       default:
         console.log("NOT direction", direction);
@@ -189,12 +180,12 @@ class BomberMan extends Position{
         vxr = 0;
         this.moveDir = "";
         break;
-      case 'p':
-        listOfEnemies = [];
-        break;
-      case 'o':
-        console.log(levelExit);
-        break;
+      // case 'p':
+      //   listOfEnemies = [];
+      //   break;
+      // case 'o':
+      //   console.log(levelExit);
+      //   break;
     }
   }
 }

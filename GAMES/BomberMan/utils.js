@@ -83,38 +83,38 @@ function isPlayerInLevelexit(player, lExit){
   return false;
 }
 
-function randomLevelexitPosition(){
-  // let xP = Math.floor(Math.random() * 20);
-  // let yP = Math.floor(Math.random() * 20);
-  let randRow = Math.floor(Math.random() * 23);
-  let randCol = Math.floor(Math.random() * 23);
-  console.log("1",randRow,randCol);
-  while (firstTestGameField[randRow][randCol] === 1){ // xP % 2 !== 0 && yP % 2 !== 0 &&
-    randRow = Math.floor(Math.random() * 23);
-    randCol = Math.floor(Math.random() * 23);
-  console.log("2",randRow,randCol);
+// function randomLevelexitPosition(){
+//   // let xP = Math.floor(Math.random() * 20);
+//   // let yP = Math.floor(Math.random() * 20);
+//   let randRow = Math.floor(Math.random() * 23);
+//   let randCol = Math.floor(Math.random() * 23);
+//   console.log("1",randRow,randCol);
+//   while (firstTestGameField[randRow][randCol] === 1){ // xP % 2 !== 0 && yP % 2 !== 0 &&
+//     randRow = Math.floor(Math.random() * 23);
+//     randCol = Math.floor(Math.random() * 23);
+//   console.log("2",randRow,randCol);
 
-  }
-  if(firstTestGameField[randRow][randCol] !== 1){
-    return {x:randRow,y:randCol};
+//   }
+//   if(firstTestGameField[randRow][randCol] !== 1){
+//     return {x:randRow,y:randCol};
 
-  }
+//   }
 
-  // console.log("3",xP,yP);
-  // let result  = {x:0, y:0};
-  // firstTestGameField.forEach((row, rI) => {
-  //   row.forEach((elem, cI) =>{
-  //     let xP = Math.floor(Math.random() * 22);
-  //     let yP = Math.floor(Math.random() * 22);
-  //     if(elem !== 1){
-  //       console.log(elem);
-  //       if(rI < xP && cI < yP){
-  //         result = {x:rI, y:cI};
-  //         return;
-  //       }
-  //     }
-  //   })
-  // })
+//   // console.log("3",xP,yP);
+//   // let result  = {x:0, y:0};
+//   // firstTestGameField.forEach((row, rI) => {
+//   //   row.forEach((elem, cI) =>{
+//   //     let xP = Math.floor(Math.random() * 22);
+//   //     let yP = Math.floor(Math.random() * 22);
+//   //     if(elem !== 1){
+//   //       console.log(elem);
+//   //       if(rI < xP && cI < yP){
+//   //         result = {x:rI, y:cI};
+//   //         return;
+//   //       }
+//   //     }
+//   //   })
+//   // })
 
-  // return result;
-}
+//   // return result;
+// }
