@@ -37,15 +37,11 @@ p {
 .button-row {
   margin-top: 10px;
   margin-bottom: 10px;
-  /* Add some spacing above the button row */
 }
 
 .button-row button {
-  width: 150px;
+  width: 65px;
   height: 2rem;
-  /* Adjust width as needed */
   margin: 0 10px;
-  /* Add some spacing between buttons */
   display: inline-block;
-  /* Display buttons inline */
 }

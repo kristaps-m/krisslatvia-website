@@ -1,6 +1,7 @@
-export class Cell {
+import {Position} from "../Global Helper Classes/PositionExported.js";
+
+export class Cell extends Position {
   constructor(x,y){
-    this.x = x;
-    this.y = y;
+    super(x,y)
   }
 }

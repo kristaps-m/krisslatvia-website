@@ -1,5 +1,5 @@
-import {Snake} from './snake.js';
-import { Food } from "./food.js";
+import {Snake} from './Snake.js';
+import { Food } from "./Food.js";
 
 const canvas = document.getElementById("snake_canvas");
 const ctx = canvas.getContext("2d");

@@ -1,7 +1,8 @@
-export class Ball{
+import { Position } from "../Global Helper Classes/PositionExported.js";
+
+export class Ball extends Position{
   constructor(x,y, radius, w,h, ctx, playerOne, playerTwo){
-    this.x = x;
-    this.y = y;
+    super(x,y)
     this.radius = radius;
     this.color = "orange";
     this.ctx = ctx;

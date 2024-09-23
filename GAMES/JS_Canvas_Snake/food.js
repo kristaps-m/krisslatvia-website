@@ -1,7 +1,8 @@
-export class Food {
-  constructor(squareSize, gameFieldFullNumber){
-    this.x = 200;
-    this.y = 200;
+import { Position } from "../Global Helper Classes/PositionExported.js";
+
+export class Food extends Position{
+  constructor(squareSize, gameFieldFullNumber, x, y){
+    super(x = 200, y = 200);
     this.squareSize = squareSize;
     this.gameFieldFullNumber = gameFieldFullNumber;
   }
