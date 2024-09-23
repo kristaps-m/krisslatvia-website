@@ -16,10 +16,19 @@
 <body>
   <h3 style="margin-bottom: 0; margin-top: 10; padding: 0;">Next Player Color:</h3>
   <div id="variableDisplay" class="p1Color">red</div>
-  <button onclick="restartGame()">New Game?</button><br>
+  <div>
+    <button onclick="restartGame()">New Game?</button>
+    <select name="test" id="tikTakToeFieldSize">
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+  </div>
+  <br>
   <!-- <p>This is a basic web page with connected HTML, CSS, and JavaScript files.</p> -->
   <canvas id="myCanvas" width="400" height="400"></canvas>
-  <script src="script.js"></script>
+  <script src="canvas_tiktaktoe_main.js"></script>
 </body>
 
 </html>

@@ -1,18 +1,16 @@
-const c = document.getElementById("myCanvas");
-const width = c.width;
-const height = c.height;
 const squareOffSet = 10;
 const tikTakToeFieldSize = 3;
 const p1Color = 'red';
 const p2Color = 'blue';
 let currentPlayerColor = p1Color;
 let gameField = [];
-var CTX = c.getContext("2d");
 var elem = document.getElementById('myCanvas'),
-    elemLeft = elem.offsetLeft,
-    elemTop = elem.offsetTop,
-    context = elem.getContext('2d'),
-    elements = [];
+elemLeft = elem.offsetLeft,
+elemTop = elem.offsetTop,
+elements = [];
+var CTX = elem.getContext("2d");
+const width = elem.width;
+const height = elem.height;
 
 // TikTakToe gird
 drawGrid();
@@ -21,18 +19,18 @@ drawGrid();
 elem.addEventListener('click', function(event) {
     var x = event.pageX - elemLeft,
         y = event.pageY - elemTop - 74;
-    console.log(x, y);
+    console.log(`x: ${x}, y: ${y}`);
 
     if(checkWiner(gameField) === false){
         elements.forEach(function(element) {
             if (y > element.top && y < element.top + element.height && x > element.left && x < element.left + element.width) {
-                console.log(element, currentPlayerColor);
-                gameField[Math.floor(y / (width / tikTakToeFieldSize))][Math.floor(x / (height / tikTakToeFieldSize))] = currentPlayerColor;
-                context.fillStyle = currentPlayerColor;
-                context.fillRect(element.left, element.top, element.width, element.height);
-                console.log(gameField);
-                updateVariableDisplay();
-                currentPlayerColor = currentPlayerColor === p2Color ? p1Color : p2Color;
+                if(gameField[Math.floor(y / (width / tikTakToeFieldSize))][Math.floor(x / (height / tikTakToeFieldSize))] === ''){
+                    gameField[Math.floor(y / (width / tikTakToeFieldSize))][Math.floor(x / (height / tikTakToeFieldSize))] = currentPlayerColor;
+                    CTX.fillStyle = currentPlayerColor;
+                    CTX.fillRect(element.left, element.top, element.width, element.height);
+                    updateVariableDisplay();
+                    currentPlayerColor = currentPlayerColor === p2Color ? p1Color : p2Color;
+                };
             }
         });
     }
@@ -43,17 +41,14 @@ elem.addEventListener('click', function(event) {
 createTikTakToeClickableElements();
 // Render elements.
 elements.forEach(function(element) {
-    context.fillStyle = element.colour;
-    context.fillRect(element.left, element.top, element.width, element.height);
+    CTX.fillStyle = element.colour;
+    CTX.fillRect(element.left, element.top, element.width, element.height);
 });
 
 function createTikTakToeClickableElements() {
     let elemH = height / tikTakToeFieldSize - squareOffSet*2;
     let elemW = width / tikTakToeFieldSize - squareOffSet*2;
     let elemColor = '#8c8382';
-    // top left 0,0 0,100 0,200 // THIS IS NOT QUITE RIGHT :(
-    // 100,0 100,100 100,200
-    // 200,0 200,100 200,200
     for (let row = 0; row < width; row+=width/tikTakToeFieldSize) {
         let tempRow = [];
         for (let col = 0; col < height; col+=height/tikTakToeFieldSize) {
@@ -117,7 +112,7 @@ function checkWiner(theGameField) {
             theGoDownNumber--;
         }
     }
-    console.log(gameResult, "gameResult Check WInner")
+
     if(countFullCells === Math.pow(gameFLength, 2) && gameResult === ''){
         // alert(`checkWineer WINNER TIE`);
         displayText(`WINNER is TIE`);
@@ -164,20 +159,22 @@ function drawGrid() {
     }
 }
 
+// function for "New Game!"
 function restartGame(){
-    context.clearRect(0, 0, width, height);
+    CTX.clearRect(0, 0, width, height);
     drawGrid();
-    let elemH = height / tikTakToeFieldSize - squareOffSet*2;
-    let elemW = width / tikTakToeFieldSize - squareOffSet*2;
+    const newTikTakToeFieldSize = document.getElementById("tikTakToeFieldSize").value;
+    let elemH = height / newTikTakToeFieldSize - squareOffSet*2;
+    let elemW = width / newTikTakToeFieldSize - squareOffSet*2;
     let elemColor = '#8c8382';
     gameField=[];
     elements=[];
     var variableDisplay = document.getElementById('variableDisplay');
     variableDisplay.className = currentPlayerColor = 'p1Color';
     variableDisplay.textContent = currentPlayerColor = p1Color;
-    for (let row = 0; row < width; row+=width/tikTakToeFieldSize) {
+    for (let row = 0; row < width; row+=width/newTikTakToeFieldSize) {
         let tempRow = [];
-        for (let col = 0; col < height; col+=height/tikTakToeFieldSize) {
+        for (let col = 0; col < height; col+=height/newTikTakToeFieldSize) {
             const oneElement = {colour: elemColor, width: elemW, height: elemH, top: row+squareOffSet, left: col+squareOffSet}
             elements.push(oneElement);
             tempRow.push('');
@@ -186,7 +183,7 @@ function restartGame(){
     }
 
     elements.forEach(function(element) {
-        context.fillStyle = element.colour;
-        context.fillRect(element.left, element.top, element.width, element.height);
+        CTX.fillStyle = element.colour;
+        CTX.fillRect(element.left, element.top, element.width, element.height);
     });
 }
