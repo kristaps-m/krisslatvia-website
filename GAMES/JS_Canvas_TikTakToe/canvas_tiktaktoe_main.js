@@ -12,8 +12,7 @@ var CTX = elem.getContext("2d");
 const width = elem.width;
 const height = elem.height;
 
-// TikTakToe gird
-drawGrid();
+displayGrid({ctx:CTX, strokeStyle: "white", girdLineWidth: 2, canvasHeight: height, canvasWidth: width, oneSquareSize: width / tikTakToeFieldSize});
 
 // Add event listener for `click` events.
 elem.addEventListener('click', function(event) {
@@ -137,26 +136,6 @@ function displayText(theText){
     CTX.textAlign = "center";
     CTX.fillStyle = '#07f223'; // greenish
     CTX.fillText(theText, width / 2, height /2);
-}
-
-function drawGrid() {
-    const oneSquareSize = width / tikTakToeFieldSize
-    // Draw vertical grid lines
-    CTX.strokeStyle = "white";
-    for (let x = 0; x <= width; x += oneSquareSize) {
-        CTX.beginPath();
-        CTX.moveTo(x, 0);
-        CTX.lineTo(x, height);
-        CTX.stroke();
-    }
-
-    // Draw horizontal grid lines
-    for (let y = 0; y <= width; y += oneSquareSize) {
-        CTX.beginPath();
-        CTX.moveTo(0, y);
-        CTX.lineTo(width, y);
-        CTX.stroke();
-    }
 }
 
 // function for "New Game!"

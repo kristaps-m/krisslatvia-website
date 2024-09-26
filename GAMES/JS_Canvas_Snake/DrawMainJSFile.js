@@ -8,54 +8,42 @@ const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 let isGameOver = false;
 let isPaused = false;
+let theGameFrameCount = 0;
 let gameFieldFullNumber = (canvasWidth / oneSquareSize) * (canvasHeight / oneSquareSize);
 let snake = new Snake(oneSquareSize, canvasWidth, canvasHeight);
 let food = new Food(oneSquareSize, gameFieldFullNumber);
-let gameMSTimer = 250;
 let isGridON = false;
 const girdLineWidth = 1;
 let snakeIsMoved = false;
 let userTypingInPause = [];
 
-function drawGrid() {
-    // Draw vertical grid lines
-    ctx.strokeStyle = "white";
-    ctx.lineWidth = girdLineWidth;
-    for (let x = 0; x <= canvasWidth; x += oneSquareSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, canvasHeight);
-        ctx.stroke();
+function theSnakeGameLoop() {
+  if(theGameFrameCount % 8 === 0){
+    if(isPaused){
+      displayText('    PAUSE    ');
     }
-
-    // Draw horizontal grid lines
-    for (let y = 0; y <= canvasHeight; y += oneSquareSize) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvasWidth, y);
-        ctx.stroke();
+    if(gameFieldFullNumber - 1 === snake.tail.length){
+      var variableDisplay = document.getElementById('scoreDisplay').textContent;
+      displayText('YOU WON!' + ` score: ${variableDisplay}`);
+      isGameOver = true;
     }
+    if(snake.isSnakeHeadCrashedInTail() && snake.tail.length > 4 && snakeIsMoved){
+      var variableDisplay = document.getElementById('scoreDisplay').textContent;
+      displayText('GAME OVER!'  + ` score: ${variableDisplay}`);
+      isGameOver = true;
+    }
+    if(!isGameOver && !isPaused){
+      the_draw();
+    }
+  }
+  requestAnimationFrame(theSnakeGameLoop);
+  theGameFrameCount++;
+  if(theGameFrameCount > Math.pow(10,6)){
+    theGameFrameCount = 0;
+  }
 }
 
-(function cycle(){
-  if(isPaused){
-    displayText('    PAUSE    ');
-  }
-  if(gameFieldFullNumber - 1 === snake.tail.length){
-    var variableDisplay = document.getElementById('scoreDisplay').textContent;
-    displayText('YOU WON!' + ` score: ${variableDisplay}`);
-    isGameOver = true;
-  }
-  if(snake.isSnakeHeadCrashedInTail() && snake.tail.length > 4 && snakeIsMoved){
-    var variableDisplay = document.getElementById('scoreDisplay').textContent;
-    displayText('GAME OVER!'  + ` score: ${variableDisplay}`);
-    isGameOver = true;
-  }
-  if(!isGameOver && !isPaused){
-    the_draw();
-  }
-  setTimeout(cycle, gameMSTimer);
-})(0);
+theSnakeGameLoop();
 
 function the_draw(){
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -64,7 +52,7 @@ function the_draw(){
   snake.drawTail(ctx, 'green');
   snake.draw(ctx, 'red');
   if(isGridON){
-    drawGrid();
+    displayGrid({ctx:ctx, strokeStyle: "white", girdLineWidth: 1, canvasHeight: canvasHeight, canvasWidth: canvasWidth, oneSquareSize: oneSquareSize})
   }
 
   if(food.isFoodEaten(snake.xLocation, snake.yLocation)){
