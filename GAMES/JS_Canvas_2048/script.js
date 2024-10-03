@@ -37,6 +37,12 @@ function gameSizeHandler() {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
     ];
+    // game2DArray = [ // TEST array !
+    //   [0, 0, 64, 64],
+    //   [4, 2, 0, 0],
+    //   [8, 2, 0, 0],
+    //   [16, 8, 4, 2],
+    // ];
   } else if (cnvsSettings.gameSize === 5) {
     cnvsSettings.width = 400;
     cnvsSettings.height = 400;
@@ -79,7 +85,6 @@ CANVAS.height = cnvsSettings.height;
 let INTERVAL = cnvsSettings.width / cnvsSettings.gameSize;
 createAndDrawGirdOnCanvas();
 drawGameFieldOnCanvas(true);
-//generateTwoOrFourAfterMovement(true);
 
 window.addEventListener("keyup", function (event) {
   if (!isGameOver) {
@@ -103,29 +108,7 @@ window.addEventListener("keyup", function (event) {
   }
 });
 
-function isArraysEqualAfterMovingNumbers(
-  arrayBeforeMovement,
-  arrAfterMovement
-) {
-  // const saveCurrentGameState = [...game2DArray];
-  // let isEqual = true;
-
-  for (let row = 0; row < cnvsSettings.gameSize; row++) {
-    for (let col = 0; col < cnvsSettings.gameSize; col++) {
-      let nBefore = arrayBeforeMovement[row][col];
-      let nAfter = arrAfterMovement[row][col];
-      if (nBefore !== nAfter) {
-        return false;
-      }
-    }
-  }
-
-  return true;
-}
-
 function doSomethingWhenKeyup(keyUP) {
-  const currentGameState = [...game2DArray];
-  console.log(currentGameState);
   switch (keyUP) {
     case "r":
       doubleEachNumberInGame();
@@ -137,43 +120,26 @@ function doSomethingWhenKeyup(keyUP) {
       break;
     case "ArrowUp":
     case "w":
-      movementHandler.moveAllNumbersUp();
-      console.log(
-        isArraysEqualAfterMovingNumbers(currentGameState, game2DArray),
-        game2DArray
-      );
-      drawGameFieldOnCanvas(true);
+      const generateNewNumberOrNot_w = movementHandler.moveAllNumbersUp();
+      drawGameFieldOnCanvas(generateNewNumberOrNot_w);
       gameOverHandlerWhenDirectionButtonPressed("up");
       break;
     case "ArrowDown":
     case "s":
-      movementHandler.moveAllNumbersDown();
-      console.log(
-        isArraysEqualAfterMovingNumbers(currentGameState, game2DArray),
-        game2DArray
-      );
-      drawGameFieldOnCanvas(true);
+      const generateNewNumberOrNot_s = movementHandler.moveAllNumbersDown();
+      drawGameFieldOnCanvas(generateNewNumberOrNot_s);
       gameOverHandlerWhenDirectionButtonPressed("down");
       break;
     case "ArrowLeft":
     case "a":
-      movementHandler.moveAllNumbersLeft();
-      console.log(
-        isArraysEqualAfterMovingNumbers(currentGameState, game2DArray),
-        game2DArray
-      );
-
-      drawGameFieldOnCanvas(true);
+      const generateNewNumberOrNot_a = movementHandler.moveAllNumbersLeft();
+      drawGameFieldOnCanvas(generateNewNumberOrNot_a);
       gameOverHandlerWhenDirectionButtonPressed("left");
       break;
     case "ArrowRight":
     case "d":
-      movementHandler.moveAllNumbersRight();
-      console.log(
-        isArraysEqualAfterMovingNumbers(currentGameState, game2DArray),
-        game2DArray
-      );
-      drawGameFieldOnCanvas(true);
+      const generateNewNumberOrNot_d = movementHandler.moveAllNumbersRight();
+      drawGameFieldOnCanvas(generateNewNumberOrNot_d);
       gameOverHandlerWhenDirectionButtonPressed("right");
       break;
     default:
@@ -273,7 +239,6 @@ function drawGameFieldOnCanvas(generateNumbBool) {
   CTX.clearRect(0, 0, cnvsSettings.width, cnvsSettings.height);
   if (generateNumbBool) {
     generateTwoOrFourAfterMovement();
-    console.log("GENERATE 2 or 4 !");
   }
   createAndDrawGirdOnCanvas();
   for (let row = 0; row < cnvsSettings.gameSize; row++) {
