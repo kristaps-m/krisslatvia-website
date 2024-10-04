@@ -83,7 +83,6 @@ gameSizeHandler();
 CANVAS.width = cnvsSettings.width;
 CANVAS.height = cnvsSettings.height;
 let INTERVAL = cnvsSettings.width / cnvsSettings.gameSize;
-createAndDrawGirdOnCanvas();
 drawGameFieldOnCanvas(true);
 
 window.addEventListener("keyup", function (event) {
@@ -110,11 +109,11 @@ window.addEventListener("keyup", function (event) {
 
 function doSomethingWhenKeyup(keyUP) {
   switch (keyUP) {
-    case "r":
+    case "F6":
       doubleEachNumberInGame();
       drawGameFieldOnCanvas(false);
       break;
-    case "v":
+    case "Delete":
       game2DArray = sort2DArray(game2DArray);
       drawGameFieldOnCanvas(false);
       break;
@@ -240,7 +239,10 @@ function drawGameFieldOnCanvas(generateNumbBool) {
   if (generateNumbBool) {
     generateTwoOrFourAfterMovement();
   }
-  createAndDrawGirdOnCanvas();
+  displayGrid({ctx:CTX, strokeStyle:"green", girdLineWidth: cnvsSettings.lineW,
+    oneSquareSize:cnvsSettings.width / cnvsSettings.gameSize,
+    canvasHeight:cnvsSettings.height,
+    canvasWidth:cnvsSettings.width});
   for (let row = 0; row < cnvsSettings.gameSize; row++) {
     for (let col = 0; col < cnvsSettings.gameSize; col++) {
       let n = game2DArray[row][col];
@@ -322,40 +324,6 @@ function getRandomNumberInRange(n, interval) {
   return Math.min(randomNumber, n);
 }
 
-// create grid lines (horizontal and vertical)
-function createAndDrawGirdOnCanvas() {
-  // Start a new Path
-  CTX.lineWidth = cnvsSettings.lineW;
-  CTX.strokeStyle = "green";
-  CTX.beginPath();
-  for (
-    let x = 0;
-    x < cnvsSettings.width;
-    x += cnvsSettings.width / cnvsSettings.gameSize
-  ) {
-    // Start a new Path
-    CTX.moveTo(0, 0);
-    CTX.lineTo(0, x);
-    CTX.moveTo(0, x);
-    CTX.lineTo(cnvsSettings.width, x);
-  }
-
-  for (
-    let y = 0;
-    y < cnvsSettings.height;
-    y += cnvsSettings.width / cnvsSettings.gameSize
-  ) {
-    // Start a new Path
-    CTX.moveTo(0, 0);
-    CTX.lineTo(y, 0);
-    CTX.moveTo(y, 0);
-    CTX.lineTo(y, cnvsSettings.height);
-  }
-
-  // Draw the Path
-  CTX.stroke();
-}
-
 function doubleEachNumberInGame() {
   for (let row = 0; row < cnvsSettings.gameSize; row++) {
     for (let col = 0; col < cnvsSettings.gameSize; col++) {
@@ -403,10 +371,5 @@ function createNewGame() {
   CANVAS.width = cnvsSettings.width;
   CANVAS.height = cnvsSettings.height;
   INTERVAL = cnvsSettings.width / cnvsSettings.gameSize;
-  createAndDrawGirdOnCanvas();
   drawGameFieldOnCanvas(true);
-  //   console.log(newGameSize)
-  //   console.log("NEW GAME");
-  //   console.log(cnvsSettings)
-  //   console.log(game2DArray)
 }
