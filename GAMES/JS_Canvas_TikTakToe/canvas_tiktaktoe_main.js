@@ -1,7 +1,7 @@
 const squareOffSet = 10;
-const tikTakToeFieldSize = 3;
 const p1Color = 'red';
 const p2Color = 'blue';
+let tikTakToeFieldSize = 3;
 let currentPlayerColor = p1Color;
 let gameField = [];
 var elem = document.getElementById('myCanvas'),
@@ -12,7 +12,8 @@ var CTX = elem.getContext("2d");
 const width = elem.width;
 const height = elem.height;
 
-displayGrid({ctx:CTX, strokeStyle: "white", girdLineWidth: 2, canvasHeight: height, canvasWidth: width, oneSquareSize: width / tikTakToeFieldSize});
+displayGrid({ctx:CTX, strokeStyle: "white", girdLineWidth: 2, canvasHeight: height, canvasWidth: width,
+    oneSquareSize: width / tikTakToeFieldSize});
 
 // Add event listener for `click` events.
 elem.addEventListener('click', function(event) {
@@ -141,19 +142,20 @@ function displayText(theText){
 // function for "New Game!"
 function restartGame(){
     CTX.clearRect(0, 0, width, height);
-    drawGrid();
-    const newTikTakToeFieldSize = document.getElementById("tikTakToeFieldSize").value;
-    let elemH = height / newTikTakToeFieldSize - squareOffSet*2;
-    let elemW = width / newTikTakToeFieldSize - squareOffSet*2;
+    tikTakToeFieldSize = parseInt(document.getElementById("tikTakToeFieldSize").value);
+    displayGrid({ctx:CTX, strokeStyle: "white", girdLineWidth: 2, canvasHeight: height, canvasWidth: width, oneSquareSize: width / tikTakToeFieldSize});
+    let elemH = height / tikTakToeFieldSize - squareOffSet*2;
+    let elemW = width / tikTakToeFieldSize - squareOffSet*2;
     let elemColor = '#8c8382';
     gameField=[];
     elements=[];
     var variableDisplay = document.getElementById('variableDisplay');
     variableDisplay.className = currentPlayerColor = 'p1Color';
     variableDisplay.textContent = currentPlayerColor = p1Color;
-    for (let row = 0; row < width; row+=width/newTikTakToeFieldSize) {
+
+    for (let row = 0; row < width; row+=width/tikTakToeFieldSize) {
         let tempRow = [];
-        for (let col = 0; col < height; col+=height/newTikTakToeFieldSize) {
+        for (let col = 0; col < height; col+=height/tikTakToeFieldSize) {
             const oneElement = {colour: elemColor, width: elemW, height: elemH, top: row+squareOffSet, left: col+squareOffSet}
             elements.push(oneElement);
             tempRow.push('');
