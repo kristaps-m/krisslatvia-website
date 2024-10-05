@@ -1,4 +1,4 @@
-import { Snake } from "./Snake.js";
+import { Snake } from "./snake.js";
 import { Food } from "./Food.js";
 
 const canvas = document.getElementById("snake_canvas");
