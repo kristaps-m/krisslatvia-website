@@ -92,7 +92,9 @@ document.addEventListener("keydown", function (event) {
   } else if (userTypingInPause.length > 50) {
     userTypingInPause = [];
   }
-  snake.changeDirection(theKeyPressed);
+  setTimeout(function () {
+    snake.changeDirection(theKeyPressed);
+  }, 10);
   snakeIsMoved = true;
 });
 
