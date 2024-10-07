@@ -8,6 +8,7 @@ const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 let isGameOver = false;
 let isPaused = false;
+let gameIsStarted = false;
 let theGameFrameCount = 0;
 let gameFieldFullNumber =
   (canvasWidth / oneSquareSize) * (canvasHeight / oneSquareSize);
@@ -53,6 +54,10 @@ theSnakeGameLoop();
 
 function the_draw() {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  if(!gameIsStarted){
+    ctx.fillStyle = "green"
+    ctx.fillRect(0,0,(snake.tail.length) * oneSquareSize,oneSquareSize);
+  }
   snake.update();
   food.draw(ctx, "black");
   snake.drawTail(ctx, "green");
@@ -61,7 +66,7 @@ function the_draw() {
     displayGrid({
       ctx: ctx,
       strokeStyle: "white",
-      girdLineWidth: 1,
+      girdLineWidth: girdLineWidth,
       canvasHeight: canvasHeight,
       canvasWidth: canvasWidth,
       oneSquareSize: oneSquareSize,
@@ -97,6 +102,9 @@ document.addEventListener("keydown", function (event) {
     snake.changeDirection(theKeyPressed);
   }, 10);
   snakeIsMoved = true;
+  if(!gameIsStarted){
+    gameIsStarted = true;
+  }
 });
 
 document.getElementById("toggleGirdOnOff").onclick = function () {
@@ -120,6 +128,8 @@ document.getElementById("togglePauseGame").onclick = function () {
 document.getElementById("newGame").onclick = function () {
   isGameOver = false;
   isPaused = false;
+  snakeIsMoved = false;
+  gameIsStarted = false;
   var variableDisplay = document.getElementById("scoreDisplay");
   variableDisplay.textContent = 4;
   oneSquareSize = parseInt(document.getElementById("squareSize").value);

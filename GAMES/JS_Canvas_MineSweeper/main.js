@@ -69,8 +69,9 @@ document.addEventListener("keyup", (e) => {
     cheat.push(e.key);
     if(cheatIfCheatEntered()){
       isCheatEnabled = !isCheatEnabled;
-      console.log("CHEAT ENABLED")
+      console.log(`CHEAT ${isCheatEnabled ? 'EN' : 'DIS'}ABLED`)
       gameMinesHandler.supCheat(gameFieldForLogic);
+      cheat = [];
     }
   }
 })
