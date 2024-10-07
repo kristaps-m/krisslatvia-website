@@ -40,6 +40,7 @@ function theSnakeGameLoop() {
     if (!isGameOver && !isPaused) {
       the_draw();
     }
+    snake.canChangeDirection = true;
   }
   requestAnimationFrame(theSnakeGameLoop);
   theGameFrameCount++;

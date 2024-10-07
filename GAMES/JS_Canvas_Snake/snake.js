@@ -15,6 +15,7 @@ export class Snake {
       new Cell(this.squareSize * 2, 0),
     ];
     this.snakeMoveDir = "right";
+    this.canChangeDirection = false;
   }
 
   update() {
@@ -73,6 +74,7 @@ export class Snake {
   }
 
   changeDirection(dirKey) {
+    if (!this.canChangeDirection) return; // Prevent changing direction multiple times in one frame
     // keys = w, s, a, d OR Up, Down, Left, Right
     switch (dirKey) {
       case "Up":
@@ -81,6 +83,7 @@ export class Snake {
           this.xSpeed = 0;
           this.ySpeed = this.squareSize * -1;
           this.snakeMoveDir = "up";
+          this.canChangeDirection = false; // Direction change happened
         }
         break;
       case "Down":
@@ -89,6 +92,7 @@ export class Snake {
           this.xSpeed = 0;
           this.ySpeed = this.squareSize * 1;
           this.snakeMoveDir = "down";
+          this.canChangeDirection = false;
         }
         break;
       case "Left":
@@ -97,6 +101,7 @@ export class Snake {
           this.ySpeed = 0;
           this.xSpeed = this.squareSize * -1;
           this.snakeMoveDir = "left";
+          this.canChangeDirection = false;
         }
         break;
       case "Right":
@@ -105,6 +110,7 @@ export class Snake {
           this.ySpeed = 0;
           this.xSpeed = this.squareSize * 1;
           this.snakeMoveDir = "right";
+          this.canChangeDirection = false;
         }
         break;
       case "x":
