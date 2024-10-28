@@ -1,7 +1,34 @@
-const CANVAS = document.getElementById('mainStage');
-const CTX = CANVAS.getContext('2d');
-const W = 500, H = 500;
-CANVAS.width = W, CANVAS.height = H;
+const CANVAS = document.getElementById("mainStage");
+const CTX = CANVAS.getContext("2d");
+const W = 500;
+const H = 500;
+CANVAS.width = W;
+CANVAS.height = H;
+
+// Some bit fields for convenience
+let cellEnum = {
+  CELL_PATH_N: 0x01,
+  CELL_PATH_E: 0x02,
+  CELL_PATH_S: 0x04,
+  CELL_PATH_W: 0x08,
+  CELL_VISITED: 0x10,
+};
+
+class Maze {
+  constructor() {
+    // Algorithm variables
+    let m_nVisitedCells;
+    let m_stack = []; // (x, y) coordinate pairs // int,int
+    let m_nPathWidth;
+
+    // Maze parameters
+    this.m_nMazeWidth = 40;
+    this.m_nMazeHeight = 25;
+  }
+}
+
+/**
+
 let x = 0;
 // let mouseX = 0;
 // let mouseY = 0;
@@ -51,3 +78,5 @@ function draw() {
         x = 0;
     }
 }
+
+ */
