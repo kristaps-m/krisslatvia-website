@@ -1,5 +1,7 @@
 class Cell{
-    constructor(x,y,width,height, cellColor, arrayROW, arraYCOL, isItOneOrZero = 0){
+    constructor(x,y,width,height, cellColor, arrayROW, arraYCOL,
+        // isItOneOrZero = 0, updateCounter = 0,
+        randomColorNumber = -10){
         this.x = x;
         this.y = y;
         this.width = width;
@@ -7,8 +9,10 @@ class Cell{
         this.cellColor = cellColor;
         this.arrayROW= arrayROW;
         this.arrayCOL = arraYCOL
-        this.isItOneOrZero = isItOneOrZero;
-        this.updateCounter = 0;
+        // this.isItOneOrZero = isItOneOrZero;
+        // this.updateCounter = updateCounter;
+        this.randomColorNumber = randomColorNumber;
+        this.run = false;
         // this.LAEC = lineAroundEachCell;
     }
 
