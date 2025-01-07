@@ -13,8 +13,8 @@ let gameFieldHeight = parseInt(document.getElementById("theHeight").value = diff
 let gameFieldWidth = parseInt(document.getElementById("theWidth").value = difficulty[1]);
 let minesInDaGame = parseInt(document.getElementById("minesCount").value = difficulty[2]);
 document.getElementById('minesLeft').textContent = minesInDaGame;
-let elemLeft = CANVAS.offsetLeft;
-let elemTop = CANVAS.offsetTop;
+// let elemLeft = CANVAS.offsetLeft;
+// let elemTop = CANVAS.offsetTop;
 let minesweeperCells = [];
 let MS_Reveal_Cells = [];
 let gameFieldForLogic = [];
@@ -77,9 +77,15 @@ document.addEventListener("keyup", (e) => {
 })
 
 CANVAS.addEventListener('click', function(event) {
+  // Get the bounding rectangle of the canvas
+  const rect = CANVAS.getBoundingClientRect();
+
   isPaused = false;
-  let xHor = event.pageX - elemLeft; // Horizontal Canvas Axis
-  let yVert = event.pageY - elemTop  - 74; // Vertical Canvas Axis
+  // let xHor = event.pageX - elemLeft; // Horizontal Canvas Axis
+  // let yVert = event.pageY - elemTop  - 74; // Vertical Canvas Axis
+  // Calculate the click position relative to the canvas
+  let xHor = (event.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
+  let yVert = (event.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
   console.log(xHor,yVert);
   let rowIndxClick = Math.floor(yVert / (CANVAS_WIDTH / gameFieldHeight));
   let colIndxClick = Math.floor(xHor / (CANVAS_HEIGHT / gameFieldWidth));
@@ -173,10 +179,15 @@ CANVAS.addEventListener('click', function(event) {
 },false);
 
 CANVAS.addEventListener('contextmenu', function(event) {
-    //isPaused = false;
+    // Get the bounding rectangle of the canvas
+    const rect = CANVAS.getBoundingClientRect();
+
     event.preventDefault(); // Prevent the default context menu from appearing
-    let x = event.pageX - elemLeft;
-    let y = event.pageY - elemTop   - 74;
+    // let x = event.pageX - elemLeft;
+    // let y = event.pageY - elemTop   - 74;
+    // Calculate the click position relative to the canvas
+    let x = (event.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
+    let y = (event.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
 
     if(!isPaused){
       // Determine the cell clicked based on coordinates
