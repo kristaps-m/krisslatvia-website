@@ -17,8 +17,14 @@ displayGrid({ctx:CTX, strokeStyle: "white", girdLineWidth: 2, canvasHeight: heig
 
 // Add event listener for `click` events.
 elem.addEventListener('click', function(event) {
-    var x = event.pageX - elemLeft,
-        y = event.pageY - elemTop - 74;
+    // Get the bounding rectangle of the canvas
+    const rect = elem.getBoundingClientRect();
+    // Before zoom fix:
+    // var x = event.pageX - elemLeft,
+    //     y = event.pageY - elemTop - 74;
+    // After ZOOM fix:
+    let x = (event.clientX - rect.left) * (elem.width / rect.width); // Normalize x
+    let y = (event.clientY - rect.top) * (elem.height / rect.height)// Normalize y
     console.log(`x: ${x}, y: ${y}`);
 
     if(checkWiner(gameField) === false){
