@@ -13,8 +13,8 @@ let gameField;
 let finishedGF;
 initGameFieldWithSizedArray(game_side_size); // set gameField & finishedGF
 gameField = shuffle(gameField);
-const elemLeft = CANVAS.offsetLeft;
-const elemTop = CANVAS.offsetTop;
+// const elemLeft = CANVAS.offsetLeft;
+// const elemTop = CANVAS.offsetTop;
 let gameFieldElements = [];
 let userClickedTwoNumbers = [];
 const DEFAULT_GRAY = "#8c8382";
@@ -36,8 +36,14 @@ function newGame() {
 CANVAS.addEventListener(
   "click",
   function (event) {
-    var x = event.pageX - elemLeft,
-      y = event.pageY - elemTop - 74;
+    // Get the bounding rectangle of the canvas
+    const rect = CANVAS.getBoundingClientRect();
+
+    // var x = event.pageX - elemLeft,
+    //   y = event.pageY - elemTop - 74;
+    // Calculate the click position relative to the canvas
+    let x = (event.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
+    let y = (event.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
     console.log(x, y);
 
     gameFieldElements.forEach(function (element) {
