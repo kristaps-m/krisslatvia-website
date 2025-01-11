@@ -26,6 +26,7 @@ elem.addEventListener('click', function(event) {
     let x = (event.clientX - rect.left) * (elem.width / rect.width); // Normalize x
     let y = (event.clientY - rect.top) * (elem.height / rect.height)// Normalize y
     console.log(`x: ${x}, y: ${y}`);
+    // console.log(gameField);
 
     if(checkWiner(gameField) === false){
         elements.forEach(function(element) {
@@ -110,9 +111,21 @@ function checkWiner(theGameField) {
             // ----------------------------------------
             if(cXwinByRows === gameFLength || cXwinByCols === gameFLength || cXwinByDiag === gameFLength || cXwinByDiag_2 === gameFLength){
                 gameResult = p1Color;
+                drawLine({r:cXwinByRows === gameFLength || cOwinByRows === gameFLength,
+                    c:cXwinByCols === gameFLength ||  cOwinByCols === gameFLength,
+                    d1:cXwinByDiag === gameFLength,
+                    d2:cXwinByDiag_2 === gameFLength},
+                    {r:row, c:col}) // gameResult = {r:fale, c:false, d1:fale, d2:false} - {r:0, c:0}
+                console.log(`cXwinByRows-${cXwinByRows} cOwinByRows-${cOwinByRows} row-${row} col-${col}`);
                 break;
             }else if(cOwinByRows === gameFLength || cOwinByCols === gameFLength || cOwinByDiag === gameFLength || cOwinByDiag_2 === gameFLength){
                 gameResult = p2Color;
+                drawLine({r:cXwinByRows === gameFLength || cOwinByRows === gameFLength,
+                    c:cXwinByCols === gameFLength ||  cOwinByCols === gameFLength,
+                    d1:cOwinByDiag === gameFLength,
+                    d2:cOwinByDiag_2 === gameFLength},
+                    {r:row, c:col})
+                console.log(`cXwinByRows-${cXwinByRows} cOwinByRows-${cOwinByRows} row-${row} col-${col}`);
                 break;
             }
             theGoDownNumber--;
@@ -173,4 +186,32 @@ function restartGame(){
         CTX.fillStyle = element.colour;
         CTX.fillRect(element.left, element.top, element.width, element.height);
     });
+}
+
+
+function drawLine(gameResult, where){ // gameResult = {r:fale, c:false, d1:fale, d2:false} - {r:0, c:0}
+    let y = height / tikTakToeFieldSize;
+    // Start a new Path
+    if(gameResult.r){
+        CTX.beginPath();
+        CTX.moveTo(y / 2, y * where.r + y /2);
+        CTX.lineTo(width - y / 2, y * where.r + y /2);
+    } else if (gameResult.c){
+        CTX.beginPath();
+        CTX.moveTo(y * where.r + y /2, y / 2);
+        CTX.lineTo(y * where.r + y /2, width - y / 2);
+    } else if (gameResult.d1){
+        CTX.beginPath();
+        CTX.moveTo(y / 2, y / 2);
+        CTX.lineTo(width - y / 2, width - y / 2);
+    } else if (gameResult.d2){
+        CTX.beginPath();
+        CTX.moveTo(width - y / 2, y / 2);
+        CTX.lineTo(y / 2, width - y / 2);
+    }
+    // Styling
+    CTX.lineWidth = 4;
+    CTX.strokeStyle = "brown";
+    // Draw the Path
+    CTX.stroke();
 }
