@@ -150,9 +150,9 @@ function updateVariableDisplay() {
 }
 
 function displayText(theText){
-    CTX.font = "italic bold 30px Comic Sans MS";
+    CTX.font = "italic bold 40px Comic Sans MS";
     CTX.textAlign = "center";
-    CTX.fillStyle = '#07f223'; // greenish
+    CTX.fillStyle = '#58755b'; // greenish
     CTX.fillText(theText, width / 2, height /2);
 }
 
@@ -208,8 +208,8 @@ function drawLineWherePlayerWon(gameResult, where){ // gameResult = {r:fale, c:f
         CTX.lineTo(y / 2, width - y / 2);
     }
     // Styling
-    CTX.lineWidth = 4;
-    CTX.strokeStyle = "brown";
+    CTX.lineWidth = 8;
+    CTX.strokeStyle = "#03a1fc";
     // Draw the Path
     CTX.stroke();
 }
