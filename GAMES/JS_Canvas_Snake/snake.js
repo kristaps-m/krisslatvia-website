@@ -23,7 +23,7 @@ export class Snake {
     this.yLocation += this.ySpeed;
   }
 
-  draw(context, color) {
+  drawSnakeHead(context, color) {
     context.fillStyle = color;
     if (this.xLocation + this.squareSize > this.canvasWidth) {
       this.xLocation = 0;
@@ -170,5 +170,38 @@ export class Snake {
   drawEyesHelper(context, leftEye, rightEye, size) {
     context.fillRect(leftEye.x, leftEye.y, size, size);
     context.fillRect(rightEye.x, rightEye.y, size, size);
+  }
+
+  automaticalyMoveSnakeToCollectFood(){
+    let startingYpos = 0;
+    let listOfSnakeMoves = ["left", "down", "right"]; // right, left, up, down
+    // y = 0, 10, 20, 30, 40, 50, ...
+
+    // if(this.xLocation >= this.canvasWidth - this.squareSize && this.yLocation === startingYpos){
+    if(listOfSnakeMoves.join("") === "leftdownright" && this.xLocation >= this.canvasWidth - this.squareSize){
+      this.changeDirection("s");
+      listOfSnakeMoves.shift()
+      listOfSnakeMoves.push("down");
+      // startingYpos += this.squareSize;
+      // if(startingYpos % this.squareSize === 0){
+    }
+    if(listOfSnakeMoves.join("") === "downrightdown" && this.xLocation >= this.canvasWidth - this.squareSize){
+      this.changeDirection("a");
+      listOfSnakeMoves.shift()
+      listOfSnakeMoves.push("left");
+    }
+    // if(this.yLocation % this.squareSize === 0 && this.xLocation >= this.canvasWidth - this.squareSize){
+    //   this.changeDirection("a");
+    // }
+    // if(this.yLocation >= this.squareSize && this.xLocation === 0){
+    //   this.changeDirection("s");
+    //   startingYpos += this.squareSize;
+    // }
+    // // if(this.yLocation >= this.squareSize && this.xLocation === 0 && this.snakeMoveDir === "down"){ //  && this.yLocation % this.squareSize === 0
+    // //   this.changeDirection("d");
+    // // }
+    // if(this.xLocation === 0 && this.snakeMoveDir === "down"){ //  && this.yLocation % this.squareSize === 0
+    //   this.changeDirection("d");
+    // }
   }
 }

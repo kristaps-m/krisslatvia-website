@@ -4,6 +4,7 @@ import { Food } from "./Food.js";
 const canvas = document.getElementById("snake_canvas");
 const ctx = canvas.getContext("2d");
 let oneSquareSize = parseInt(document.getElementById("squareSize").value);
+let gameSpeedDivider = 21 - parseInt(document.getElementById("gameSpeedDivider").value);
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 let isGameOver = false;
@@ -20,7 +21,7 @@ let snakeIsMoved = false;
 let userTypingInPause = [];
 
 function theSnakeGameLoop() {
-  if (theGameFrameCount % 8 === 0) {
+  if (theGameFrameCount % gameSpeedDivider === 0) {
     if (isPaused) {
       displayText("    PAUSE    ");
     }
@@ -40,6 +41,9 @@ function theSnakeGameLoop() {
     }
     if (!isGameOver && !isPaused) {
       the_draw();
+    }
+    if(true){
+      snake.automaticalyMoveSnakeToCollectFood();
     }
     snake.canChangeDirection = true;
   }
@@ -61,7 +65,7 @@ function the_draw() {
   snake.update();
   food.draw(ctx, "black");
   snake.drawTail(ctx, "green");
-  snake.draw(ctx, "red");
+  snake.drawSnakeHead(ctx, "red");
   if (isGridON) {
     displayGrid({
       ctx: ctx,
@@ -87,6 +91,12 @@ document.addEventListener("keydown", function (event) {
   if (theKeyPressed === "p" || theKeyPressed === " ") {
     isPaused = !isPaused;
   }
+    // TESTING --------------------------
+    if (theKeyPressed === "o") {
+      console.log(gameSpeedDivider);
+      console.log(`w-${canvasWidth}, h-${canvasHeight} w.cubes-${canvasWidth / oneSquareSize} h.cubes-${canvasHeight / oneSquareSize}`);
+      console.log(snake.xLocation, snake.yLocation);
+    }
   if (isPaused) {
     userTypingInPause.push(theKeyPressed);
     console.log(userTypingInPause);
@@ -98,9 +108,9 @@ document.addEventListener("keydown", function (event) {
   } else if (userTypingInPause.length > 50) {
     userTypingInPause = [];
   }
-  setTimeout(function () {
-    snake.changeDirection(theKeyPressed);
-  }, 10);
+  snake.changeDirection(theKeyPressed);
+  // setTimeout(function () {
+  // }, 10);
   snakeIsMoved = true;
   if(!gameIsStarted){
     gameIsStarted = true;
@@ -133,6 +143,7 @@ document.getElementById("newGame").onclick = function () {
   var variableDisplay = document.getElementById("scoreDisplay");
   variableDisplay.textContent = 4;
   oneSquareSize = parseInt(document.getElementById("squareSize").value);
+  gameSpeedDivider = 21 - parseInt(document.getElementById("gameSpeedDivider").value);
   if (oneSquareSize < 10) {
     oneSquareSize = 10;
     document.getElementById("squareSize").value = 10;
