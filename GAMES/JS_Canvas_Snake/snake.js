@@ -15,7 +15,8 @@ export class Snake {
       new Cell(this.squareSize * 2, 0),
     ];
     this.snakeMoveDir = "right";
-    this.canChangeDirection = false;
+    this.canChangeDirection = false; // DEFAULT = false
+    // this.listOfSnakeMoves = ["left", "down", "right"]; // right, left, up, down
   }
 
   update() {
@@ -164,7 +165,6 @@ export class Snake {
       };
       this.drawEyesHelper(context, leftEyeLoc, rightEyeLoc, eyeSize);
     }
-    // console.log(this.snakeMoveDir);
   }
 
   drawEyesHelper(context, leftEye, rightEye, size) {
@@ -172,36 +172,40 @@ export class Snake {
     context.fillRect(rightEye.x, rightEye.y, size, size);
   }
 
+  // if in theSnakeGameLoop this function is activated snake
+  // automaticaly moves down in row to collect all food and WIN :) <3
   automaticalyMoveSnakeToCollectFood(){
-    let startingYpos = 0;
-    let listOfSnakeMoves = ["left", "down", "right"]; // right, left, up, down
-    // y = 0, 10, 20, 30, 40, 50, ...
-
-    // if(this.xLocation >= this.canvasWidth - this.squareSize && this.yLocation === startingYpos){
-    if(listOfSnakeMoves.join("") === "leftdownright" && this.xLocation >= this.canvasWidth - this.squareSize){
+    if(this.xLocation === this.canvasWidth - this.squareSize &&
+      this.tail[this.tail.length - 1].x === this.canvasWidth - this.squareSize &&
+      this.tail[this.tail.length - 2].x === this.canvasWidth - this.squareSize*2 &&
+      this.tail[this.tail.length - 3].x === this.canvasWidth - this.squareSize*3 &&
+      this.snakeMoveDir === "right"
+    ){
       this.changeDirection("s");
-      listOfSnakeMoves.shift()
-      listOfSnakeMoves.push("down");
-      // startingYpos += this.squareSize;
-      // if(startingYpos % this.squareSize === 0){
     }
-    if(listOfSnakeMoves.join("") === "downrightdown" && this.xLocation >= this.canvasWidth - this.squareSize){
+    if(this.xLocation === this.canvasWidth - this.squareSize &&
+      this.tail[this.tail.length - 1].x === this.canvasWidth - this.squareSize &&
+      this.tail[this.tail.length - 2].x === this.canvasWidth - this.squareSize &&
+      this.tail[this.tail.length - 3].x === this.canvasWidth - this.squareSize*2 &&
+      this.snakeMoveDir === "down"
+    ){
       this.changeDirection("a");
-      listOfSnakeMoves.shift()
-      listOfSnakeMoves.push("left");
     }
-    // if(this.yLocation % this.squareSize === 0 && this.xLocation >= this.canvasWidth - this.squareSize){
-    //   this.changeDirection("a");
-    // }
-    // if(this.yLocation >= this.squareSize && this.xLocation === 0){
-    //   this.changeDirection("s");
-    //   startingYpos += this.squareSize;
-    // }
-    // // if(this.yLocation >= this.squareSize && this.xLocation === 0 && this.snakeMoveDir === "down"){ //  && this.yLocation % this.squareSize === 0
-    // //   this.changeDirection("d");
-    // // }
-    // if(this.xLocation === 0 && this.snakeMoveDir === "down"){ //  && this.yLocation % this.squareSize === 0
-    //   this.changeDirection("d");
-    // }
+    if(this.xLocation === 0 &&
+      this.tail[this.tail.length - 1].x === 0 &&
+      this.tail[this.tail.length - 2].x === this.squareSize &&
+      this.tail[this.tail.length - 3].x === this.squareSize*2 &&
+      this.snakeMoveDir === "left"
+    ){
+      this.changeDirection("s");
+    }
+    if(this.xLocation === 0 &&
+      this.tail[this.tail.length - 1].x === 0 &&
+      this.tail[this.tail.length - 2].x === 0 &&
+      this.tail[this.tail.length - 3].x === this.squareSize &&
+      this.snakeMoveDir === "down"
+    ){
+      this.changeDirection("d");
+    }
   }
 }

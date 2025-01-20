@@ -1,5 +1,6 @@
 import { Snake } from "./snake.js";
 import { Food } from "./Food.js";
+import { Cell } from "./cell.js";
 
 const canvas = document.getElementById("snake_canvas");
 const ctx = canvas.getContext("2d");
@@ -25,6 +26,9 @@ function theSnakeGameLoop() {
     if (isPaused) {
       displayText("    PAUSE    ");
     }
+    if(true){
+      snake.automaticalyMoveSnakeToCollectFood();
+    }
     if (gameFieldFullNumber - 1 === snake.tail.length) {
       var variableDisplay = document.getElementById("scoreDisplay").textContent;
       displayText("YOU WON!" + ` score: ${variableDisplay}`);
@@ -41,9 +45,6 @@ function theSnakeGameLoop() {
     }
     if (!isGameOver && !isPaused) {
       the_draw();
-    }
-    if(true){
-      snake.automaticalyMoveSnakeToCollectFood();
     }
     snake.canChangeDirection = true;
   }
@@ -96,6 +97,11 @@ document.addEventListener("keydown", function (event) {
       console.log(gameSpeedDivider);
       console.log(`w-${canvasWidth}, h-${canvasHeight} w.cubes-${canvasWidth / oneSquareSize} h.cubes-${canvasHeight / oneSquareSize}`);
       console.log(snake.xLocation, snake.yLocation);
+      console.log(snake.listOfSnakeMoves);
+      console.log(snake.tail, snake.xLocation, snake.yLocation);
+    }
+    if(theKeyPressed === "x"){
+      snake.tail.push(new Cell(snake.xLocation, snake.yLocation));
     }
   if (isPaused) {
     userTypingInPause.push(theKeyPressed);
