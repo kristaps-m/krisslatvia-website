@@ -16,7 +16,6 @@ export class Snake {
     ];
     this.snakeMoveDir = "right";
     this.canChangeDirection = false; // DEFAULT = false
-    // this.listOfSnakeMoves = ["left", "down", "right"]; // right, left, up, down
   }
 
   update() {
@@ -46,12 +45,10 @@ export class Snake {
   }
 
   drawTail(ctx, color) {
-    // if(this.xTEST > 0 || this.yTEST > 0){
     this.tail.forEach((cEll) => {
       ctx.fillStyle = color;
       ctx.fillRect(cEll.x, cEll.y, this.squareSize, this.squareSize);
     });
-    // }
   }
 
   updateTail() {

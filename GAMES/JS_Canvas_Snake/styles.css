@@ -45,3 +45,11 @@ p {
   margin: 0 10px;
   display: inline-block;
 }
+
+.autoPlayOFF{
+  background-color: rgb(253, 157, 157);
+}
+
+.autoPlayON{
+  background-color: rgb(141, 231, 141);
+}

@@ -18,7 +18,8 @@
   <h2 id="scoreDisplay">4</h2>
   <div class="button-row">
     <button id="toggleGirdOnOff">Enable Grid?</button>
-    <button id="newGame">New Game!</button>
+    <button id="toggleAutoSnakePlayOnOff" class="autoPlayOFF">Enable AutoPlay?</button>
+    <button id="newGame" style="background-color: greenyellow;">New Game!</button>
     <button id="togglePauseGame">Pause Game?</button>
   </div>
   <div class="button-row">
@@ -30,11 +31,10 @@
       <option value="50">50</option>
       <option value="100">100</option>
     </select>
-    <label for="squareSize">GameSpeed:</label>
-    <input type="number" id="gameSpeedDivider" value="20" style="width: 3rem;">
+    <label for="squareSize">GameSpeed [1-20]:</label>
+    <input type="number" id="gameSpeedDivider" value="13" style="width: 3rem;">
   </div>
-  <p>TODO: add speed min max value</p>
-  <p>TODO: move only left or right if there is a food</p>
+  <p>TODO: move only left or right if there is a food (improve autoplay algorithm)</p>
   <canvas id="snake_canvas" width="500" height="400"></canvas>
   <script src="../Global Helper Classes/displayGrid.js"></script>
   <script src="../Global Helper Classes/Position.js"></script>

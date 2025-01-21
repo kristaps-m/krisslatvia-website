@@ -2,10 +2,13 @@ import { Snake } from "./snake.js";
 import { Food } from "./Food.js";
 import { Cell } from "./cell.js";
 
+const maxAndMinGameSpeedHelper = (n) => n > 20 ? 20 : n < 1 ? 1 : n;
 const canvas = document.getElementById("snake_canvas");
 const ctx = canvas.getContext("2d");
 let oneSquareSize = parseInt(document.getElementById("squareSize").value);
-let gameSpeedDivider = 21 - parseInt(document.getElementById("gameSpeedDivider").value);
+// Game speed is from 1 to 20. If player enters 20 he draws snake very fast
+// meaning his speed is max....
+let gameSpeedDivider = 21 - maxAndMinGameSpeedHelper(parseInt(document.getElementById("gameSpeedDivider").value));
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 let isGameOver = false;
@@ -17,6 +20,7 @@ let gameFieldFullNumber =
 let snake = new Snake(oneSquareSize, canvasWidth, canvasHeight);
 let food = new Food(oneSquareSize, gameFieldFullNumber);
 let isGridON = false;
+let isAutoSnakePlayON = false;
 const girdLineWidth = 1;
 let snakeIsMoved = false;
 let userTypingInPause = [];
@@ -26,7 +30,7 @@ function theSnakeGameLoop() {
     if (isPaused) {
       displayText("    PAUSE    ");
     }
-    if(true){
+    if(isAutoSnakePlayON && !isGameOver && !isPaused){
       snake.automaticalyMoveSnakeToCollectFood();
     }
     if (gameFieldFullNumber - 1 === snake.tail.length) {
@@ -84,6 +88,12 @@ function the_draw() {
     var variableDisplay = document.getElementById("scoreDisplay");
     variableDisplay.textContent = parseInt(variableDisplay.textContent) + 1;
   }
+  if(isAutoSnakePlayON){
+    ctx.font = "italic bold 20px Comic Sans MS";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "rgb(141, 231, 141)";
+    ctx.fillText("AUTO PLAY ON!", 100, 20);
+  }
   snake.removeFirstElementFromTail();
 }
 
@@ -123,10 +133,6 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-document.getElementById("toggleGirdOnOff").onclick = function () {
-  isGridON = !isGridON;
-};
-
 function displayText(theText) {
   ctx.font = "italic bold 30px Comic Sans MS";
   ctx.textAlign = "center";
@@ -142,25 +148,44 @@ document.getElementById("togglePauseGame").onclick = function () {
 };
 
 document.getElementById("newGame").onclick = function () {
-  isGameOver = false;
-  isPaused = false;
-  snakeIsMoved = false;
-  gameIsStarted = false;
-  var variableDisplay = document.getElementById("scoreDisplay");
-  variableDisplay.textContent = 4;
-  oneSquareSize = parseInt(document.getElementById("squareSize").value);
-  gameSpeedDivider = 21 - parseInt(document.getElementById("gameSpeedDivider").value);
-  if (oneSquareSize < 10) {
-    oneSquareSize = 10;
-    document.getElementById("squareSize").value = 10;
-  } else if (oneSquareSize > 100) {
-    oneSquareSize = 100;
-    document.getElementById("squareSize").value = 100;
+  const doYouWantToStartNewGame = confirm("ARE YOU SURE???");
+  if(doYouWantToStartNewGame){
+    isGameOver = false;
+    isPaused = false;
+    snakeIsMoved = false;
+    gameIsStarted = false;
+    var variableDisplay = document.getElementById("scoreDisplay");
+    variableDisplay.textContent = 4;
+    oneSquareSize = parseInt(document.getElementById("squareSize").value);
+    gameSpeedDivider = 21 - maxAndMinGameSpeedHelper(parseInt(document.getElementById("gameSpeedDivider").value));
+    if (oneSquareSize < 10) {
+      oneSquareSize = 10;
+      document.getElementById("squareSize").value = 10;
+    } else if (oneSquareSize > 100) {
+      oneSquareSize = 100;
+      document.getElementById("squareSize").value = 100;
+    }
+    gameFieldFullNumber =
+      (canvasWidth / oneSquareSize) * (canvasHeight / oneSquareSize);
+    snake = new Snake(oneSquareSize, canvasWidth, canvasHeight);
+    food = new Food(oneSquareSize, gameFieldFullNumber);
+    isGridON = false;
+    console.log("Starting new game...", "oneSquareSize=", oneSquareSize);
   }
-  gameFieldFullNumber =
-    (canvasWidth / oneSquareSize) * (canvasHeight / oneSquareSize);
-  snake = new Snake(oneSquareSize, canvasWidth, canvasHeight);
-  food = new Food(oneSquareSize, gameFieldFullNumber);
-  isGridON = false;
-  console.log("Starting new game...", oneSquareSize);
 };
+
+
+document.getElementById("toggleGirdOnOff").onclick = function () {
+  isGridON = !isGridON;
+};
+
+document.getElementById("toggleAutoSnakePlayOnOff").onclick = function () {
+  updateVariableDisplay();
+  isAutoSnakePlayON = !isAutoSnakePlayON;
+};
+
+function updateVariableDisplay() {
+    var variableDisplay = document.getElementById('toggleAutoSnakePlayOnOff');
+    variableDisplay.className = isAutoSnakePlayON ? "autoPlayON" : "autoPlayOFF";
+    variableDisplay.textContent = !isAutoSnakePlayON ? "AutoPlay Enabled!" : "Enable AutoPlay?";
+}
