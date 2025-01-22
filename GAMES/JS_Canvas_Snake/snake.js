@@ -1,4 +1,5 @@
 import { Cell } from "./cell.js";
+import { Food } from "./Food.js";
 
 export class Snake {
   constructor(squareSize, canvasWidth, canvasHeight) {
@@ -20,7 +21,16 @@ export class Snake {
 
   update() {
     this.xLocation += this.xSpeed;
-    this.yLocation += this.ySpeed;
+    // add is AUTO PLAY ON LOL :D
+    if(this.isSnakeHeadCrashedInTail(0, this.ySpeed) === true){
+      if(this.xLocation === this.canvasWidth - this.squareSize){
+        this.changeDirection("a");
+      } else if (this.xLocation === 0){
+        this.changeDirection("d");
+      }
+    }else{
+      this.yLocation += this.ySpeed;
+    }
   }
 
   drawSnakeHead(context, color) {
@@ -52,18 +62,25 @@ export class Snake {
   }
 
   updateTail() {
-    // Add element at BEGINNING
-    this.tail.unshift(new Cell(this.tail[0].x, this.tail[0].y));
+    // // Add element at BEGINNING
+    // this.tail.unshift(new Cell(this.tail[0].x, this.tail[0].y));
+    // Add element at the END?!?!?
+    this.tail.push(new Cell(this.xLocation, this.yLocation));
   }
 
   removeFirstElementFromTail() {
     this.tail.shift();
   }
 
-  isSnakeHeadCrashedInTail() {
+  isSnakeHeadCrashedInTail(add_X = 0, add_Y = 0) {
     for (let index = 0; index < this.tail.slice(0, -2).length; index++) {
       const element = this.tail[index];
-      if (element.x === this.xLocation && element.y === this.yLocation) {
+      if (element.x === this.xLocation + add_X && element.y === this.yLocation + add_Y ) {
+        return true;
+      }
+      if(element.y === 0 && this.yLocation + add_Y === this.canvasHeight
+        && element.x === this.xLocation
+      ){ // element.y = 0 === 350 + 50
         return true;
       }
     }
@@ -171,38 +188,93 @@ export class Snake {
 
   // if in theSnakeGameLoop this function is activated snake
   // automaticaly moves down in row to collect all food and WIN :) <3
-  automaticalyMoveSnakeToCollectFood(){
+  automaticalyMoveSnakeToCollectFood(theFood){
     if(this.xLocation === this.canvasWidth - this.squareSize &&
-      this.tail[this.tail.length - 1].x === this.canvasWidth - this.squareSize &&
-      this.tail[this.tail.length - 2].x === this.canvasWidth - this.squareSize*2 &&
-      this.tail[this.tail.length - 3].x === this.canvasWidth - this.squareSize*3 &&
+      // this.tail[this.tail.length - 1].x === this.canvasWidth - this.squareSize &&
+      // this.tail[this.tail.length - 2].x === this.canvasWidth - this.squareSize*2 &&
+      // this.tail[this.tail.length - 3].x === this.canvasWidth - this.squareSize*3 &&
       this.snakeMoveDir === "right"
     ){
+      console.log(theFood.x, theFood.y);
       this.changeDirection("s");
     }
     if(this.xLocation === this.canvasWidth - this.squareSize &&
-      this.tail[this.tail.length - 1].x === this.canvasWidth - this.squareSize &&
-      this.tail[this.tail.length - 2].x === this.canvasWidth - this.squareSize &&
-      this.tail[this.tail.length - 3].x === this.canvasWidth - this.squareSize*2 &&
+      // this.tail[this.tail.length - 1].x === this.canvasWidth - this.squareSize &&
+      // this.tail[this.tail.length - 2].x === this.canvasWidth - this.squareSize &&
+      // this.tail[this.tail.length - 3].x === this.canvasWidth - this.squareSize*2 &&
       this.snakeMoveDir === "down"
+      // ||
+      && theFood.y === this.yLocation
+      // && !this.checkIsItSafeToTurnLeftOrRightForFood(theFood)
+      && this.checkIfItSafeToTurnLeft()
     ){
+      console.log(theFood.x, theFood.y);
       this.changeDirection("a");
     }
     if(this.xLocation === 0 &&
-      this.tail[this.tail.length - 1].x === 0 &&
-      this.tail[this.tail.length - 2].x === this.squareSize &&
-      this.tail[this.tail.length - 3].x === this.squareSize*2 &&
+      // this.tail[this.tail.length - 1].x === 0 &&
+      // this.tail[this.tail.length - 2].x === this.squareSize &&
+      // this.tail[this.tail.length - 3].x === this.squareSize*2 &&
       this.snakeMoveDir === "left"
     ){
+      console.log(theFood.x, theFood.y);
       this.changeDirection("s");
     }
     if(this.xLocation === 0 &&
-      this.tail[this.tail.length - 1].x === 0 &&
-      this.tail[this.tail.length - 2].x === 0 &&
-      this.tail[this.tail.length - 3].x === this.squareSize &&
+      // this.tail[this.tail.length - 1].x === 0 &&
+      // this.tail[this.tail.length - 2].x === 0 &&
+      // this.tail[this.tail.length - 3].x === this.squareSize &&
       this.snakeMoveDir === "down"
+      // ||
+      && theFood.y === this.yLocation
+      // && Distance to food < left over tail length?
+      // && !this.checkIsItSafeToTurnLeftOrRightForFood(theFood)
+      && this.checkIfItSafeToTurnRight()
     ){
+      console.log(theFood.x, theFood.y);
       this.changeDirection("d");
     }
+  }
+
+  checkIsItSafeToTurnLeftOrRightForFood(theFood) {
+    const distFromHeadToFood = Math.abs(this.xLocation - theFood.x) / this.squareSize;
+    let distFromTailHitTilEnd = 0;
+    for (let index = 0; index < this.tail.length; index++) {
+      const element = this.tail[index];
+      if(element.y === theFood.y){
+        distFromTailHitTilEnd = index+1;
+        break;
+      }
+    }
+
+    return distFromHeadToFood < distFromTailHitTilEnd;
+  }
+
+  checkIfItSafeToTurnRight(){
+    const distFromLeftToRight = this.canvasWidth / this.squareSize + 3;
+    let distFromTailHitTilEnd = 0;
+    for (let index = 0; index < this.tail.length; index++) {
+      const tailCell = this.tail[index];
+      if(tailCell.y === this.yLocation && tailCell.x === this.canvasWidth - this.squareSize){
+        distFromTailHitTilEnd = index;
+      }
+    }
+
+    // distFromLtoR < the left over tail
+    return distFromLeftToRight < distFromTailHitTilEnd;
+  }
+
+  checkIfItSafeToTurnLeft(){
+    const distFromRightToLeft = this.canvasWidth / this.squareSize + 3;
+    let distFromTailHitTilEnd = 0;
+    for (let index = 0; index < this.tail.length; index++) {
+      const tailCell = this.tail[index];
+      if(tailCell.y === this.yLocation && tailCell.x === 0){
+        distFromTailHitTilEnd = index;
+      }
+    }
+
+    // distFromLtoR < the left over tail
+    return distFromRightToLeft < distFromTailHitTilEnd;
   }
 }

@@ -30,9 +30,6 @@ function theSnakeGameLoop() {
     if (isPaused) {
       displayText("    PAUSE    ");
     }
-    if(isAutoSnakePlayON && !isGameOver && !isPaused){
-      snake.automaticalyMoveSnakeToCollectFood();
-    }
     if (gameFieldFullNumber - 1 === snake.tail.length) {
       var variableDisplay = document.getElementById("scoreDisplay").textContent;
       displayText("YOU WON!" + ` score: ${variableDisplay}`);
@@ -49,6 +46,9 @@ function theSnakeGameLoop() {
     }
     if (!isGameOver && !isPaused) {
       the_draw();
+    }
+    if(isAutoSnakePlayON && !isGameOver && !isPaused){
+      snake.automaticalyMoveSnakeToCollectFood(food);
     }
     snake.canChangeDirection = true;
   }
@@ -106,9 +106,9 @@ document.addEventListener("keydown", function (event) {
     if (theKeyPressed === "o") {
       console.log(gameSpeedDivider);
       console.log(`w-${canvasWidth}, h-${canvasHeight} w.cubes-${canvasWidth / oneSquareSize} h.cubes-${canvasHeight / oneSquareSize}`);
-      console.log(snake.xLocation, snake.yLocation);
       console.log(snake.listOfSnakeMoves);
       console.log(snake.tail, snake.xLocation, snake.yLocation);
+      console.log("Food", food.x, food.y);
     }
     if(theKeyPressed === "x"){
       snake.tail.push(new Cell(snake.xLocation, snake.yLocation));
