@@ -44,11 +44,11 @@ function theSnakeGameLoop() {
       displayText("GAME OVER!" + ` score: ${variableDisplay}`);
       isGameOver = true;
     }
-    if (!isGameOver && !isPaused) {
-      the_draw();
-    }
     if(isAutoSnakePlayON && !isGameOver && !isPaused){
       snake.automaticalyMoveSnakeToCollectFood(food);
+    }
+    if (!isGameOver && !isPaused) {
+      the_draw();
     }
     snake.canChangeDirection = true;
   }

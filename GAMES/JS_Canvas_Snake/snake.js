@@ -190,48 +190,39 @@ export class Snake {
   // automaticaly moves down in row to collect all food and WIN :) <3
   automaticalyMoveSnakeToCollectFood(theFood){
     if(this.xLocation === this.canvasWidth - this.squareSize &&
-      // this.tail[this.tail.length - 1].x === this.canvasWidth - this.squareSize &&
-      // this.tail[this.tail.length - 2].x === this.canvasWidth - this.squareSize*2 &&
-      // this.tail[this.tail.length - 3].x === this.canvasWidth - this.squareSize*3 &&
       this.snakeMoveDir === "right"
     ){
-      console.log(theFood.x, theFood.y);
+      // console.log(theFood.x, theFood.y);
       this.changeDirection("s");
     }
-    if(this.xLocation === this.canvasWidth - this.squareSize &&
-      // this.tail[this.tail.length - 1].x === this.canvasWidth - this.squareSize &&
-      // this.tail[this.tail.length - 2].x === this.canvasWidth - this.squareSize &&
-      // this.tail[this.tail.length - 3].x === this.canvasWidth - this.squareSize*2 &&
+    if((this.checkIfItSafeToTurnLeft().doTheAditionalTurn
+      && this.snakeMoveDir === "down"
+      && this.xLocation === this.canvasWidth - this.squareSize) || (this.xLocation === this.canvasWidth - this.squareSize &&
       this.snakeMoveDir === "down"
       // ||
       && theFood.y === this.yLocation
       // && !this.checkIsItSafeToTurnLeftOrRightForFood(theFood)
-      && this.checkIfItSafeToTurnLeft()
+      && this.checkIfItSafeToTurnLeft().isItSafeToTurn)
     ){
-      console.log(theFood.x, theFood.y);
+      // console.log(theFood.x, theFood.y);
       this.changeDirection("a");
     }
     if(this.xLocation === 0 &&
-      // this.tail[this.tail.length - 1].x === 0 &&
-      // this.tail[this.tail.length - 2].x === this.squareSize &&
-      // this.tail[this.tail.length - 3].x === this.squareSize*2 &&
       this.snakeMoveDir === "left"
     ){
-      console.log(theFood.x, theFood.y);
+      // console.log(theFood.x, theFood.y);
       this.changeDirection("s");
     }
-    if(this.xLocation === 0 &&
-      // this.tail[this.tail.length - 1].x === 0 &&
-      // this.tail[this.tail.length - 2].x === 0 &&
-      // this.tail[this.tail.length - 3].x === this.squareSize &&
+    if((this.xLocation === 0 && this.checkIfItSafeToTurnRight().doTheAditionalTurn && this.snakeMoveDir === "down")
+      || (this.xLocation === 0 &&
       this.snakeMoveDir === "down"
       // ||
       && theFood.y === this.yLocation
       // && Distance to food < left over tail length?
       // && !this.checkIsItSafeToTurnLeftOrRightForFood(theFood)
-      && this.checkIfItSafeToTurnRight()
+      && this.checkIfItSafeToTurnRight().isItSafeToTurn)
     ){
-      console.log(theFood.x, theFood.y);
+      // console.log(theFood.x, theFood.y);
       this.changeDirection("d");
     }
   }
@@ -251,30 +242,38 @@ export class Snake {
   }
 
   checkIfItSafeToTurnRight(){
-    const distFromLeftToRight = this.canvasWidth / this.squareSize + 3;
+    const distFromLeftToRight = this.canvasWidth / this.squareSize;
     let distFromTailHitTilEnd = 0;
     for (let index = 0; index < this.tail.length; index++) {
       const tailCell = this.tail[index];
       if(tailCell.y === this.yLocation && tailCell.x === this.canvasWidth - this.squareSize){
-        distFromTailHitTilEnd = index;
+        distFromTailHitTilEnd = index + 1;
       }
     }
 
-    // distFromLtoR < the left over tail
-    return distFromLeftToRight < distFromTailHitTilEnd;
+    const safeNumberToAviod = this.canvasWidth / this.squareSize - 2;
+    const objectToReturn = { // 10 - 2 >= 8
+      "doTheAditionalTurn": distFromLeftToRight - distFromTailHitTilEnd >= safeNumberToAviod && distFromTailHitTilEnd !== 0, // ABS?
+      "isItSafeToTurn": distFromTailHitTilEnd < distFromLeftToRight || distFromTailHitTilEnd === 0
+    };
+    return objectToReturn;
   }
 
   checkIfItSafeToTurnLeft(){
-    const distFromRightToLeft = this.canvasWidth / this.squareSize + 3;
+    const distFromRightToLeft = this.canvasWidth / this.squareSize;
     let distFromTailHitTilEnd = 0;
     for (let index = 0; index < this.tail.length; index++) {
       const tailCell = this.tail[index];
       if(tailCell.y === this.yLocation && tailCell.x === 0){
-        distFromTailHitTilEnd = index;
+        distFromTailHitTilEnd = index + 1;
       }
     }
 
-    // distFromLtoR < the left over tail
-    return distFromRightToLeft < distFromTailHitTilEnd;
+    const safeNumberToAviod = this.canvasWidth / this.squareSize - 2;
+    const objectToReturn = { // 20 - 19 >= 18
+      "doTheAditionalTurn": distFromRightToLeft - distFromTailHitTilEnd >= safeNumberToAviod && distFromTailHitTilEnd !== 0, // ABS?
+      "isItSafeToTurn": distFromTailHitTilEnd < distFromRightToLeft || distFromTailHitTilEnd === 0
+    };
+    return objectToReturn;
   }
 }
