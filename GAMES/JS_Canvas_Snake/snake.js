@@ -1,5 +1,4 @@
 import { Cell } from "./cell.js";
-import { Food } from "./Food.js";
 
 export class Snake {
   constructor(squareSize, canvasWidth, canvasHeight) {
@@ -21,16 +20,7 @@ export class Snake {
 
   update() {
     this.xLocation += this.xSpeed;
-    // add is AUTO PLAY ON LOL :D
-    if(this.isSnakeHeadCrashedInTail(0, this.ySpeed) === true){
-      if(this.xLocation === this.canvasWidth - this.squareSize){
-        this.changeDirection("a");
-      } else if (this.xLocation === 0){
-        this.changeDirection("d");
-      }
-    }else{
-      this.yLocation += this.ySpeed;
-    }
+    this.yLocation += this.ySpeed;
   }
 
   drawSnakeHead(context, color) {
@@ -62,10 +52,12 @@ export class Snake {
   }
 
   updateTail() {
-    // // Add element at BEGINNING
-    // this.tail.unshift(new Cell(this.tail[0].x, this.tail[0].y));
-    // Add element at the END?!?!?
-    this.tail.push(new Cell(this.xLocation, this.yLocation));
+    // Add element at BEGINNING
+    this.tail.unshift(new Cell(this.tail[0].x, this.tail[0].y));
+    // // Add element at the END?!?!?
+    // Do not use this. This couses equal elements to be in tail (if tail size increased artificialy)
+    // (example = [{x:10,y:10},{x:10,y:10}])
+    // this.tail.push(new Cell(this.xLocation, this.yLocation));
   }
 
   removeFirstElementFromTail() {
@@ -80,7 +72,7 @@ export class Snake {
       }
       if(element.y === 0 && this.yLocation + add_Y === this.canvasHeight
         && element.x === this.xLocation
-      ){ // element.y = 0 === 350 + 50
+      ){
         return true;
       }
     }
@@ -192,88 +184,45 @@ export class Snake {
     if(this.xLocation === this.canvasWidth - this.squareSize &&
       this.snakeMoveDir === "right"
     ){
-      // console.log(theFood.x, theFood.y);
       this.changeDirection("s");
     }
-    if((this.checkIfItSafeToTurnLeft().doTheAditionalTurn
+    if((this.ifDistanceFromHeadToTailEndShortMove()
       && this.snakeMoveDir === "down"
-      && this.xLocation === this.canvasWidth - this.squareSize) || (this.xLocation === this.canvasWidth - this.squareSize &&
+      && this.xLocation === this.canvasWidth - this.squareSize) ||
+      (this.xLocation === this.canvasWidth - this.squareSize &&
       this.snakeMoveDir === "down"
-      // ||
-      && theFood.y === this.yLocation
-      // && !this.checkIsItSafeToTurnLeftOrRightForFood(theFood)
-      && this.checkIfItSafeToTurnLeft().isItSafeToTurn)
+      && theFood.y === this.yLocation)
     ){
-      // console.log(theFood.x, theFood.y);
       this.changeDirection("a");
     }
     if(this.xLocation === 0 &&
       this.snakeMoveDir === "left"
     ){
-      // console.log(theFood.x, theFood.y);
       this.changeDirection("s");
     }
-    if((this.xLocation === 0 && this.checkIfItSafeToTurnRight().doTheAditionalTurn && this.snakeMoveDir === "down")
-      || (this.xLocation === 0 &&
-      this.snakeMoveDir === "down"
-      // ||
-      && theFood.y === this.yLocation
-      // && Distance to food < left over tail length?
-      // && !this.checkIsItSafeToTurnLeftOrRightForFood(theFood)
-      && this.checkIfItSafeToTurnRight().isItSafeToTurn)
+    if((this.ifDistanceFromHeadToTailEndShortMove()
+      && this.xLocation === 0
+      && this.snakeMoveDir === "down")
+      || (this.xLocation === 0 && this.snakeMoveDir === "down" && theFood.y === this.yLocation)
     ){
-      // console.log(theFood.x, theFood.y);
       this.changeDirection("d");
     }
   }
 
-  checkIsItSafeToTurnLeftOrRightForFood(theFood) {
-    const distFromHeadToFood = Math.abs(this.xLocation - theFood.x) / this.squareSize;
-    let distFromTailHitTilEnd = 0;
-    for (let index = 0; index < this.tail.length; index++) {
-      const element = this.tail[index];
-      if(element.y === theFood.y){
-        distFromTailHitTilEnd = index+1;
-        break;
-      }
-    }
+  ifDistanceFromHeadToTailEndShortMove(){
+    const distance = this.ifTailMinusHeadIsNegative() / this.squareSize;
 
-    return distFromHeadToFood < distFromTailHitTilEnd;
+    return distance <= 4; // if d = 3 ... return true it forses snake to move 'right' or 'left';
   }
 
-  checkIfItSafeToTurnRight(){
-    const distFromLeftToRight = this.canvasWidth / this.squareSize;
-    let distFromTailHitTilEnd = 0;
-    for (let index = 0; index < this.tail.length; index++) {
-      const tailCell = this.tail[index];
-      if(tailCell.y === this.yLocation && tailCell.x === this.canvasWidth - this.squareSize){
-        distFromTailHitTilEnd = index + 1;
-      }
+  ifTailMinusHeadIsNegative(){
+    let distanceInPixels = 0;
+    if(this.tail[0].y - this.yLocation < 0){
+      distanceInPixels = (this.canvasHeight - this.yLocation) + this.tail[0].y;
+    }else{
+      distanceInPixels = this.tail[0].y - this.yLocation;
     }
 
-    const safeNumberToAviod = this.canvasWidth / this.squareSize - 2;
-    const objectToReturn = { // 10 - 2 >= 8
-      "doTheAditionalTurn": distFromLeftToRight - distFromTailHitTilEnd >= safeNumberToAviod && distFromTailHitTilEnd !== 0, // ABS?
-      "isItSafeToTurn": distFromTailHitTilEnd < distFromLeftToRight || distFromTailHitTilEnd === 0
-    };
-    return objectToReturn;
-  }
-
-  checkIfItSafeToTurnLeft(){
-    const distFromRightToLeft = this.canvasWidth / this.squareSize;
-    let distFromTailHitTilEnd = 0;
-    for (let index = 0; index < this.tail.length; index++) {
-      const tailCell = this.tail[index];
-      if(tailCell.y === this.yLocation && tailCell.x === 0){
-        distFromTailHitTilEnd = index + 1;
-      }
-    }
-
-    const safeNumberToAviod = this.canvasWidth / this.squareSize - 2;
-    const objectToReturn = { // 20 - 19 >= 18
-      "doTheAditionalTurn": distFromRightToLeft - distFromTailHitTilEnd >= safeNumberToAviod && distFromTailHitTilEnd !== 0, // ABS?
-      "isItSafeToTurn": distFromTailHitTilEnd < distFromRightToLeft || distFromTailHitTilEnd === 0
-    };
-    return objectToReturn;
+    return Math.floor(distanceInPixels);
   }
 }

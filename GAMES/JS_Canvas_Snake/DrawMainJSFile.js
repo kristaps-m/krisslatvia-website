@@ -1,6 +1,5 @@
 import { Snake } from "./snake.js";
 import { Food } from "./Food.js";
-import { Cell } from "./cell.js";
 
 const maxAndMinGameSpeedHelper = (n) => n > 20 ? 20 : n < 1 ? 1 : n;
 const canvas = document.getElementById("snake_canvas");
@@ -44,7 +43,7 @@ function theSnakeGameLoop() {
       displayText("GAME OVER!" + ` score: ${variableDisplay}`);
       isGameOver = true;
     }
-    if(isAutoSnakePlayON && !isGameOver && !isPaused){
+    if(isAutoSnakePlayON && !isGameOver && !isPaused && isPasswordEntered()){
       snake.automaticalyMoveSnakeToCollectFood(food);
     }
     if (!isGameOver && !isPaused) {
@@ -88,7 +87,7 @@ function the_draw() {
     var variableDisplay = document.getElementById("scoreDisplay");
     variableDisplay.textContent = parseInt(variableDisplay.textContent) + 1;
   }
-  if(isAutoSnakePlayON){
+  if(isAutoSnakePlayON && isPasswordEntered()){
     ctx.font = "italic bold 20px Comic Sans MS";
     ctx.textAlign = "center";
     ctx.fillStyle = "rgb(141, 231, 141)";
@@ -102,17 +101,6 @@ document.addEventListener("keydown", function (event) {
   if (theKeyPressed === "p" || theKeyPressed === " ") {
     isPaused = !isPaused;
   }
-    // TESTING --------------------------
-    if (theKeyPressed === "o") {
-      console.log(gameSpeedDivider);
-      console.log(`w-${canvasWidth}, h-${canvasHeight} w.cubes-${canvasWidth / oneSquareSize} h.cubes-${canvasHeight / oneSquareSize}`);
-      console.log(snake.listOfSnakeMoves);
-      console.log(snake.tail, snake.xLocation, snake.yLocation);
-      console.log("Food", food.x, food.y);
-    }
-    if(theKeyPressed === "x"){
-      snake.tail.push(new Cell(snake.xLocation, snake.yLocation));
-    }
   if (isPaused) {
     userTypingInPause.push(theKeyPressed);
     console.log(userTypingInPause);
@@ -125,8 +113,6 @@ document.addEventListener("keydown", function (event) {
     userTypingInPause = [];
   }
   snake.changeDirection(theKeyPressed);
-  // setTimeout(function () {
-  // }, 10);
   snakeIsMoved = true;
   if(!gameIsStarted){
     gameIsStarted = true;
@@ -158,9 +144,9 @@ document.getElementById("newGame").onclick = function () {
     variableDisplay.textContent = 4;
     oneSquareSize = parseInt(document.getElementById("squareSize").value);
     gameSpeedDivider = 21 - maxAndMinGameSpeedHelper(parseInt(document.getElementById("gameSpeedDivider").value));
-    if (oneSquareSize < 10) {
-      oneSquareSize = 10;
-      document.getElementById("squareSize").value = 10;
+    if (oneSquareSize < 5) {
+      oneSquareSize = 5;
+      document.getElementById("squareSize").value = 5;
     } else if (oneSquareSize > 100) {
       oneSquareSize = 100;
       document.getElementById("squareSize").value = 100;
@@ -180,12 +166,20 @@ document.getElementById("toggleGirdOnOff").onclick = function () {
 };
 
 document.getElementById("toggleAutoSnakePlayOnOff").onclick = function () {
-  updateVariableDisplay();
-  isAutoSnakePlayON = !isAutoSnakePlayON;
+  if(isPasswordEntered()){
+    updateVariableDisplay();
+    isAutoSnakePlayON = !isAutoSnakePlayON;
+  }
 };
 
 function updateVariableDisplay() {
-    var variableDisplay = document.getElementById('toggleAutoSnakePlayOnOff');
+    let variableDisplay = document.getElementById('toggleAutoSnakePlayOnOff');
     variableDisplay.className = isAutoSnakePlayON ? "autoPlayON" : "autoPlayOFF";
     variableDisplay.textContent = !isAutoSnakePlayON ? "AutoPlay Enabled!" : "Enable AutoPlay?";
+}
+
+function isPasswordEntered() {
+  let enteredCheatElement = document.getElementById("enteredCheat").value;
+
+  return enteredCheatElement === "\"Secret Password!!\"";
 }
