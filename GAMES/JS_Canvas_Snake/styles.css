@@ -53,3 +53,11 @@ p {
 .autoPlayON{
   background-color: rgb(141, 231, 141);
 }
+
+.button-row button:hover{
+  font-weight: 700;
+  margin-right: 2px;
+  padding-right: 2px;
+  margin-left: 2px;
+  padding-left: 2px;
+}
