@@ -44,7 +44,6 @@ CANVAS.addEventListener(
     // Calculate the click position relative to the canvas
     let x = (event.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
     let y = (event.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
-    console.log(x, y);
 
     gameFieldElements.forEach(function (element) {
       if (

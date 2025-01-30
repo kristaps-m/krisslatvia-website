@@ -25,8 +25,6 @@ elem.addEventListener('click', function(event) {
     // After ZOOM fix:
     let x = (event.clientX - rect.left) * (elem.width / rect.width); // Normalize x
     let y = (event.clientY - rect.top) * (elem.height / rect.height)// Normalize y
-    console.log(`x: ${x}, y: ${y}`);
-    // console.log(gameField);
 
     if(checkWiner(gameField) === false){
         elements.forEach(function(element) {

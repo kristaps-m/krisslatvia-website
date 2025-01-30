@@ -120,8 +120,6 @@ export class Snake {
           this.canChangeDirection = false;
         }
         break;
-      case "x":
-        this.tail.unshift(new Cell(this.tail[0].x, this.tail[0].y));
       default:
         break;
     }

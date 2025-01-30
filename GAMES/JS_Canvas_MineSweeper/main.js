@@ -86,10 +86,9 @@ CANVAS.addEventListener('click', function(event) {
   // Calculate the click position relative to the canvas
   let xHor = (event.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
   let yVert = (event.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
-  console.log(xHor,yVert);
   let rowIndxClick = Math.floor(yVert / (CANVAS_WIDTH / gameFieldHeight));
   let colIndxClick = Math.floor(xHor / (CANVAS_HEIGHT / gameFieldWidth));
-  console.log(rowIndxClick, colIndxClick);
+
   if(withFirstClickYouCanHitMine){ // defaul = false (so first click will never be mine!)
     // if false, mines will be generated randomly
     let rRow = gameMinesHandler.getRandomInt(gameFieldForLogic.length);
