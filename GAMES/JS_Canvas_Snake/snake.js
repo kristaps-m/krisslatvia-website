@@ -1,7 +1,9 @@
 import { Cell } from "./cell.js";
+import { SnakeDrawHelper } from "./snakeDrawHelper.js";
 
 export class Snake {
-  constructor(squareSize, canvasWidth, canvasHeight) {
+  constructor(ctx, squareSize, canvasWidth, canvasHeight) {
+    this.ctx = ctx;
     this.squareSize = squareSize;
     this.xLocation = this.squareSize * 3; // location of head - movement speed
     this.yLocation = 0;
@@ -9,13 +11,15 @@ export class Snake {
     this.canvasHeight = canvasHeight;
     this.xSpeed = 0;
     this.ySpeed = 0;
-    this.tail = [
-      new Cell(0, 0),
-      new Cell(this.squareSize, 0),
-      new Cell(this.squareSize * 2, 0),
-    ];
     this.snakeMoveDir = "right";
+    this.tail = [
+      new Cell(0, 0, this.snakeMoveDir),
+      new Cell(this.squareSize, 0, this.snakeMoveDir),
+      new Cell(this.squareSize * 2, 0, this.snakeMoveDir),
+    ];
     this.canChangeDirection = false; // DEFAULT = false
+    this.snakeOuterBodyLinesColor = "black";
+    this.snakeDrawHelper = new SnakeDrawHelper(this.ctx, this.squareSize, this.snakeOuterBodyLinesColor);
   }
 
   update() {
@@ -40,14 +44,34 @@ export class Snake {
       this.squareSize,
       this.squareSize
     );
-    this.drawSnakeEyes(context);
-    this.tail.push(new Cell(this.xLocation, this.yLocation));
+    this.snakeDrawHelper.drawSnakeEyes(context, this.xLocation, this.yLocation, this.snakeMoveDir);
+    this.tail.push(new Cell(this.xLocation, this.yLocation, this.snakeMoveDir));
   }
 
   drawTail(ctx, color) {
-    this.tail.forEach((cEll) => {
-      ctx.fillStyle = color;
-      ctx.fillRect(cEll.x, cEll.y, this.squareSize, this.squareSize);
+    ctx.fillStyle = color;
+    this.tail.forEach((cell, i) => {
+      ctx.fillRect(cell.x, cell.y, this.squareSize, this.squareSize);
+      // TOP CORNERS
+      if(cell.isCornerPiece && cell.isTopRightCorner){
+        this.snakeDrawHelper.drawCornerLinesTopRight(ctx, cell);
+      } else if(cell.isCornerPiece && cell.isTopLeftCorner){
+        this.snakeDrawHelper.drawCornerLinesTopLeft(ctx, cell);
+      }
+      // BOTTOM CORNERS
+      else if(cell.isCornerPiece && cell.isBottomRightCorner) {
+        this.snakeDrawHelper.drawCornerLinesBottomRight(ctx, cell);
+      } else if(cell.isCornerPiece && cell.isBottomLeftCorner)
+        {
+        this.snakeDrawHelper.drawCornerLinesBottomLeft(ctx, cell);
+      }
+      // VERTICAL OR HERIZONTAL lines
+      else if((cell.moveDirection === "down" || cell.moveDirection === "up")  && !cell.isCornerPiece){
+        this.snakeDrawHelper.drawVerticalLines(ctx, cell);
+      } else if((cell.moveDirection === "right" || cell.moveDirection === "left")  && !cell.isCornerPiece){
+        this.snakeDrawHelper.drawHorizontalLines(ctx, cell);
+      }
+      //this.drawLinesAroundCell(ctx, cell);
     });
   }
 
@@ -89,8 +113,14 @@ export class Snake {
         if (this.ySpeed !== this.squareSize * 1) {
           this.xSpeed = 0;
           this.ySpeed = this.squareSize * -1;
-          this.snakeMoveDir = "up";
           this.canChangeDirection = false; // Direction change happened
+          this.tail[this.tail.length - 1].isCornerPiece = true;
+          if(this.snakeMoveDir === "left"){
+            this.tail[this.tail.length - 1].isBottomLeftCorner = true;
+          } else if(this.snakeMoveDir === "right"){
+            this.tail[this.tail.length - 1].isBottomRightCorner = true;
+          }
+          this.snakeMoveDir = "up";
         }
         break;
       case "Down":
@@ -98,8 +128,14 @@ export class Snake {
         if (this.ySpeed !== this.squareSize * -1) {
           this.xSpeed = 0;
           this.ySpeed = this.squareSize * 1;
-          this.snakeMoveDir = "down";
           this.canChangeDirection = false;
+          this.tail[this.tail.length - 1].isCornerPiece = true;
+          if(this.snakeMoveDir === "left"){
+            this.tail[this.tail.length - 1].isTopLeftCorner = true;
+          } else if(this.snakeMoveDir === "right"){
+            this.tail[this.tail.length - 1].isTopRightCorner = true;
+          }
+          this.snakeMoveDir = "down";
         }
         break;
       case "Left":
@@ -107,8 +143,14 @@ export class Snake {
         if (this.xSpeed !== this.squareSize * 1) {
           this.ySpeed = 0;
           this.xSpeed = this.squareSize * -1;
-          this.snakeMoveDir = "left";
           this.canChangeDirection = false;
+          this.tail[this.tail.length - 1].isCornerPiece = true;
+          if(this.snakeMoveDir === "up"){
+            this.tail[this.tail.length - 1].isTopRightCorner = true;
+          } else if(this.snakeMoveDir === "down"){
+            this.tail[this.tail.length - 1].isBottomRightCorner = true;
+          }
+          this.snakeMoveDir = "left";
         }
         break;
       case "Right":
@@ -116,64 +158,22 @@ export class Snake {
         if (this.xSpeed !== this.squareSize * -1) {
           this.ySpeed = 0;
           this.xSpeed = this.squareSize * 1;
-          this.snakeMoveDir = "right";
           this.canChangeDirection = false;
+          this.tail[this.tail.length - 1].isCornerPiece = true;
+          if(this.snakeMoveDir === "up"){
+            this.tail[this.tail.length - 1].isTopLeftCorner = true;
+          } else if(this.snakeMoveDir === "down"){
+            this.tail[this.tail.length - 1].isBottomLeftCorner = true;
+          }
+          this.snakeMoveDir = "right";
         }
+        break;
+      case "o":
+        console.log(this.tail);
         break;
       default:
         break;
     }
-  }
-
-  drawSnakeEyes(context) {
-    context.fillStyle = "white";
-    const eyeSize = this.squareSize / 5;
-    if (this.snakeMoveDir === "right") {
-      const leftEyeLoc = {
-        x: this.xLocation + eyeSize * 3,
-        y: this.yLocation + eyeSize,
-      };
-      const rightEyeLoc = {
-        x: this.xLocation + eyeSize * 3,
-        y: this.yLocation + eyeSize * 3,
-      };
-      this.drawEyesHelper(context, leftEyeLoc, rightEyeLoc, eyeSize);
-    } else if (this.snakeMoveDir === "left") {
-      const leftEyeLoc = {
-        x: this.xLocation + eyeSize,
-        y: this.yLocation + eyeSize,
-      };
-      const rightEyeLoc = {
-        x: this.xLocation + eyeSize,
-        y: this.yLocation + eyeSize * 3,
-      };
-      this.drawEyesHelper(context, leftEyeLoc, rightEyeLoc, eyeSize);
-    } else if (this.snakeMoveDir === "up") {
-      const leftEyeLoc = {
-        x: this.xLocation + eyeSize,
-        y: this.yLocation + eyeSize,
-      };
-      const rightEyeLoc = {
-        x: this.xLocation + eyeSize * 3,
-        y: this.yLocation + eyeSize,
-      };
-      this.drawEyesHelper(context, leftEyeLoc, rightEyeLoc, eyeSize);
-    } else if (this.snakeMoveDir === "down") {
-      const leftEyeLoc = {
-        x: this.xLocation + eyeSize,
-        y: this.yLocation + eyeSize * 3,
-      };
-      const rightEyeLoc = {
-        x: this.xLocation + eyeSize * 3,
-        y: this.yLocation + eyeSize * 3,
-      };
-      this.drawEyesHelper(context, leftEyeLoc, rightEyeLoc, eyeSize);
-    }
-  }
-
-  drawEyesHelper(context, leftEye, rightEye, size) {
-    context.fillRect(leftEye.x, leftEye.y, size, size);
-    context.fillRect(rightEye.x, rightEye.y, size, size);
   }
 
   // if in theSnakeGameLoop this function is activated snake
@@ -213,6 +213,9 @@ export class Snake {
     return distance <= 4; // if d = 3 ... return true it forses snake to move 'right' or 'left';
   }
 
+  // This happends when head pos y = 350 and tail end pos y = 50
+  // if so we sum distance till bottom of play screen
+  // and from tail end till top of play screen
   ifTailMinusHeadIsNegative(){
     let distanceInPixels = 0;
     if(this.tail[0].y - this.yLocation < 0){

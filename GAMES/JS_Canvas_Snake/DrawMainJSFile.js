@@ -16,7 +16,7 @@ let gameIsStarted = false;
 let theGameFrameCount = 0;
 let gameFieldFullNumber =
   (canvasWidth / oneSquareSize) * (canvasHeight / oneSquareSize);
-let snake = new Snake(oneSquareSize, canvasWidth, canvasHeight);
+let snake = new Snake(ctx, oneSquareSize, canvasWidth, canvasHeight);
 let food = new Food(oneSquareSize, gameFieldFullNumber);
 let isGridON = false;
 let isAutoSnakePlayON = false;
@@ -66,10 +66,6 @@ function the_draw() {
     ctx.fillStyle = "green"
     ctx.fillRect(0,0,(snake.tail.length) * oneSquareSize,oneSquareSize);
   }
-  snake.update();
-  food.draw(ctx, "black");
-  snake.drawTail(ctx, "green");
-  snake.drawSnakeHead(ctx, "red");
   if (isGridON) {
     displayGrid({
       ctx: ctx,
@@ -80,6 +76,10 @@ function the_draw() {
       oneSquareSize: oneSquareSize,
     });
   }
+  snake.update();
+  food.draw(ctx, "black");
+  snake.drawTail(ctx, "green");
+  snake.drawSnakeHead(ctx, "red");
 
   if (food.isFoodEaten(snake.xLocation, snake.yLocation)) {
     food.createNewFood(ctx, "black", canvasWidth, canvasHeight, snake.tail);
@@ -153,7 +153,7 @@ document.getElementById("newGame").onclick = function () {
     }
     gameFieldFullNumber =
       (canvasWidth / oneSquareSize) * (canvasHeight / oneSquareSize);
-    snake = new Snake(oneSquareSize, canvasWidth, canvasHeight);
+    snake = new Snake(ctx, oneSquareSize, canvasWidth, canvasHeight);
     food = new Food(oneSquareSize, gameFieldFullNumber);
     isGridON = false;
     console.log("Starting new game...", "oneSquareSize=", oneSquareSize);
