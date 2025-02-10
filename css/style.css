@@ -1,125 +1,137 @@
-.site-top {
-  min-width: 1000px;
-  padding-left: 55px;
-  padding-right: 55px;
-}
+/* For desktop computers */
+/* @media screen and (min-width: 900px) { */
+  .site-top {
+    min-width: 1000px;
+    padding-left: 55px;
+    padding-right: 55px;
+  }
 
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  background-color: rgb(189, 182, 182);
-}
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(189, 182, 182);
+  }
 
-/*li {
-display: inline;
-font-size: larger;
-}*/
+  /*li {
+  display: inline;
+  font-size: larger;
+  }*/
 
-/* DROP DOWN BUTTON*/
+  /* DROP DOWN BUTTON*/
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
 
-.navbar {
-  overflow: hidden;
-  background-color: #333;
-  /*ceter?
+  .navbar {
+    overflow: hidden;
+    background-color: #333;
+    /*ceter?
   float: none;
   position: absolute;
   left: 10%;
   right: 10%;*/
-}
+  }
 
-.navbar a {
-  float: left;
-  font-size: 16px; /*16px*/
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
+  .navbar a {
+    float: left;
+    font-size: 16px;
+    /*16px*/
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
 
-.dropdown {
-  float: left;
-  overflow: hidden;
-}
+  .dropdown {
+    float: left;
+    overflow: hidden;
+  }
 
-.dropdown .dropbtn {
-  font-size: 16px; /*16*/
-  border: none;
-  outline: none;
-  color: white;
-  padding: 14px 16px; /*14px 16px*/
-  background-color: inherit;
-  font-family: inherit;
-  margin: 0;
-}
+  .dropdown .dropbtn {
+    font-size: 16px;
+    /*16*/
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    /*14px 16px*/
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+  }
 
-.navbar a:hover,
-.dropdown:hover .dropbtn {
-  background-color: red;
-}
+  .navbar a:hover,
+  .dropdown:hover .dropbtn {
+    background-color: red;
+  }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
 
-.dropdown-content a {
-  float: none;
-  color: black;
-  padding: 12px 16px; /* 12px 16px */
-  text-decoration: none;
-  display: block;
-  text-align: left;
-}
+  .dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    /* 12px 16px */
+    text-decoration: none;
+    display: block;
+    text-align: left;
+  }
 
-.dropdown-content a:hover {
-  background-color: #ddd;
-}
+  .dropdown-content a:hover {
+    background-color: #ddd;
+  }
 
-.dropdown:hover .dropdown-content {
-  display: block;
-}
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
 
-/*COLUMS AND ROWS*/
+  /*COLUMS AND ROWS*/
 
-/* Set additional styling options for the columns */
-.column {
-  float: left;
-}
+  /* Set additional styling options for the columns */
+  .column {
+    float: left;
+    width: 33%;
+  }
 
-/* Set width length for the left, right and middle columns */
-.left {
-  width: 20%;
-}
+  /* Set width length for the left, right and middle columns */
+  .left {
+    width: 20%;
+  }
 
-.middle {
-  width: 60%;
-}
+  .middle {
+    width: 60%;
+  }
 
-.right {
-  width: 20%;
-}
+  .right {
+    width: 20%;
+  }
 
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 
-/* google it*/
-.g_it:hover {
-  color: red;
-  text-decoration: none;
-  font-weight: bolder;
-}
+  /* google it*/
+  .g_it:hover {
+    color: red;
+    text-decoration: none;
+    font-weight: bolder;
+  }
+/* } */
+
+/* For tablets */
+/* @media screen and (min-width: 600px) and (max-width: 900px) {} */
+
 /* root colors for colums*/
 :root {
   --col_1_color: #ebe189;
