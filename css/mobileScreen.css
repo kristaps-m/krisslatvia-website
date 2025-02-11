@@ -120,7 +120,14 @@
   .right {
     /* width: 0%; */
     grid-area: bottom;
+  }
 
+  /* MineSweeper */
+  #digOrFlag{
+    display: inline-block;
+    padding-right: 10;
+    color: red;
+    background-color: lightgreen;
   }
 
   /* google it*/

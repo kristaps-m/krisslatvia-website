@@ -291,3 +291,7 @@ function toggleIsFirstClickMine(){
   var firstClick = document.getElementById('isFirstClickMine');
   firstClick.textContent = `${withFirstClickYouCanHitMine}`;
 }
+
+function toggleDigforminesOrFlag() {
+  console.log("You have clicked a button!");
+}

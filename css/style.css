@@ -121,6 +121,11 @@
     clear: both;
   }
 
+  /* MineSweeper */
+  #digOrFlag {
+    display: none;
+  }
+
   /* google it*/
   .g_it:hover {
     color: red;
