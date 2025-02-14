@@ -7,11 +7,6 @@
   .menu-toggle {
     display: none;
   }
-  .site-top {
-    min-width: 1000px;
-    padding-left: 55px;
-    padding-right: 55px;
-  }
 
   ul {
     list-style-type: none;
