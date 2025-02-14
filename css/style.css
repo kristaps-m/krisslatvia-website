@@ -1,5 +1,12 @@
 /* For desktop computers */
 /* @media screen and (min-width: 900px) { */
+  .doNotShowInDesktop {
+      display: none !important;
+  }
+/* } */
+  .menu-toggle {
+    display: none;
+  }
   .site-top {
     min-width: 1000px;
     padding-left: 55px;
@@ -25,6 +32,7 @@
   }
 
   .navbar {
+    display: flex;
     overflow: hidden;
     background-color: #333;
     /*ceter?
@@ -47,6 +55,12 @@
   .dropdown {
     float: left;
     overflow: hidden;
+    background: none;
+    border: none;
+    color: white;
+    padding: 10px;
+    font-size: 6px;
+    cursor: pointer;
   }
 
   .dropdown .dropbtn {

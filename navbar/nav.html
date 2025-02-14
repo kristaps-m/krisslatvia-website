@@ -1,83 +1,86 @@
 <head>
   <div class="navbar">
-    <div class="dropdown">
-      <button class="dropbtn">
-        <a href="/index.html">HOME</a>
-        <i class="fa fa-caret-down"></i>
-      </button>
+    <button class="menu-toggle">&#9776;</button> <!-- Hamburger icon -->
+    <div class="menu">
+      <div class="dropdown">
+        <button class="dropbtn">
+          <a href="/index.html">HOME</a>
+          <i class="fa fa-caret-down"></i>
+        </button>
+      </div>
+
+      <!-- <div class="dropdown">
+            <button class="dropbtn">dropONE
+              <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+              <a href="#">Link 1</a>
+              <a href="#">Link 2</a>
+              <a href="#">Link 3</a>
+            </div>
+          </div>
+
+          <a href="#news">News</a> -->
+
+      <div class="dropdown">
+        <button class="dropbtn">
+          <a href="/hobbies/hobbies.html" class="doNotShowInMobile">Hobbies</a>
+          <a class="doNotShowInDesktop">Hobbies</a>
+          <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+          <a href="/hobbies/cubes.html">Cubes</a>
+          <a href="/hobbies/videogames.html">Video games</a>
+          <a href="/hobbies/programming.html">Programming</a>
+          <a href="/hobbies/wrestling.html">Wrestling</a>
+          <a href="/hobbies/cooking.html">Cooking</a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <button class="dropbtn">
+          <a href="/javascript/scripts.html" class="doNotShowInMobile">Javascript</a>
+          <a class="doNotShowInDesktop">Javascript</a>
+          <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+          <a href="/javascript/scripts.html">Simple canvas</a>
+          <a href="/javascript/JS_all_shapes.html">JS all shapes</a>
+          <a href="/javascript/interactive JS.html">Interactive JS</a>
+          <a href="/javascript/funny_line.html">Funny line</a>
+        </div>
+      </div>
+      <!-- GAMES -->
+      <div class="dropdown">
+        <button class="dropbtn">
+          <a href="/GAMES/index.html" class="doNotShowInMobile">Games</a>
+          <a class="doNotShowInDesktop">Games</a>
+          <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content">
+          <!-- <a href="/GAMES/JS_Canvas_Maze/">Canvas Maze</a> -->
+          <a href="/GAMES/BomberMan/index.html" class="doNotShowInMobile">Canvas BomberMan</a>
+          <!-- <a href="/GAMES/CandyCrush Variants/JS_Cnvs_CandyCrush From PyGame/index.html">CC from Pygame</a>
+              <a href="/GAMES/CandyCrush Variants/JS_Canvas_CandyCrush_v3/index.html">Candy Crush Game v3</a> -->
+          <!-- <a href="/GAMES/CandyCrush Variants/JS_Canvas_CandyCrush_v2/index.html">Candy Crush Game v2</a> -->
+          <a href="/GAMES/CandyCrush Variants/JS_Canvas_CandyCrush/index.html">Canvas Candy Crush Game</a>
+          <a href="/GAMES/JS_Canvas_Pong/index.html" class="doNotShowInMobile">Canvas Pong Game</a>
+          <a href="/GAMES/JS_Canvas_15puzzle/index.html">Canvas 15puzzle Game</a>
+          <a href="/GAMES/JS_Canvas_2048/index.html" class="doNotShowInMobile">Canvas 2048 Game</a>
+          <a href="/GAMES/JS_Canvas_MineSweeper/index.html">Canvas MineSweeper Game</a>
+          <a href="/GAMES/JS_Canvas_Rays/index.html" class="doNotShowInMobile">Canvas Rays Game</a>
+          <a href="/GAMES/JS_Canvas_Snake/index.html">Canvas Snake Game</a>
+          <a href="/GAMES/JS_Canvas_TikTakToe/index.html">Canvas TikTakToe Game</a>
+          <a href="/GAMES/JS_snake/index.html" class="doNotShowInMobile">Snake Game (div)</a>
+          <a href="/GAMES/JS_TikTakToe/index.html" class="doNotShowInMobile">TikTakToe Game (div)</a>
+        </div>
+      </div>
+      <div class="dropdown">
+        <button class="dropbtn">
+          <a href="/kubs/kubs.html">Ka-salikt-rubika-kubu?</a>
+          <i class="fa fa-caret-down"></i>
+        </button>
+      </div>
     </div>
 
-    <!-- <div class="dropdown">
-      <button class="dropbtn">dropONE
-        <i class="fa fa-caret-down"></i>
-      </button>
-      <div class="dropdown-content">
-        <a href="#">Link 1</a>
-        <a href="#">Link 2</a>
-        <a href="#">Link 3</a>
-      </div>
-    </div>
-
-    <a href="#news">News</a> -->
-
-    <div class="dropdown">
-      <button class="dropbtn">
-        <a href="/hobbies/hobbies.html">Hobbies</a>
-        <i class="fa fa-caret-down"></i>
-      </button>
-      <div class="dropdown-content">
-        <a href="/hobbies/cubes.html">Cubes</a>
-        <a href="/hobbies/videogames.html">Video games</a>
-        <a href="/hobbies/programming.html">Programming</a>
-        <a href="/hobbies/wrestling.html">Wrestling</a>
-        <a href="/hobbies/cooking.html">Cooking</a>
-      </div>
-    </div>
-    <div class="dropdown">
-      <button class="dropbtn">
-        <a href="/javascript/scripts.html">Javascript</a>
-        <i class="fa fa-caret-down"></i>
-      </button>
-      <div class="dropdown-content">
-        <a href="/javascript/scripts.html">Simple canvas</a>
-        <a href="/javascript/JS_all_shapes.html">JS all shapes</a>
-        <a href="/javascript/interactive JS.html">Interactive JS</a>
-        <a href="/javascript/funny_line.html">Funny line</a>
-      </div>
-    </div>
-    <!-- GAMES -->
-    <div class="dropdown">
-      <button class="dropbtn">
-        <a href="/GAMES/index.html">Games</a>
-        <i class="fa fa-caret-down"></i>
-      </button>
-      <div class="dropdown-content">
-        <!-- <a href="/GAMES/JS_Canvas_Maze/">Canvas Maze</a> -->
-        <a href="/GAMES/BomberMan/index.html">Canvas BomberMan</a>
-        <!-- <a href="/GAMES/CandyCrush Variants/JS_Cnvs_CandyCrush From PyGame/index.html">CC from Pygame</a>
-        <a href="/GAMES/CandyCrush Variants/JS_Canvas_CandyCrush_v3/index.html">Candy Crush Game v3</a> -->
-        <!-- <a href="/GAMES/CandyCrush Variants/JS_Canvas_CandyCrush_v2/index.html">Candy Crush Game v2</a> -->
-        <a href="/GAMES/CandyCrush Variants/JS_Canvas_CandyCrush/index.html"
-          >Canvas Candy Crush Game</a
-        >
-        <a href="/GAMES/JS_Canvas_Pong/index.html">Canvas Pong Game</a>
-        <a href="/GAMES/JS_Canvas_15puzzle/index.html">Canvas 15puzzle Game</a>
-        <a href="/GAMES/JS_Canvas_2048/index.html">Canvas 2048 Game</a>
-        <a href="/GAMES/JS_Canvas_MineSweeper/index.html">Canvas MineSweeper Game</a>
-        <a href="/GAMES/JS_Canvas_Rays/index.html">Canvas Rays Game</a>
-        <a href="/GAMES/JS_Canvas_Snake/index.html">Canvas Snake Game</a>
-        <a href="/GAMES/JS_Canvas_TikTakToe/index.html"
-          >Canvas TikTakToe Game</a
-        >
-        <a href="/GAMES/JS_snake/index.html">Snake Game (div)</a>
-        <a href="/GAMES/JS_TikTakToe/index.html">TikTakToe Game (div)</a>
-      </div>
-    </div>
-    <div class="dropdown">
-      <button class="dropbtn">
-        <a href="/kubs/kubs.html">Ka-salikt-rubika-kubu?</a>
-        <i class="fa fa-caret-down"></i>
-      </button>
-    </div>
   </div>
 </head>
