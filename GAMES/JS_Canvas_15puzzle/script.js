@@ -1,7 +1,13 @@
 const CANVAS = document.getElementById("puzzleField");
 const CTX = CANVAS.getContext("2d");
-const W = 500;
-const H = 500;
+const sc_Width = window.screen.width;
+const sc_Height = window.screen.height;
+let W;
+let H;
+if (sc_Width <= 600){
+  W = sc_Width - 10;
+  H = sc_Width - 10;
+} else{ W = 500; H = 500}
 const SQUARE_OFF_SET = 10;
 CANVAS.width = W;
 CANVAS.height = H;

@@ -1,0 +1,183 @@
+/* For smart phones */
+@media screen and (max-width: 600px) {
+  .doNotShowInMobile {
+    display: none !important;
+  }
+  /* ------- */
+  .navbar {
+    flex-direction: column;
+    position: relative;
+  }
+
+  .menu {
+    display: none;
+    flex-direction: column;
+    background-color: #333;
+    width: 100%;
+  }
+
+  .menu.active {
+    display: flex;
+  }
+
+  .menu-toggle {
+    display: block;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    /* cursor: pointer; */
+    padding: 10px;
+  }
+
+  .dropdown-content {
+    position: static;
+    display: none;
+    background-color: #222;
+  }
+
+  .dropdown.active .dropdown-content {
+    display: flex;
+    flex-direction: column;
+    /* padding: 0px; */
+  }
+
+  /* ------- */
+  .site-top {
+    min-width: 1000px;
+    padding-left: 55px;
+    padding-right: 55px;
+  }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(189, 182, 182);
+  }
+
+  ol {
+    padding-right: 0.5rem;
+  }
+
+  /* DROP DOWN BUTTON*/
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .navbar {
+    overflow: hidden;
+    background-color: #333;
+  }
+
+  .navbar a{
+    float: left;
+    font-size: 8px;
+    /*16px*/
+    color: rgb(50, 230, 14);
+    /*white*/
+    text-align: center;
+    /* padding: 4px 6px; */
+    text-decoration: none;
+  }
+
+  /* .dropdown {
+    float: left;
+    overflow: hidden;
+  }
+
+  .dropdown .dropbtn {
+    font-size: 12px;
+    16 DO NOT NEED
+    border: none;
+    outline: none;
+    color: white;
+    padding: 8px 10px;
+    14px 16px -- DO NOT NEED
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+  } */
+
+  /* .navbar a:hover,
+  .dropdown:hover .dropbtn {
+    background-color: red;
+  } */
+
+  /* .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  } */
+
+  /* .dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    12px 16px DO NOT NEED
+    text-decoration: none;
+    display: block;
+    text-align: left;
+  } */
+
+  /* .dropdown-content a:hover {
+    background-color: #ddd;
+  } */
+
+  /* .dropdown:hover .dropdown-content {
+    display: block;
+  } */
+
+  /*COLUMS AND ROWS*/
+  .row::after {
+    display: grid;
+    grid-template-areas:
+      "top"
+      "middle"
+      "bottom";
+    /* content: "";
+      display: table;
+      clear: both; */
+  }
+  /* Set additional styling options for the columns */
+  .column {
+    /* float: left; */
+    width: 100%;
+  }
+
+  /* Set width length for the left, right and middle columns */
+  .left {
+    /* width: 0%; */
+    grid-area: top;
+  }
+
+  .middle {
+    /* width: 60%; */
+    grid-area: middle;
+    background-color: lightblue;
+  }
+
+  .right {
+    /* width: 0%; */
+    grid-area: bottom;
+  }
+
+  /* MineSweeper */
+  #digOrFlag{
+    display: inline-block;
+    padding: 0rem 1rem 0rem 1rem;
+    color: black;
+    background-color: lightsalmon;
+    font-size: large;
+  }
+
+  /* google it*/
+  .g_it:hover {
+    color: red;
+    text-decoration: none;
+    font-weight: bolder;
+  }
+}
