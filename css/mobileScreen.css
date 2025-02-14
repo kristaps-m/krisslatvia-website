@@ -125,9 +125,15 @@
   /* MineSweeper */
   #digOrFlag{
     display: inline-block;
-    padding-right: 10;
-    color: red;
-    background-color: lightgreen;
+    padding: 0rem 1rem 0rem 1rem;
+    color: black;
+    background-color: lightsalmon;
+    font-size: large;
+  }
+
+  /* MineSweeper */
+  .doNotShowInMobile {
+    display: none;
   }
 
   /* google it*/

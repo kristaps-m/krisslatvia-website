@@ -16,7 +16,7 @@
   <body>
     <div>
       <h2>Totaly Not Minesweeper!</h2>
-      <div style="white-space: nowrap">
+      <div style="white-space: nowrap" class="doNotShowInMobile">
         <div style="display: inline-block">
           <h3>H</h3>
           <input type="number" id="theHeight" value="9" style="width: 2rem" />
@@ -42,9 +42,9 @@
             <option value="7 7 5">Casual</option>
             <option value="9 9 10" selected>Beginner</option>
             <option value="16 16 40">Intermediate</option>
-            <option value="16 30 99">Expert</option>
-            <option value="20 20 50">Challenging</option>
-            <option value="30 30 150">Insane</option>
+            <option value="16 30 99" class="doNotShowInMobile">Expert</option>
+            <option value="20 20 50" class="doNotShowInMobile">Challenging</option>
+            <option value="30 30 150" class="doNotShowInMobile">Insane</option>
           </select>
           <button style="background-color: greenyellow; display: inline-block; margin-left: 1rem;" onclick="newGame()">
             NEW GAME!
@@ -67,7 +67,7 @@
         </div>
       </div>
       <div style="white-space: nowrap">
-        <button onclick="toggleDigforminesOrFlag()" id="digOrFlag">TEST</button>
+        <button onclick="toggleDigforminesOrFlag()" id="digOrFlag">DIG</button>
         <h2 style="display: inline-block; padding-right: 10;">Mines left:</h2>
         <h1 id="minesLeft" style="display: inline-block">:)</h2>
       </div>
@@ -79,6 +79,8 @@
       ></canvas
       ><br />
     <canvas id="minesweeper" width="500" height="500"></canvas>
+    <script type="text/javascript" src="twoClickFunctions.js"></script>
+    <script type="text/javascript" src="mainFileHelperFunctions.js"></script>
     <script type="text/javascript" src="gameMinesHandler.js"></script>
     <script type="text/javascript" src="mineSweeperCellsHander.js"></script>
     <script type="text/javascript" src="main.js"></script>
