@@ -19,20 +19,27 @@ class Circle{
     const distance = Math.sqrt((mx - this.x) ** 2 + (my - this.y) ** 2);
     return distance < this.radius;
   }
+
+  drawRays(){
+
+  }
 };
 
 const canvas = document.getElementById('homepage_canvas');
 const ctx = canvas.getContext('2d');
-const WIDTH = 400;
+const WIDTH = 550;
 const HEIGHT = 400;
+const rayCount = 100;
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
-const circle = new Circle(20,20,20,'blue');
+const circle = new Circle(20,20,20,'yellow');
+const notLightSource = new Circle(300, 100, 50,'white');
 // circle.draw();
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   circle.draw();
+  notLightSource.draw();
   requestAnimationFrame(animate);
 }
 
