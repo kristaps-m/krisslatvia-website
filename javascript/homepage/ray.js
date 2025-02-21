@@ -5,20 +5,24 @@ class Ray {
   }
 
   lookAt(x, y) {
-    // this.direction = new Position(x - this.pos.x, y - this.pos.y).normalize();
-    this.direction.x = x;
-    this.direction.y = y;
+    this.direction = new Position(x - this.pos.x, y - this.pos.y).normalizeVector();
+    // console.log(this.direction);
+    // this.direction.x = x;
+    // this.direction.y = y;
     // this.direction.normalize();
   }
 
   drawRay() {
     ctx.strokeStyle = "yellow";
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.beginPath();
     // ctx.translate(this.pos.x, this.pos.y);
+    // ctx.moveTo(0, 0);
     ctx.moveTo(this.pos.x, this.pos.y);
-    ctx.lineTo(this.direction.x, this.direction.y);
+    // ctx.lineTo(this.direction.x * 10, this.direction.y * 10);
+    ctx.lineTo(this.pos.x + this.direction.x * 10, this.pos.y + this.direction.y * 10);
     ctx.stroke();
+    // console.log(this.x, this.y, this.direction.x, this.direction.y);
   }
 
   intersect(b) {
