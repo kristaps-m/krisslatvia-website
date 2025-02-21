@@ -1,7 +1,9 @@
 class Ray {
-  constructor(x, y) {
-    this.pos = new Position(x, y); // position
-    this.direction = new Position(1, 0);
+  // constructor(x, y) {
+  constructor(pos, angle,t) {
+    this.pos = pos;//new Position(x, y); // position
+    this.test = t;
+    this.direction = vectorFromAngle(angle);//new Position(1, 0);
   }
 
   lookAt(x, y) {
@@ -12,8 +14,8 @@ class Ray {
     // this.direction.normalize();
   }
 
-  drawRay() {
-    ctx.strokeStyle = "yellow";
+  drawRay(color = "yellow") {
+    ctx.strokeStyle = color;
     ctx.lineWidth = 2;
     ctx.beginPath();
     // ctx.translate(this.pos.x, this.pos.y);
@@ -45,7 +47,9 @@ class Ray {
     const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denominator;
 
     if (theta > 0 && theta < 1 && u > 0) {
-      return true;
+      const pt = new Position(x1 + theta * (x2 - x1), y1 + theta * (y2 - y1));
+      return pt;
+      // return true;
     } else {
       return;
     }

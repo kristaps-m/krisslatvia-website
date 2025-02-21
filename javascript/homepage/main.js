@@ -5,26 +5,36 @@ const HEIGHT = 400;
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
 const rayCount = 100;
-const boundry = new Boundary(300, 100, 333, 333);
+// const boundry = new Boundary(100, 100, 200, 200);
+let boundries = [];
+multipleBoundries();
+const partilce = new Particle();
 const ray = new Ray(100, 200);
 let framesCounter = 0;
 let mouseX = 0;
 let mouseY = 0;
 
 function animate() {
-  if (framesCounter % 7 === 0) {
+  if (framesCounter % 3 === 0) {
     // const pos = getMousePos();
     // console.log(pos.x, pos.y);
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    boundry.draw(ctx);
-    ray.drawRay();
-    // getMousePos();
-    ray.lookAt(mouseX, mouseY);
-    thePoint = ray.intersect(boundry);
-    console.log(thePoint); // true if hit wall else undefined
-    if(thePoint){
-      drawCircleAtMouse(); // Pass mouseX and mouseY
+    // boundry.draw(ctx);
+    for (let b of boundries){
+      b.draw(ctx);
     }
+    partilce.update(mouseX, mouseY);
+    partilce.draw(ctx);
+    // partilce.look(boundry);
+    partilce.look(boundries);
+    // ray.drawRay();
+    // getMousePos();
+    // ray.lookAt(mouseX, mouseY);
+    // rayHitWallPoint = ray.intersect(boundry);
+    // // console.log(rayHitWallPoint); // true if hit wall else undefined
+    // if(rayHitWallPoint){
+    //   drawCircleAtMouse(rayHitWallPoint.x, rayHitWallPoint.y); // Pass mouseX and mouseY
+    // }
   }
   if (framesCounter === 1000000) {
     framesCounter = 0;
@@ -41,35 +51,20 @@ canvas.addEventListener('mousemove', (e) => {
   mouseY = e.clientY - rect.top;
 });
 
-// function getMousePos() {
-//   let x;
-//   let y;
-//   canvas.addEventListener("mousemove", (e) => {
-//     const rect = canvas.getBoundingClientRect();
-//     x = e.clientX - rect.left;
-//     y = e.clientY - rect.top;
-//     // console.log(x, y);
-//     ray.lookAt(x, y);
-//   });
-//   // return {x: x, y: y};
-// }
-// function getMousePos(evt) {
-//   var rect = canvas.getBoundingClientRect();
-//   return {
-//     x: evt.clientX - rect.left,
-//     y: evt.clientY - rect.top
-//   };
-// }
-
-// if(thePoint){
-//   // do something with the point
-//   // ctx.fillRect(thePoint.x, thePoint.y, 5, 5);
-// }
-
 // Function using mouse position
-function drawCircleAtMouse() {
+function drawCircleAtMouse(lineHitX=0, lineHitY=0) {
   ctx.beginPath();
-  ctx.arc(mouseX, mouseY, 7, 0, Math.PI * 2);
+  ctx.arc(lineHitX, lineHitY, 7, 0, Math.PI * 2);
   ctx.fillStyle = 'red';
   ctx.fill();
+}
+
+function multipleBoundries() {
+  for (let i = 0; i < 5; i++) {
+    const x1 = Math.random() * WIDTH;
+    const x2 = Math.random() * WIDTH;
+    const y1 = Math.random() * HEIGHT;
+    const y2 = Math.random() * HEIGHT;
+    boundries.push(new Boundary(x1, y1, x2, y2));
+  }
 }

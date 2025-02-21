@@ -13,6 +13,20 @@
       <script id="replace_with_navbar" src="navbar/nav.js"></script><!--Nav bar script;go:NB/nav.html-->
       <!-- prevuis menu bar-->
     </body>
+    <script>
+      const degreesToRads = deg => (deg * Math.PI) / 180.0;
+
+      function vectorFromAngle(angle) {
+        return {
+          x: Math.cos(angle),
+          y: Math.sin(angle)
+        };
+      }
+
+      function distanceBetween2Points(x1, y1, x2, y2) {
+        return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+      }
+    </script>
       <!-- <style>
       /* Set additional styling options for the columns*/
       .column {
@@ -44,7 +58,7 @@
         <h1>Welcome to my website.</h1>
         <p>In this website i put out little information about my self. And here i learn about HTML, Javascript and other programming languages.</p>
         <a href="https://www.youtube.com/watch?v=TOEi6T2mtHo"
-          class="g_it" target="_blank">Insiper by Coding Train</a>
+          class="g_it" target="_blank" style="font-weight: bold;">Insiper by Coding Train</a>
         <canvas id="homepage_canvas"></canvas>
       </div>
     </div>
@@ -55,6 +69,7 @@
   <script src="./GAMES/Global Helper Classes/Position.js"></script>
    <script src="./javascript/homepage/boundary.js"></script>
    <script src="./javascript/homepage/ray.js"></script>
+   <script src="./javascript/homepage/particle.js"></script>
    <script src="./javascript/homepage/main.js"></script>
   </body>
   <footer>

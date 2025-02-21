@@ -15,7 +15,7 @@ class Boundary {
 
   draw(ctx) {
     ctx.strokeStyle = "white";
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(this.a.x, this.a.y);
     ctx.lineTo(this.b.x, this.b.y);
