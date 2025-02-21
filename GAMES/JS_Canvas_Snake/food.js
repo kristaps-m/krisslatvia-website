@@ -1,6 +1,6 @@
 export class Food extends Position{
   constructor(squareSize, gameFieldFullNumber, x, y){
-    super(x = 200, y = 200);
+    super(x = 200, y = 200); // default x = 200, y = 200
     this.squareSize = squareSize;
     this.gameFieldFullNumber = gameFieldFullNumber;
   }

@@ -12,16 +12,16 @@ class ListOfCells{
                 try {
                     element.updateHorizontaly(element.height);
                 } catch (error) {
-                    
+
                 }
             }
         }
     }
 
     drawList(){
-        for (let index = 0; index < this.listOfCells.length; index++) {
+        for (let theRow = 0; theRow < this.listOfCells.length; theRow++) {
             for (let col = 0; col < this.listOfCells[0].length; col++) {
-                const element = this.listOfCells[index][col];
+                const element = this.listOfCells[theRow][col];
                 try {
                     element.draw();
                     const textX = element.x + element.width / 2;
@@ -30,9 +30,9 @@ class ListOfCells{
                     // if(element.y % 5 === 0){
                         displayText(Math.round(element.y), textX, textY-7);
                         displayText(`r-${element.arrayROW}:${element.arrayCOL}`, textX, textY+7);
-                    // } 
+                    // }
                 } catch (error) {
-                    
+                    console.log(error);
                 }
             }
         }
@@ -47,11 +47,13 @@ class ListOfCells{
                 if(c.arrayROW === testResult.rowMin && c.arrayCOL >= testResult.colMin && c.arrayCOL <= testResult.colMax){
                     c.cellColor = "white";
                 }
-            }            
+            }
         }
     }
 
     updateEachCell(){
+        /**
+
         // this.arrayROW
         // this.arrayCOL
         const r = 5;
@@ -62,6 +64,9 @@ class ListOfCells{
         let testResult = getRowAndColMinMaxForHorizAndVert(testVerticalDropw);
         // this.testSetEqualCellColor(testListWhereThereIs3inOneRow);
         // console.log(testListWhereThereIs3inOneRow);
+
+
+         */
         for (let index = 0; index < this.listOfCells.length; index++) {
             for (let col = this.listOfCells[0].length; col >= 0; col--) {
                 const element = this.listOfCells[index][col];
@@ -72,7 +77,7 @@ class ListOfCells{
                     //     const textY = element.y + element.height * 2/3;
                     //     displayText(`${element.arrayROW}-${element.arrayCOL}`, textX, textY);
                     // }
-                    //  else 
+                    //  else
                      if(false){ // Horizontal
                         // testResult = getRowAndColMinMaxForHorizontal(cellsToBeUpdated[0]);
                         if(element.arrayROW <= testResult.rowMin && element.arrayCOL >= testResult.colMin && element.arrayCOL <= testResult.colMax){
@@ -98,12 +103,12 @@ class ListOfCells{
                     //     element.update();
                     // }
                 } catch (error) {
-                    
+
                 }
             }
         }
-    }    
-    
+    }
+
     updateAllDown(){
         for (let row = 0; row < this.listOfCells.length-1; row++) {
             for (let col = 0; col < this.listOfCells[0].length; col++) {
@@ -131,7 +136,7 @@ class ListOfCells{
                     try {
                         newElem = this.listOfCells[row-1][col];
                     } catch (error) {
-                        
+
                     }
                     this.listOfCells[row][col] = newElem;//this.listOfCells[row-1][col];//0;
                     this.listOfCells[rowIndex][col] = element;

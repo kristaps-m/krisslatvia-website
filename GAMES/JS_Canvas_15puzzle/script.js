@@ -1,7 +1,13 @@
 const CANVAS = document.getElementById("puzzleField");
 const CTX = CANVAS.getContext("2d");
-const W = 500;
-const H = 500;
+const sc_Width = window.screen.width;
+const sc_Height = window.screen.height;
+let W;
+let H;
+if (sc_Width <= 600){
+  W = sc_Width - 10;
+  H = sc_Width - 10;
+} else{ W = 500; H = 500}
 const SQUARE_OFF_SET = 10;
 CANVAS.width = W;
 CANVAS.height = H;
@@ -13,8 +19,8 @@ let gameField;
 let finishedGF;
 initGameFieldWithSizedArray(game_side_size); // set gameField & finishedGF
 gameField = shuffle(gameField);
-const elemLeft = CANVAS.offsetLeft;
-const elemTop = CANVAS.offsetTop;
+// const elemLeft = CANVAS.offsetLeft;
+// const elemTop = CANVAS.offsetTop;
 let gameFieldElements = [];
 let userClickedTwoNumbers = [];
 const DEFAULT_GRAY = "#8c8382";
@@ -36,9 +42,14 @@ function newGame() {
 CANVAS.addEventListener(
   "click",
   function (event) {
-    var x = event.pageX - elemLeft,
-      y = event.pageY - elemTop - 74;
-    console.log(x, y);
+    // Get the bounding rectangle of the canvas
+    const rect = CANVAS.getBoundingClientRect();
+
+    // var x = event.pageX - elemLeft,
+    //   y = event.pageY - elemTop - 74;
+    // Calculate the click position relative to the canvas
+    let x = (event.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
+    let y = (event.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
 
     gameFieldElements.forEach(function (element) {
       if (

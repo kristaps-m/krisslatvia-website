@@ -6,7 +6,7 @@ CANVAS.width = W, CANVAS.height = H;
 const CANDIES_IN_ROW = 8, CANDIES_IN_COL = 8;
 // const CANDIES_IN_ROW = 4, CANDIES_IN_COL = 4;
 const SQUARE_OFF_SET = 2; // space between each element
-const ELEM_LEFT = CANVAS.offsetLeft, ELEM_TOP = CANVAS.offsetTop;
+// const ELEM_LEFT = CANVAS.offsetLeft, ELEM_TOP = CANVAS.offsetTop;
 const DEFAULT_GRAY = '#8c8382';
 const GAME_COLORS = ["red", "blue", "yellow", "green","purple","brown","pink","lightblue","lightgreen"];
 
@@ -18,8 +18,13 @@ let gameClickableElements = [];
 let userClickedTwoNumbers = [];
 
 CANVAS.addEventListener("click", function(e) {
-    const X = e.pageX - ELEM_LEFT, Y = e.pageY - ELEM_TOP - 74;
-    // console.log(X,Y);
+    // Get the bounding rectangle of the canvas
+    const rect = CANVAS.getBoundingClientRect();
+    // const X = e.pageX - ELEM_LEFT, Y = e.pageY - ELEM_TOP - 74;
+    // Calculate the click position relative to the canvas
+    let X = (e.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
+    let Y = (e.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
+    console.log(X,Y);
 
     gameClickableElements.forEach((elem) =>{
         if(X+SQUARE_OFF_SET > elem.left && X < elem.left + elem.width &&
