@@ -1,28 +1,31 @@
-const canvas = document.getElementById('homepage_canvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById("homepage_canvas");
+const ctx = canvas.getContext("2d");
 const WIDTH = 550;
 const HEIGHT = 400;
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
 const rayCount = 100;
 const boundry = new Boundary(300, 100, 333, 333);
-const ray = new Ray(100,200);
+const ray = new Ray(100, 200);
 let framesCounter = 0;
 
 function animate() {
-  if(framesCounter % 30 === 0){
+  if (framesCounter % 7 === 0) {
     // const pos = getMousePos();
     // console.log(pos.x, pos.y);
-    getMousePos();
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    getMousePos();
     boundry.draw(ctx);
     ray.drawRay();
     // ray.lookAt(pos.x, pos.y);
     thePoint = ray.intersect(boundry);
-    console.log(thePoint);
-    requestAnimationFrame(animate);
+    console.log(thePoint); // true if hit wall else undefined
   }
-  if(framesCounter = 1000000){framesCounter = 0}
+  if (framesCounter === 1000000) {
+    framesCounter = 0;
+  }
+  requestAnimationFrame(animate);
+  framesCounter++;
 }
 
 animate();
@@ -30,13 +33,12 @@ animate();
 function getMousePos() {
   let x;
   let y;
-  canvas.addEventListener('mousemove', (e) => {
+  canvas.addEventListener("mousemove", (e) => {
     const rect = canvas.getBoundingClientRect();
     x = e.clientX - rect.left;
     y = e.clientY - rect.top;
-    console.log(x,y);
+    // console.log(x, y);
     ray.lookAt(x, y);
-
   });
   // return {x: x, y: y};
 }
@@ -47,8 +49,6 @@ function getMousePos() {
 //     y: evt.clientY - rect.top
 //   };
 // }
-
-
 
 // if(thePoint){
 //   // do something with the point
