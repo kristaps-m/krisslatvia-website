@@ -17,6 +17,10 @@ multipleBoundries(); // add random boundries and outer walls;
 const partilce = new Particle(WIDTH / 2, HEIGHT / 2);
 const ray = new Ray(100, 200);
 const testObject_1 = new TestObject(WIDTH - 60, 60, 30, 30);
+const testObject_2 = new TestObject(60, HEIGHT - 60, 30, 30);
+let testObjectList = [];
+testObjectList.push(testObject_1);
+// testObjectList.push(testObject_2);
 let isTestObject_1_hit = false;
 let framesCounter = 0;
 let mouseX = 0;
@@ -48,7 +52,11 @@ function animate() {
     // partilce.update(touchEndX, touchEndY);
     partilce.draw(ctx);
     // partilce.look(boundry);
-    partilce.look(boundries, testObject_1);
+    partilce.look(boundries, testObjectList);
+    // partilce.lookForTestObjects(testObjectList);
+    testObject_1.drawTestObject();
+    // testObject_2.drawTestObject();
+
     // if(partilce.doesSingleRayHit_testObject(testObject_1)){
     //   isTestObject_1_hit = true;
     //   testObject_1.drawTestObject("red");
@@ -60,13 +68,13 @@ function animate() {
     //     console.log("Hit detected!");
     // }
 
-    if(isTestObject_1_hit){
-      // isTestObject_1_hit = true;
-      testObject_1.drawTestObject("red");
-    }else{
-      // isTestObject_1_hit = false;
-      testObject_1.drawTestObject();
-    }
+    // if(isTestObject_1_hit){
+    //   // isTestObject_1_hit = true;
+    //   testObject_1.drawTestObject("red");
+    // }else{
+    //   // isTestObject_1_hit = false;
+    //   testObject_1.drawTestObject();
+    // }
     updateHTML("gitHub", "GitHub: ?", "GitHub: github.com/kristaps-m");
     // ray.drawRay();
     // getMousePos();

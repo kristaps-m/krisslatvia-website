@@ -3,10 +3,11 @@ class TestObject extends Position {
     super(x, y);
     this.w = w;
     this.h = h;
+    this.color;// = "green";
   }
 
   drawTestObject(color="green") {
-    ctx.fillStyle = color;
+    ctx.fillStyle = this.color;
     ctx.fillRect(this.x, this.y, this.w, this.h);
   }
 
