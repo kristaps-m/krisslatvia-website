@@ -40,15 +40,14 @@ function animate() {
     for (let b of boundries){
       b.draw(ctx);
     }
-    // if(WIDTH > 600){
-    //   console.log(WIDTH, HEIGHT);
-    //   partilce.update(mouseX, mouseY);
-    // }
+    if(sc_Width > 600){
+      partilce.update(mouseX, mouseY);
+    }
     // const sc_Width = window.screen.width;
     // if (sc_Width <= 600){
       // partilce.update(touchStartX, touchStartY);
     // } else {
-      partilce.update(mouseX, mouseY);
+      // partilce.update(mouseX, mouseY);
     // }
     // partilce.update(touchEndX, touchEndY);
     partilce.draw(ctx);
@@ -103,7 +102,7 @@ document.addEventListener("touchstart", function (event) {
 
 
 document.addEventListener("touchmove", function (event) {
-  event.preventDefault(); // Prevent scrolling
+  // event.preventDefault(); // Prevent scrolling
   if (!touchStartedInsideCanvas) return;
 
   const touchPos = getTouchPos(event);
@@ -112,7 +111,7 @@ document.addEventListener("touchmove", function (event) {
 
   partilce.update(touchEndX, touchEndY);
   // console.log(partilce.pos.x, partilce.pos.y);
-},{ passive: false });
+}); // ,{ passive: false }
 
 // Function using mouse position
 function drawCircleAtMouse(lineHitX=0, lineHitY=0) {
