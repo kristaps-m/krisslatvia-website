@@ -2,8 +2,6 @@ const canvas = document.getElementById("homepage_canvas");
 const ctx = canvas.getContext("2d");
 let WIDTH;// = 550;
 let HEIGHT;// = 400;
-
-
 const sc_Width = window.screen.width;
 // const sc_Height = window.screen.height;
 if (sc_Width <= 600){
@@ -12,16 +10,14 @@ if (sc_Width <= 600){
 } else{ WIDTH = 550; HEIGHT = 400}
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
-
-
-// canvas.width = WIDTH;
-// canvas.height = HEIGHT;
 const rayCount = 100;
 // const boundry = new Boundary(100, 100, 200, 200);
 let boundries = [];
 multipleBoundries(); // add random boundries and outer walls;
 const partilce = new Particle(WIDTH / 2, HEIGHT / 2);
 const ray = new Ray(100, 200);
+const testObject_1 = new TestObject(WIDTH - 60, 60, 30, 30);
+let isTestObject_1_hit = false;
 let framesCounter = 0;
 let mouseX = 0;
 let mouseY = 0;
@@ -52,7 +48,26 @@ function animate() {
     // partilce.update(touchEndX, touchEndY);
     partilce.draw(ctx);
     // partilce.look(boundry);
-    partilce.look(boundries);
+    partilce.look(boundries, testObject_1);
+    // if(partilce.doesSingleRayHit_testObject(testObject_1)){
+    //   isTestObject_1_hit = true;
+    //   testObject_1.drawTestObject("red");
+    // }else{
+    //   isTestObject_1_hit = false;
+    //   testObject_1.drawTestObject();
+    // }
+    // if (partilce.doesSingleRayHit_testObject(partilce.pos, testObject_1, 10)) {
+    //     console.log("Hit detected!");
+    // }
+
+    if(isTestObject_1_hit){
+      // isTestObject_1_hit = true;
+      testObject_1.drawTestObject("red");
+    }else{
+      // isTestObject_1_hit = false;
+      testObject_1.drawTestObject();
+    }
+    updateHTML("gitHub", "GitHub: ?", "GitHub: github.com/kristaps-m");
     // ray.drawRay();
     // getMousePos();
     // ray.lookAt(mouseX, mouseY);
@@ -119,6 +134,15 @@ function drawCircleAtMouse(lineHitX=0, lineHitY=0) {
   ctx.arc(lineHitX, lineHitY, 7, 0, Math.PI * 2);
   ctx.fillStyle = 'red';
   ctx.fill();
+}
+
+function updateHTML(elementId = "", oldText = "", newText = "") {
+  const htmlTextToGet = document.getElementById(elementId);
+  if(isTestObject_1_hit){
+    htmlTextToGet.textContent = newText;
+  }else{
+    htmlTextToGet.textContent = oldText;
+  }
 }
 
 function multipleBoundries() {

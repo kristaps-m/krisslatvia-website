@@ -6,9 +6,9 @@ class Ray {
     this.direction = vectorFromAngle(angle);
   }
 
-  lookAt(x, y) {
-    this.direction = new Position(x - this.pos.x, y - this.pos.y).normalizeVector();
-  }
+  // lookAt(x, y) {
+  //   this.direction = new Position(x - this.pos.x, y - this.pos.y).normalizeVector();
+  // }
 
   drawRay(color = "yellow") {
     ctx.strokeStyle = color;
