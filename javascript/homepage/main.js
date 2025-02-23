@@ -5,7 +5,7 @@ let HEIGHT;// = 400;
 const sc_Width = window.screen.width;
 // const sc_Height = window.screen.height;
 if (sc_Width <= 600){
-  WIDTH = sc_Width - 10;
+  WIDTH = sc_Width - 20;
   HEIGHT = sc_Width;
 } else{ WIDTH = 550; HEIGHT = 400}
 canvas.width = WIDTH;
@@ -20,7 +20,7 @@ const testObject_1 = new TestObject(WIDTH - 60, 60, 30, 30);
 const testObject_2 = new TestObject(60, HEIGHT - 60, 30, 30);
 let testObjectList = [];
 testObjectList.push(testObject_1);
-// testObjectList.push(testObject_2);
+testObjectList.push(testObject_2);
 let isTestObject_1_hit = false;
 let framesCounter = 0;
 let mouseX = 0;
@@ -54,29 +54,15 @@ function animate() {
     // partilce.look(boundry);
     partilce.look(boundries, testObjectList);
     // partilce.lookForTestObjects(testObjectList);
-    testObject_1.drawTestObject();
-    // testObject_2.drawTestObject();
-
-    // if(partilce.doesSingleRayHit_testObject(testObject_1)){
-    //   isTestObject_1_hit = true;
-    //   testObject_1.drawTestObject("red");
-    // }else{
-    //   isTestObject_1_hit = false;
-    //   testObject_1.drawTestObject();
-    // }
-    // if (partilce.doesSingleRayHit_testObject(partilce.pos, testObject_1, 10)) {
-    //     console.log("Hit detected!");
-    // }
-
-    // if(isTestObject_1_hit){
-    //   // isTestObject_1_hit = true;
-    //   testObject_1.drawTestObject("red");
-    // }else{
-    //   // isTestObject_1_hit = false;
-    //   testObject_1.drawTestObject();
-    // }
-    updateHTML("gitHub", "GitHub: ?", "GitHub: github.com/kristaps-m");
+    for (let testObject of testObjectList){
+      testObject.drawTestObject();
+    }
     // ray.drawRay();
+    if (testObject_1.color === "red") {
+      updateHTML("gitHub", "GitHub: github.com/kristaps-m");
+    } else {
+      updateHTML("gitHub", "GitHub: ?");
+    }
     // getMousePos();
     // ray.lookAt(mouseX, mouseY);
     // rayHitWallPoint = ray.intersect(boundry);
@@ -144,13 +130,9 @@ function drawCircleAtMouse(lineHitX=0, lineHitY=0) {
   ctx.fill();
 }
 
-function updateHTML(elementId = "", oldText = "", newText = "") {
+function updateHTML(elementId = "", newText = "") {
   const htmlTextToGet = document.getElementById(elementId);
-  if(isTestObject_1_hit){
-    htmlTextToGet.textContent = newText;
-  }else{
-    htmlTextToGet.textContent = oldText;
-  }
+  if(htmlTextToGet) {htmlTextToGet.textContent = newText;}
 }
 
 function multipleBoundries() {

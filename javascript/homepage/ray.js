@@ -1,9 +1,9 @@
 class Ray {
   // constructor(x, y) {
-  constructor(pos, angle,t) {
+  constructor(pos, angleInRads, angleInDegrees) {
     this.pos = pos;//new Position(x, y); // position
-    this.test = t;
-    this.direction = vectorFromAngle(angle);
+    this.angleInDegrees = angleInDegrees;
+    this.direction = vectorFromAngle(angleInRads);
   }
 
   // lookAt(x, y) {
