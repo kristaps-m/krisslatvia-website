@@ -1,14 +1,9 @@
 class Ray {
-  // constructor(x, y) {
   constructor(pos, angleInRads, angleInDegrees) {
-    this.pos = pos;//new Position(x, y); // position
+    this.pos = pos;//new Position(x, y);
     this.angleInDegrees = angleInDegrees;
     this.direction = vectorFromAngle(angleInRads);
   }
-
-  // lookAt(x, y) {
-  //   this.direction = new Position(x - this.pos.x, y - this.pos.y).normalizeVector();
-  // }
 
   drawRay(color = "yellow") {
     ctx.strokeStyle = color;

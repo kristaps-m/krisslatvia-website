@@ -12,7 +12,6 @@ class TestObject extends Position {
   }
 
   doesSingleRayHit_testObject(ray, walls) {
-    // console.log(rayStartPoint, testObject, walls, angle = 0);
     const edges = [
         new Boundary(this.x, this.y, this.x + this.w, this.y), // Top 0,0 - 10,0
         new Boundary(this.x, this.y, this.x, this.y + this.h), // Left 0,0 - 0,10
@@ -35,12 +34,11 @@ class TestObject extends Position {
                 closestDistance = distance;
                 closestHit = hitPoint;
                 hitObject = "rectangle"; // Mark that we hit the rectangle
-                // console.log("----HIIIIIIIIT----------");
             }
         }
     }
 
-    // Check for intersections with walls
+    // Check for intersections with walls/boundries
     for (let wall of walls) {
         const hitPoint = oneRay.intersect(wall);
         if (hitPoint) {

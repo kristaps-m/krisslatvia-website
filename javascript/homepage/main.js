@@ -3,15 +3,13 @@ const ctx = canvas.getContext("2d");
 let WIDTH;// = 550;
 let HEIGHT;// = 400;
 const sc_Width = window.screen.width;
-// const sc_Height = window.screen.height;
 if (sc_Width <= 600){
   WIDTH = sc_Width - 20;
-  HEIGHT = sc_Width;
+  HEIGHT = sc_Width + 20;
 } else{ WIDTH = 550; HEIGHT = 400}
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
 const rayCount = 100;
-// const boundry = new Boundary(100, 100, 200, 200);
 let boundries = [];
 multipleBoundries(); // add random boundries and outer walls;
 const partilce = new Particle(WIDTH / 2, HEIGHT / 2);
@@ -33,43 +31,23 @@ let touchStartedInsideCanvas = false; // Flag to check where touch started
 
 function animate() {
   if (framesCounter % 3 === 0) {
-    // const pos = getMousePos();
-    // console.log(pos.x, pos.y);
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    // boundry.draw(ctx);
     for (let b of boundries){
       b.draw(ctx);
     }
     if(sc_Width > 600){
       partilce.update(mouseX, mouseY);
     }
-    // const sc_Width = window.screen.width;
-    // if (sc_Width <= 600){
-      // partilce.update(touchStartX, touchStartY);
-    // } else {
-      // partilce.update(mouseX, mouseY);
-    // }
-    // partilce.update(touchEndX, touchEndY);
-    partilce.draw(ctx);
-    // partilce.look(boundry);
-    partilce.look(boundries, testObjectList);
-    // partilce.lookForTestObjects(testObjectList);
+    partilce.look(boundries);
+    partilce.checkHitTestObject(testObjectList, boundries);
     for (let testObject of testObjectList){
       testObject.drawTestObject();
     }
-    // ray.drawRay();
     if (testObject_1.color === "red") {
       updateHTML("gitHub", "GitHub: github.com/kristaps-m");
     } else {
       updateHTML("gitHub", "GitHub: ?");
     }
-    // getMousePos();
-    // ray.lookAt(mouseX, mouseY);
-    // rayHitWallPoint = ray.intersect(boundry);
-    // // console.log(rayHitWallPoint); // true if hit wall else undefined
-    // if(rayHitWallPoint){
-    //   drawCircleAtMouse(rayHitWallPoint.x, rayHitWallPoint.y); // Pass mouseX and mouseY
-    // }
   }
   if (framesCounter === 1000000) {
     framesCounter = 0;
@@ -103,7 +81,6 @@ document.addEventListener("touchstart", function (event) {
     touchStartY = touchPos.y;
 
     partilce.update(touchStartX, touchStartY);
-    // console.log("touchstart", partilce.pos.x, partilce.pos.y);
   } else {
       touchStartedInsideCanvas = false;
   }
@@ -111,7 +88,6 @@ document.addEventListener("touchstart", function (event) {
 
 
 document.addEventListener("touchmove", function (event) {
-  // event.preventDefault(); // Prevent scrolling
   if (!touchStartedInsideCanvas) return;
 
   const touchPos = getTouchPos(event);
@@ -119,16 +95,7 @@ document.addEventListener("touchmove", function (event) {
   touchEndY = touchPos.y;
 
   partilce.update(touchEndX, touchEndY);
-  // console.log(partilce.pos.x, partilce.pos.y);
-}); // ,{ passive: false }
-
-// Function using mouse position
-function drawCircleAtMouse(lineHitX=0, lineHitY=0) {
-  ctx.beginPath();
-  ctx.arc(lineHitX, lineHitY, 7, 0, Math.PI * 2);
-  ctx.fillStyle = 'red';
-  ctx.fill();
-}
+});
 
 function updateHTML(elementId = "", newText = "") {
   const htmlTextToGet = document.getElementById(elementId);
