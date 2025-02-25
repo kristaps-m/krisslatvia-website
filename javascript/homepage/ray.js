@@ -1,13 +1,8 @@
 class Ray {
-  // constructor(x, y) {
-  constructor(pos, angle,t) {
-    this.pos = pos;//new Position(x, y); // position
-    this.test = t;
-    this.direction = vectorFromAngle(angle);
-  }
-
-  lookAt(x, y) {
-    this.direction = new Position(x - this.pos.x, y - this.pos.y).normalizeVector();
+  constructor(pos, angleInRads, angleInDegrees) {
+    this.pos = pos;//new Position(x, y);
+    this.angleInDegrees = angleInDegrees;
+    this.direction = vectorFromAngle(angleInRads);
   }
 
   drawRay(color = "yellow") {

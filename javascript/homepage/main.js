@@ -2,26 +2,24 @@ const canvas = document.getElementById("homepage_canvas");
 const ctx = canvas.getContext("2d");
 let WIDTH;// = 550;
 let HEIGHT;// = 400;
-
-
 const sc_Width = window.screen.width;
-// const sc_Height = window.screen.height;
 if (sc_Width <= 600){
-  WIDTH = sc_Width - 10;
-  HEIGHT = sc_Width;
+  WIDTH = sc_Width - 20;
+  HEIGHT = sc_Width + 20;
 } else{ WIDTH = 550; HEIGHT = 400}
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
-
-
-// canvas.width = WIDTH;
-// canvas.height = HEIGHT;
 const rayCount = 100;
-// const boundry = new Boundary(100, 100, 200, 200);
+const generatedBoundriesCount = 20;
 let boundries = [];
 multipleBoundries(); // add random boundries and outer walls;
 const partilce = new Particle(WIDTH / 2, HEIGHT / 2);
 const ray = new Ray(100, 200);
+const rayTrigger_1 = new RayTrigger(WIDTH - 60, 60, 30, 30);
+const rayTrigger_2 = new RayTrigger(60, HEIGHT - 60, 30, 30);
+let rayTriggerList = [];
+rayTriggerList.push(rayTrigger_1);
+rayTriggerList.push(rayTrigger_2);
 let framesCounter = 0;
 let mouseX = 0;
 let mouseY = 0;
@@ -33,34 +31,28 @@ let touchStartedInsideCanvas = false; // Flag to check where touch started
 
 function animate() {
   if (framesCounter % 3 === 0) {
-    // const pos = getMousePos();
-    // console.log(pos.x, pos.y);
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    // boundry.draw(ctx);
     for (let b of boundries){
       b.draw(ctx);
     }
     if(sc_Width > 600){
       partilce.update(mouseX, mouseY);
     }
-    // const sc_Width = window.screen.width;
-    // if (sc_Width <= 600){
-      // partilce.update(touchStartX, touchStartY);
-    // } else {
-      // partilce.update(mouseX, mouseY);
-    // }
-    // partilce.update(touchEndX, touchEndY);
-    partilce.draw(ctx);
-    // partilce.look(boundry);
     partilce.look(boundries);
-    // ray.drawRay();
-    // getMousePos();
-    // ray.lookAt(mouseX, mouseY);
-    // rayHitWallPoint = ray.intersect(boundry);
-    // // console.log(rayHitWallPoint); // true if hit wall else undefined
-    // if(rayHitWallPoint){
-    //   drawCircleAtMouse(rayHitWallPoint.x, rayHitWallPoint.y); // Pass mouseX and mouseY
-    // }
+    partilce.checkHitRayTrigger(rayTriggerList, boundries);
+    for (let rayTrigger of rayTriggerList){
+      rayTrigger.drawRayTrigger();
+    }
+    if (rayTrigger_1.color === "red") {
+      updateHTML("gitHub", "github.com/kristaps-m");
+    } else {
+      updateHTML("gitHub", "");
+    }
+    if (rayTrigger_2.color === "red") {
+      updateHTML("linkedIn", "linkedin.com/in/kristaps-mitins");
+    } else {
+      updateHTML("linkedIn", "");
+    }
   }
   if (framesCounter === 1000000) {
     framesCounter = 0;
@@ -94,7 +86,6 @@ document.addEventListener("touchstart", function (event) {
     touchStartY = touchPos.y;
 
     partilce.update(touchStartX, touchStartY);
-    // console.log("touchstart", partilce.pos.x, partilce.pos.y);
   } else {
       touchStartedInsideCanvas = false;
   }
@@ -102,7 +93,6 @@ document.addEventListener("touchstart", function (event) {
 
 
 document.addEventListener("touchmove", function (event) {
-  // event.preventDefault(); // Prevent scrolling
   if (!touchStartedInsideCanvas) return;
 
   const touchPos = getTouchPos(event);
@@ -110,19 +100,15 @@ document.addEventListener("touchmove", function (event) {
   touchEndY = touchPos.y;
 
   partilce.update(touchEndX, touchEndY);
-  // console.log(partilce.pos.x, partilce.pos.y);
-}); // ,{ passive: false }
+});
 
-// Function using mouse position
-function drawCircleAtMouse(lineHitX=0, lineHitY=0) {
-  ctx.beginPath();
-  ctx.arc(lineHitX, lineHitY, 7, 0, Math.PI * 2);
-  ctx.fillStyle = 'red';
-  ctx.fill();
+function updateHTML(elementId = "", newText = "") {
+  const htmlTextToGet = document.getElementById(elementId);
+  if(htmlTextToGet) {htmlTextToGet.textContent = newText;}
 }
 
 function multipleBoundries() {
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < generatedBoundriesCount; i++) {
     const x1 = Math.random() * WIDTH;
     const x2 = Math.random() * WIDTH;
     const y1 = Math.random() * HEIGHT;

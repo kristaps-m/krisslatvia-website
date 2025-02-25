@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/mobileScreen.css">
     <body>
-      <!-- <br><br><br><br> --><!-- 4 line breaks -->
       <script id="replace_with_navbar" src="navbar/nav.js"></script><!--Nav bar script;go:NB/nav.html-->
       <!-- prevuis menu bar-->
     </body>
@@ -27,18 +26,6 @@
         return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
       }
     </script>
-      <!-- <style>
-      /* Set additional styling options for the columns*/
-      .column {
-      float: left;
-      width: 33%;
-      }
-      .row:after {
-      content: "";
-      display: table;
-      clear: both;
-      }
-      </style> -->
   </head>
   <main>
     <div class="row">
@@ -56,22 +43,38 @@
       </div>
       <div class="column">
         <h1>Welcome to my website.</h1>
-        <p>In this website i put out little information about my self. And here i learn about HTML, Javascript and other programming languages.</p>
-        <a href="https://www.youtube.com/watch?v=TOEi6T2mtHo"
-          class="g_it" target="_blank" style="font-weight: bold;">Insiper by Coding Train</a>
+        <p>In this website i put out little information about my self. And here I learn about HTML, Javascript, CSS and other programming languages.</p>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 35rem;">GitHub</th>
+              <th style="width: 35rem;">LinkedIn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="height: 2.5rem;">
+              <td><a href="https://github.com/kristaps-m" target="_blank" id="gitHub"></a></td>
+              <td><a href="https://www.linkedin.com/in/kristaps-mitins" target="_blank" id="linkedIn"></a></td>
+            </tr>
+          </tbody>
+        </table>
         <canvas id="homepage_canvas"></canvas>
       </div>
     </div>
 
   </main>
   <body>
-	<!-- <script src="homepage_scripts.js"></script> -->
   <script src="./GAMES/Global Helper Classes/Position.js"></script>
-   <script src="./javascript/homepage/boundary.js"></script>
-   <script src="./javascript/homepage/ray.js"></script>
-   <script src="./javascript/homepage/particle.js"></script>
-   <script src="./javascript/homepage/main.js"></script>
+  <script src="./javascript/homepage/boundary.js"></script>
+  <script src="./javascript/homepage/rayTrigger.js"></script>
+  <script src="./javascript/homepage/ray.js"></script>
+  <script src="./javascript/homepage/particle.js"></script>
+  <script src="./javascript/homepage/main.js"></script>
+  <div  class="footer">
+    <footer>
+    <a href="https://www.youtube.com/watch?v=TOEi6T2mtHo" class="g_it" target="_blank" style="font-weight: bold;">RayCasting ⇧
+      insiper by <b>Coding Train</b></a>
+    </footer>
+  </div>
   </body>
-  <footer>
-  </footer>
 </html>

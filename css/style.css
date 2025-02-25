@@ -103,8 +103,17 @@
     display: block;
   }
 
-  /*COLUMS AND ROWS*/
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(242, 242, 242);
+    color: white;
+    text-align: center;
+  }
 
+  /*COLUMS AND ROWS*/
   /* Set additional styling options for the columns */
   .column {
     float: left;
