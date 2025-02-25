@@ -10,16 +10,16 @@ if (sc_Width <= 600){
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
 const rayCount = 100;
+const generatedBoundriesCount = 20;
 let boundries = [];
 multipleBoundries(); // add random boundries and outer walls;
 const partilce = new Particle(WIDTH / 2, HEIGHT / 2);
 const ray = new Ray(100, 200);
-const testObject_1 = new TestObject(WIDTH - 60, 60, 30, 30);
-const testObject_2 = new TestObject(60, HEIGHT - 60, 30, 30);
-let testObjectList = [];
-testObjectList.push(testObject_1);
-testObjectList.push(testObject_2);
-let isTestObject_1_hit = false;
+const rayTrigger_1 = new RayTrigger(WIDTH - 60, 60, 30, 30);
+const rayTrigger_2 = new RayTrigger(60, HEIGHT - 60, 30, 30);
+let rayTriggerList = [];
+rayTriggerList.push(rayTrigger_1);
+rayTriggerList.push(rayTrigger_2);
 let framesCounter = 0;
 let mouseX = 0;
 let mouseY = 0;
@@ -39,14 +39,19 @@ function animate() {
       partilce.update(mouseX, mouseY);
     }
     partilce.look(boundries);
-    partilce.checkHitTestObject(testObjectList, boundries);
-    for (let testObject of testObjectList){
-      testObject.drawTestObject();
+    partilce.checkHitRayTrigger(rayTriggerList, boundries);
+    for (let rayTrigger of rayTriggerList){
+      rayTrigger.drawRayTrigger();
     }
-    if (testObject_1.color === "red") {
-      updateHTML("gitHub", "GitHub: github.com/kristaps-m");
+    if (rayTrigger_1.color === "red") {
+      updateHTML("gitHub", "github.com/kristaps-m");
     } else {
-      updateHTML("gitHub", "GitHub: ?");
+      updateHTML("gitHub", "");
+    }
+    if (rayTrigger_2.color === "red") {
+      updateHTML("linkedIn", "linkedin.com/in/kristaps-mitins");
+    } else {
+      updateHTML("linkedIn", "");
     }
   }
   if (framesCounter === 1000000) {
@@ -103,7 +108,7 @@ function updateHTML(elementId = "", newText = "") {
 }
 
 function multipleBoundries() {
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < generatedBoundriesCount; i++) {
     const x1 = Math.random() * WIDTH;
     const x2 = Math.random() * WIDTH;
     const y1 = Math.random() * HEIGHT;

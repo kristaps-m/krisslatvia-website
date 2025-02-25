@@ -1,17 +1,20 @@
-class TestObject extends Position {
+class RayTrigger extends Position {
   constructor(x,y,w=10, h=10) {
     super(x, y);
     this.w = w;
     this.h = h;
     this.color = "green";
+    this.questionMarkColor = "white";
   }
 
-  drawTestObject() {
+  drawRayTrigger() {
     ctx.fillStyle = this.color;
     ctx.fillRect(this.x, this.y, this.w, this.h);
+    // ctx.fillText("?", this.x, this.y);
+    this.displayText("?", this.x, this.y, this.questionMarkColor);
   }
 
-  doesSingleRayHit_testObject(ray, walls) {
+  doesSingleRayHitRayTrigger(ray, walls) {
     const edges = [
         new Boundary(this.x, this.y, this.x + this.w, this.y), // Top 0,0 - 10,0
         new Boundary(this.x, this.y, this.x, this.y + this.h), // Left 0,0 - 0,10
@@ -53,5 +56,17 @@ class TestObject extends Position {
 
     // Only return true if the rectangle was the closest hit
     return hitObject === "rectangle";
+  }
+
+  displayText(theText, x, y, color = "white") {
+    let fSize = 25;
+    ctx.font = `bold ${fSize}px Comic Sans MS`;
+    ctx.textAlign = "center";
+    ctx.fillStyle = color;
+    ctx.fillText(
+      theText,
+      x + this.w / 2,
+      y + (this.h * 2) / 2.5
+    );
   }
 }

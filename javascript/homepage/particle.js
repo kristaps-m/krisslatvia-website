@@ -13,16 +13,17 @@ class Particle {
     this.pos.y = y;
   }
 
-  checkHitTestObject(testObjectList, boundries){
-    for (let theObject of testObjectList){
+  checkHitRayTrigger(rayTriggerList, boundries){
+    for (let theObject of rayTriggerList){
       let hit = false; // Reset hit tracking for each test object
       for (let ray of this.rays) {
-        if (theObject.doesSingleRayHit_testObject(ray, boundries)) {
+        if (theObject.doesSingleRayHitRayTrigger(ray, boundries)) {
           hit = true; // If at least one ray hits, mark as hit
           break; // No need to check more rays for this object
         }
       }
       theObject.color = hit ? "red" : "green";
+      theObject.questionMarkColor = hit ? "yellow" : "white";
     }
   }
 
