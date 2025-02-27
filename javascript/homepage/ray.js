@@ -5,15 +5,6 @@ class Ray {
     this.direction = vectorFromAngle(angleInRads);
   }
 
-  drawRay(color = "yellow") {
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(this.pos.x, this.pos.y);
-    ctx.lineTo(this.pos.x + this.direction.x * 10, this.pos.y + this.direction.y * 10);
-    ctx.stroke();
-  }
-
   intersect(b) {
     // b = boundry
     const x1 = b.a.x,

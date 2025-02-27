@@ -28,6 +28,9 @@ let touchStartY = 0;
 let touchEndX = 0;
 let touchEndY = 0;
 let touchStartedInsideCanvas = false; // Flag to check where touch started
+const x =     partilce.rays[66];
+console.log(x);
+
 
 function animate() {
   if (framesCounter % 3 === 0) {

@@ -136,13 +136,14 @@ document.addEventListener("keydown", function (event) {
 
 document.addEventListener("touchstart", function (event) {
   if (canvas.contains(event.target)) {
-      touchStartedInsideCanvas = true; // Allow swipes only if touch starts inside canvas
-      touchStartX = event.touches[0].clientX;
-      touchStartY = event.touches[0].clientY;
+    event.preventDefault(); // Stops the swipe from triggering page refresh
+    touchStartedInsideCanvas = true; // Allow swipes only if touch starts inside canvas
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
   } else {
-      touchStartedInsideCanvas = false; // Ignore touches outside canvas
+    touchStartedInsideCanvas = false; // Ignore touches outside canvas
   }
-});
+}, { passive: false });
 
 document.addEventListener("touchend", function (event) {
   if (!touchStartedInsideCanvas) return; // Ignore touchend if touch didn't start inside the canvas

@@ -79,7 +79,7 @@ CANVAS.addEventListener(
           gameField = swapNumbers(gameField, userClickedTwoNumbers);
           setTimeout(function () {
             renderElements();
-          }, 500);
+          }, 150);
           userClickedTwoNumbers = [];
         } else if (
           userClickedTwoNumbers.length == 2 &&
@@ -88,7 +88,7 @@ CANVAS.addEventListener(
           userClickedTwoNumbers = [];
           setTimeout(function () {
             renderElements();
-          }, 300);
+          }, 150);
         }
       }
     });
@@ -147,7 +147,7 @@ function swapNumbers(the_list, swap_numbers) {
     Math.abs(x_index - y_index) == 1 ||
     Math.abs(x_index - y_index) == game_side_size
   ) {
-    console.log("It is okay to swap");
+    // console.log("It is okay to swap");
     // now swap?
     new_array[x_index] = y;
     new_array[y_index] = x;
@@ -168,20 +168,43 @@ function compareTwoLists(listOne, listTwo) {
   return true;
 }
 
-// shuffle function from:
-// https://github.com/imshubhamsingh/15-puzzle/blob/master/src/utils/game.js
-function shuffle(array_elements) {
-  let i = array_elements.length,
-    randomNumIndex,
-    randomNum;
-  while (--i > 0) {
-    randomNumIndex = Math.floor(Math.random() * (i + 1));
-    randomNum = array_elements[randomNumIndex];
-    array_elements[randomNumIndex] = array_elements[i];
-    array_elements[i] = randomNum;
+// shuffle function from: https://chatgpt.com/ /* -- functions -- */
+/* -------------------------------------------------- */
+function isSolvable(puzzle) {
+  let inversions = 0;
+  let size = Math.sqrt(puzzle.length);
+  let emptyRow = 0;
+
+  for (let i = 0; i < puzzle.length; i++) {
+    if (puzzle[i] === game_side_size*game_side_size) {
+      emptyRow = Math.floor(i / size) + 1; // Find row of the empty space (game_side_size*game_side_size)
+      continue;
+    }
+    for (let j = i + 1; j < puzzle.length; j++) {
+      if (puzzle[j] !== game_side_size*game_side_size && puzzle[i] > puzzle[j]) {
+        inversions++;
+      }
+    }
   }
-  return array_elements;
+
+  if (size % 2 !== 0) {
+    // Odd grid (4x4): solvable if inversions are even
+    return inversions % 2 === 0;
+  } else {
+    // Even grid (4x4): depends on empty space row
+    return (inversions + emptyRow) % 2 === 0;
+  }
 }
+
+function shuffle() { // shuffleSolvable
+  let numbers = gameField;//[...Array(15).keys()].map(n => n + 1).concat(16); // 1 to 16
+  do {
+    numbers = numbers.sort(() => Math.random() - 0.5);
+  } while (!isSolvable(numbers));
+
+  return numbers;
+}
+/* -------------------------------------------------- */
 
 function displayText(theText, x, y) {
   let fSize = 55;

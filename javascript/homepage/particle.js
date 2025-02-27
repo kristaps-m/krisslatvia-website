@@ -43,14 +43,18 @@ class Particle {
         }
       }
       if(closest){
-        ctx.strokeStyle = ray.angleInDegrees % 90 === 0 ? this.rightAngleRaysColor : "rgba(249, 255, 0, 0.6)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(this.pos.x, this.pos.y);
-        ctx.lineTo(closest.x, closest.y);
-        ctx.stroke();
-
+        // TODO - create more colorful efects for rays!
+        this.thisIsMyPuppy(closest);
       }
     }
+  }
+
+  thisIsMyPuppy(closest, theAngle = null){
+    ctx.strokeStyle = ray.angleInDegrees % 90 === 0 ? this.rightAngleRaysColor : "rgba(249, 255, 0, 0.6)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(this.pos.x, this.pos.y);
+    ctx.lineTo(closest.x, closest.y);
+    ctx.stroke();
   }
 };
