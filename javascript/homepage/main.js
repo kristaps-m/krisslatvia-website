@@ -9,11 +9,11 @@ if (sc_Width <= 600){
 } else{ WIDTH = 550; HEIGHT = 400}
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
-const rayCount = 100;
-const generatedBoundriesCount = 20;
+const generatedBoundriesCount = 19;
 let boundries = [];
 multipleBoundries(); // add random boundries and outer walls;
 const partilce = new Particle(WIDTH / 2, HEIGHT / 2);
+const radarEffectAngle = 30;
 const ray = new Ray(100, 200);
 const rayTrigger_1 = new RayTrigger(WIDTH - 60, 60, 30, 30);
 const rayTrigger_2 = new RayTrigger(60, HEIGHT - 60, 30, 30);
@@ -28,9 +28,6 @@ let touchStartY = 0;
 let touchEndX = 0;
 let touchEndY = 0;
 let touchStartedInsideCanvas = false; // Flag to check where touch started
-const x =     partilce.rays[66];
-console.log(x);
-
 
 function animate() {
   if (framesCounter % 3 === 0) {
@@ -41,7 +38,7 @@ function animate() {
     if(sc_Width > 600){
       partilce.update(mouseX, mouseY);
     }
-    partilce.look(boundries);
+    partilce.look(boundries, radarEffectAngle);
     partilce.checkHitRayTrigger(rayTriggerList, boundries);
     for (let rayTrigger of rayTriggerList){
       rayTrigger.drawRayTrigger();
@@ -57,11 +54,11 @@ function animate() {
       updateHTML("linkedIn", "");
     }
   }
+  framesCounter++;
   if (framesCounter === 1000000) {
     framesCounter = 0;
   }
   requestAnimationFrame(animate);
-  framesCounter++;
 }
 
 animate();

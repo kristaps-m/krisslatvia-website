@@ -1,7 +1,7 @@
 /* For desktop computers */
 /* @media screen and (min-width: 900px) { */
   .doNotShowInDesktop {
-      display: none !important;
+    display: none !important;
   }
 /* } */
   .menu-toggle {
