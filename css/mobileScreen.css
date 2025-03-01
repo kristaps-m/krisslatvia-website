@@ -1,9 +1,11 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+
 /* For smart phones */
 @media screen and (max-width: 600px) {
   .doNotShowInMobile {
     display: none !important;
   }
-  .dropdown{
+  .dropdown {
     padding: 0;
     margin: 0;
   }
@@ -60,6 +62,8 @@
   /* DROP DOWN BUTTON*/
   body {
     font-family: Arial, Helvetica, sans-serif;
+    margin: 0px;
+    padding: 0px;
   }
 
   .navbar {
@@ -67,7 +71,7 @@
     background-color: #333;
   }
 
-  .navbar a{
+  .navbar a {
     float: left;
     font-size: 12px;
     /*16px*/
@@ -93,6 +97,8 @@
   .column {
     /* float: left; */
     width: 100%;
+    margin: 0.1rem;
+    padding: 0.1rem;
   }
 
   /* Set width length for the left, right and middle columns */
@@ -113,7 +119,7 @@
   }
 
   /* MineSweeper */
-  #digOrFlag{
+  #digOrFlag {
     display: inline-block;
     padding: 0rem 1rem 0rem 1rem;
     color: black;

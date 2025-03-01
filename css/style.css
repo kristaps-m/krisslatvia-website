@@ -1,3 +1,5 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+
 /* For desktop computers */
 /* @media screen and (min-width: 900px) { */
   .doNotShowInDesktop {
@@ -24,6 +26,8 @@
 
   body {
     font-family: Arial, Helvetica, sans-serif;
+    margin: 0px;
+    padding: 0px;
   }
 
   .navbar {
