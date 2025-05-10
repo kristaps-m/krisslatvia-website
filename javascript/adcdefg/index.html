@@ -14,8 +14,13 @@
   <!--Nav bar script;go:NB/nav.html-->
 </body>
 <style>
+  body{
+    align-items: center;
+    text-align: center;
+    align-content: center;
+  }
   /* Set additional styling options for the columns*/
-  .column {
+  /* .column {
     float: left;
     width: 20%;
   }
@@ -24,13 +29,86 @@
     content: "";
     display: table;
     clear: both;
-  }
+  } */
 </style>
 </head>
 
 <body>
-  <h1>Lets try make this interactive.</h1>
-  <div class="row">
+  <h3>Default formula: y = x^2</h3>
+  <h1 id="howFormulaLooks">y = (1 / 1) * (x - 0)^2 + 0</h1>
+  <div >
+    <div style="margin-right: 20px; white-space: nowrap">
+      <label for="upOrDown">Up Down?:</label>
+      <select name="upOrDown" id="upOrDown" onchange="selectSomething(); drawTheGraph()">
+        <option value="-35">-35</option>
+        <option value="-30">-30</option>
+        <option value="-25">-25</option>
+        <option value="-20">-20</option>
+        <option value="-16">-16</option>
+        <option value="-12">-12</option>
+        <option value="-12">-12</option>
+        <option value="-8">-8</option>
+        <option value="-4">-4</option>
+        <option value="0" selected>0</option>
+        <option value="4">4</option>
+        <option value="8">8</option>
+        <option value="10">10</option>
+        <option value="12">12</option>
+        <!-- <option value="30 30 150" >Insane</option> -->
+      </select>
+      <!-- <button style="background-color: greenyellow; display: inline-block; margin-left: 1rem;" onclick="newGame()">
+                NEW GAME!
+              </button> -->
+    </div>
+      <div style="margin-right: 20px; white-space: nowrap">
+        <label for="leftOrRight">Left or Right?:</label>
+        <select name="leftOrRight" id="leftOrRight" onchange="selectSomething2(); drawTheGraph()">
+          <option value="-20">-20</option>
+          <option value="-16">-16</option>
+          <option value="-12">-12</option>
+          <option value="-8">-8</option>
+          <option value="-4">-4</option>
+          <option value="0" selected>0</option>
+          <option value="4">4</option>
+          <option value="8">8</option>
+          <option value="12">12</option>
+          <option value="16">16</option>
+          <option value="20">20</option>
+          <option value="24">24</option>
+          <!-- <option value="30 30 150" >Insane</option> -->
+        </select>
+        <!-- <button style="background-color: greenyellow; display: inline-block; margin-left: 1rem;" onclick="newGame()">
+              NEW GAME!
+            </button> -->
+      </div>
+    </div>
+    <div style="margin-right: 20px; white-space: nowrap">
+      <label for="theSecret">TheSecret:</label>
+      <select name="theSecret" id="theSecret" onchange="selectSomething3(); drawTheGraph()">
+        <option value="0.05">0.05</option>
+        <option value="0.1">0.1</option>
+        <option value="0.5">0.5</option>
+        <option value="1" selected>1</option>
+        <option value="3">3</option>
+        <option value="9">9</option>
+        <option value="12">12</option>
+        <option value="15">15</option>
+        <option value="18">18</option>
+        <option value="21">21</option>
+        <option value="24">24</option>
+        <option value="27">27</option>
+        <option value="30">30</option>
+        <option value="33">33</option>
+        <option value="37">37</option>
+        <option value="40">40</option>
+        <option value="43">43</option>
+        <option value="46">46</option>
+        <option value="49">49</option>
+        <option value="52">52</option>
+      </select>
+    </div>
+  </div>
+  <!-- <div class="row">
     <div class="column">
       <form action="../js_canvas/cordinates.js"></form>
       <br>
@@ -38,7 +116,7 @@
       <input type="text" name="Start X" id="sx"><br>
       <label for="sy">Start Y</label><br>
       <input type="text" name="Start Y" id="sy"><br>
-      <!-- end -->
+      end
       <label for="ex">End X</label><br>
       <input type="text" name="End X" id="ex"><br>
       <label for="ey">End Y</label><br>
@@ -50,7 +128,8 @@
       <canvas id="myCanvas3" width="800" height="800"
         style="border:4px solid #000000; background-color: white;"></canvas>
     </div>
-  </div>
+  </div> -->
+  <canvas id="myCanvas3" width="800" height="800" style="border:4px solid #000000; background-color: white;"></canvas>
 
   <script src="main.js"></script>
 
