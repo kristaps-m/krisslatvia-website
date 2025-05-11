@@ -7,7 +7,8 @@ const step = 10;
 const s = (n) => Math.floor(n / 10);
 let theYchange = 0;
 let theXchange = 0;
-let theSecretChange = 1;
+let theWidthAdjusterChange = 1;
+let theSignBeforeFormula = 1;
 
 function drawXandYaxis() {
   // Y axis
@@ -52,25 +53,44 @@ for i in range -100 ... 100
 //   drawCircle(i, i, 3);
 // }
 
-function selectSomething() {
+function resetGraph() {
+  theYchange = 0;
+  theXchange = 0;
+  theWidthAdjusterChange = 1;
+  theSignBeforeFormula = 1;
+  let howFormulaLooks = document.getElementById("howFormulaLooks");
+  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
+
+  document.getElementById("upOrDown").value = theYchange;
+  document.getElementById("leftOrRight").value = theXchange;
+  document.getElementById("theWidthAdjuster").value = theWidthAdjusterChange;
+  document.getElementById("signBeforeFormula").value = theSignBeforeFormula;
+}
+
+function selectUpOrDown() {
   theYchange = parseInt(document.getElementById("upOrDown").value);
   let howFormulaLooks = document.getElementById("howFormulaLooks");
-  howFormulaLooks.textContent = `y = (1 / ${theSecretChange}) * (x - ${theXchange})^2 + ${theYchange}`;
-  console.log(theYchange);
+  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
 }
 
-function selectSomething2() {
+function selectLeftOrRight() {
   theXchange = parseInt(document.getElementById("leftOrRight").value);
   let howFormulaLooks = document.getElementById("howFormulaLooks");
-  howFormulaLooks.textContent = `y = (1 / ${theSecretChange}) * (x - ${theXchange})^2 + ${theYchange}`;
-  console.log(theXchange);
+  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
 }
 
-function selectSomething3() {
-  theSecretChange = parseFloat(document.getElementById("theSecret").value);
+function selectTheWidthAdjuster() {
+  theWidthAdjusterChange = parseFloat(document.getElementById("theWidthAdjuster").value);
   let howFormulaLooks = document.getElementById("howFormulaLooks");
-  howFormulaLooks.textContent = `y = (1 / ${theSecretChange}) * (x - ${theXchange})^2 + ${theYchange}`;
-  console.log(theSecretChange);
+  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
+}
+
+function changeSignBeforeFormula() {
+  theSignBeforeFormula = theSignBeforeFormula * -1;
+  let x = document.getElementById("signBeforeFormula");
+  x.textContent = `${theSignBeforeFormula}`;
+  let howFormulaLooks = document.getElementById("howFormulaLooks");
+  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
 }
 
 function drawTheGraph() {
@@ -80,9 +100,11 @@ function drawTheGraph() {
   // THE FORMULA .........................
   // from y = x^2
   // to....
-  // y = (1 / theSecretChange) * (x - theXchange)^2 + theYchange
+  // y = theSignBeforeFormula * ((1 / theWidthAdjusterChange) * (x - theXchange)^2 + theYchange)
   const yValuesList = xValuesList.map(
-    (x) => (1 / theSecretChange) * Math.pow(x - theXchange, 2) + theYchange
+    (x) =>
+      theSignBeforeFormula *
+      ((1 / theWidthAdjusterChange) * Math.pow(x - theXchange, 2) + theYchange)
   );
   //----------------------------------------------------------------------------
 

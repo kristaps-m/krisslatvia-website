@@ -35,11 +35,11 @@
 
 <body>
   <h3>Default formula: y = x^2</h3>
-  <h1 id="howFormulaLooks">y = (1 / 1) * (x - 0)^2 + 0</h1>
-  <div >
-    <div style="margin-right: 20px; white-space: nowrap">
+  <h2 id="howFormulaLooks">y = 1 * ((1 / 1) * (x - 0)^2 + 0)</h2><button onclick="resetGraph(); drawTheGraph()">reset!</button>
+  <div style="white-space: nowrap; margin-bottom: 1rem;">
+    <div style="display: inline-block">
       <label for="upOrDown">Up Down?:</label>
-      <select name="upOrDown" id="upOrDown" onchange="selectSomething(); drawTheGraph()">
+      <select name="upOrDown" id="upOrDown" onchange="selectUpOrDown(); drawTheGraph()">
         <option value="-35">-35</option>
         <option value="-30">-30</option>
         <option value="-25">-25</option>
@@ -54,15 +54,11 @@
         <option value="8">8</option>
         <option value="10">10</option>
         <option value="12">12</option>
-        <!-- <option value="30 30 150" >Insane</option> -->
       </select>
-      <!-- <button style="background-color: greenyellow; display: inline-block; margin-left: 1rem;" onclick="newGame()">
-                NEW GAME!
-              </button> -->
     </div>
-      <div style="margin-right: 20px; white-space: nowrap">
+    <div style="display: inline-block">
         <label for="leftOrRight">Left or Right?:</label>
-        <select name="leftOrRight" id="leftOrRight" onchange="selectSomething2(); drawTheGraph()">
+        <select name="leftOrRight" id="leftOrRight" onchange="selectLeftOrRight(); drawTheGraph()">
           <option value="-20">-20</option>
           <option value="-16">-16</option>
           <option value="-12">-12</option>
@@ -75,16 +71,11 @@
           <option value="16">16</option>
           <option value="20">20</option>
           <option value="24">24</option>
-          <!-- <option value="30 30 150" >Insane</option> -->
         </select>
-        <!-- <button style="background-color: greenyellow; display: inline-block; margin-left: 1rem;" onclick="newGame()">
-              NEW GAME!
-            </button> -->
-      </div>
     </div>
-    <div style="margin-right: 20px; white-space: nowrap">
-      <label for="theSecret">TheSecret:</label>
-      <select name="theSecret" id="theSecret" onchange="selectSomething3(); drawTheGraph()">
+    <div style="display: inline-block">
+      <label for="theWidthAdjuster">theWidthAdjuster:</label>
+      <select name="theWidthAdjuster" id="theWidthAdjuster" onchange="selectTheWidthAdjuster(); drawTheGraph()">
         <option value="0.05">0.05</option>
         <option value="0.1">0.1</option>
         <option value="0.5">0.5</option>
@@ -106,29 +97,10 @@
         <option value="49">49</option>
         <option value="52">52</option>
       </select>
+        <button onclick="changeSignBeforeFormula(); drawTheGraph()" style="display: inline-block">Change Direction</button>
+        <p style="display: inline-block" id="signBeforeFormula">1</p>
     </div>
   </div>
-  <!-- <div class="row">
-    <div class="column">
-      <form action="../js_canvas/cordinates.js"></form>
-      <br>
-      <label for="sx">Start X</label><br>
-      <input type="text" name="Start X" id="sx"><br>
-      <label for="sy">Start Y</label><br>
-      <input type="text" name="Start Y" id="sy"><br>
-      end
-      <label for="ex">End X</label><br>
-      <input type="text" name="End X" id="ex"><br>
-      <label for="ey">End Y</label><br>
-      <input type="text" name="End Y" id="ey"><br>
-      <input type="submit" value="AUTOSUBMIT!" style="color: red;">
-    </div>
-
-    <div class="column2">
-      <canvas id="myCanvas3" width="800" height="800"
-        style="border:4px solid #000000; background-color: white;"></canvas>
-    </div>
-  </div> -->
   <canvas id="myCanvas3" width="800" height="800" style="border:4px solid #000000; background-color: white;"></canvas>
 
   <script src="main.js"></script>
