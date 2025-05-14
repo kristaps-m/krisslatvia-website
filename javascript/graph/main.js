@@ -9,6 +9,7 @@ let theYchange = 0;
 let theXchange = 0;
 let theWidthAdjusterChange = 1;
 let theSignBeforeFormula = 1;
+const rnd = (n) => Math.round(n * 100) / 100;
 
 function drawXandYaxis() {
   // Y axis
@@ -37,8 +38,10 @@ const xValuesList = [
 ];
 // const newXPluss = xValuesList.map((x) => x * 10);
 // const yValuesList = xValuesList.map((x) => Math.pow(x, 2));
+ctx.clearRect(0, 0, w, h);
 drawXandYaxis();
-drawTheGraph();
+drawTheGraph(true, false);
+drawTheGraph(false, true);
 // ctx.fillStyle = "red";
 // ctx.fillRect(20, 20, 20, 20);
 
@@ -67,34 +70,69 @@ function resetGraph() {
   document.getElementById("signBeforeFormula").value = theSignBeforeFormula;
 }
 
-function selectUpOrDown() {
-  theYchange = parseInt(document.getElementById("upOrDown").value);
+function testUniversalFunction(getThisID) {
+  const getGraphElement = document.getElementById(getThisID).value;
   let howFormulaLooks = document.getElementById("howFormulaLooks");
+  /*
+  theYchange = 0;
+  theXchange = 0;
+  theWidthAdjusterChange = 1;
+  theSignBeforeFormula = 1;
+  */
+  switch (getThisID) {
+    case "leftOrRight":
+      theXchange = parseInt(getGraphElement);
+      break;
+    case "upOrDown":
+      theYchange = parseInt(getGraphElement);
+      break;
+    case "theWidthAdjuster":
+      theWidthAdjusterChange = parseFloat(getGraphElement);
+      break;
+    case "signBeforeFormula":
+      theSignBeforeFormula = theSignBeforeFormula * -1;
+      let x = document.getElementById("signBeforeFormula");
+      x.textContent = `${theSignBeforeFormula}`;
+      break;
+    default:
+      break;
+  }
   howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
 }
 
-function selectLeftOrRight() {
-  theXchange = parseInt(document.getElementById("leftOrRight").value);
-  let howFormulaLooks = document.getElementById("howFormulaLooks");
-  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
-}
+// function selectUpOrDown() {
+//   theYchange = parseInt(document.getElementById("upOrDown").value);
+//   let howFormulaLooks = document.getElementById("howFormulaLooks");
+//   howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
+// }
 
-function selectTheWidthAdjuster() {
-  theWidthAdjusterChange = parseFloat(document.getElementById("theWidthAdjuster").value);
-  let howFormulaLooks = document.getElementById("howFormulaLooks");
-  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
-}
+// function selectLeftOrRight() {
+//   theXchange = parseInt(document.getElementById("leftOrRight").value);
+//   let howFormulaLooks = document.getElementById("howFormulaLooks");
+//   howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
+// }
 
-function changeSignBeforeFormula() {
-  theSignBeforeFormula = theSignBeforeFormula * -1;
-  let x = document.getElementById("signBeforeFormula");
-  x.textContent = `${theSignBeforeFormula}`;
-  let howFormulaLooks = document.getElementById("howFormulaLooks");
-  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
-}
+// function selectTheWidthAdjuster() {
+//   theWidthAdjusterChange = parseFloat(document.getElementById("theWidthAdjuster").value);
+//   let howFormulaLooks = document.getElementById("howFormulaLooks");
+//   howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
+// }
 
-function drawTheGraph() {
+// function changeSignBeforeFormula() {
+//   theSignBeforeFormula = theSignBeforeFormula * -1;
+//   let x = document.getElementById("signBeforeFormula");
+//   x.textContent = `${theSignBeforeFormula}`;
+//   let howFormulaLooks = document.getElementById("howFormulaLooks");
+//   howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
+// }
+
+function drawBothVersionsOfGraph() {
   ctx.clearRect(0, 0, w, h);
+  drawTheGraph(true, false);
+  drawTheGraph(false, true);
+}
+
+function drawTheGraph(drawLines = true, drawDots = false) {
   const firstLineStartPoints = [];
   drawXandYaxis();
   // THE FORMULA .........................
@@ -127,16 +165,20 @@ function drawTheGraph() {
           (Math.floor(xValuesList[index]) === x && Math.floor(yValuesList[index]) === y)
         ) {
           // ctx.fillText(`*${x} ${y}`, i, j);
-          // ctx.fillText(` ${xValuesList[index]}  ${yValuesList[index]}`, i, j);
-          // drawCircle(i, j, 3);
-          if (firstLineStartPoints.length === 0) {
-            firstLineStartPoints.push(i);
-            firstLineStartPoints.push(j);
+          if (drawDots) {
+            ctx.fillText(` ${rnd(xValuesList[index])} ${rnd(yValuesList[index])}`, i, j);
+            drawCircle(i, j, 3);
           }
-          // Draw Line?!
-          ctx.strokeStyle = "#000000";
-          ctx.lineWidth = "1";
-          ctx.lineTo(i, j);
+          if (drawLines) {
+            if (firstLineStartPoints.length === 0) {
+              firstLineStartPoints.push(i);
+              firstLineStartPoints.push(j);
+            }
+            // Draw Line?!
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = "1";
+            ctx.lineTo(i, j);
+          }
         }
       }
     }
