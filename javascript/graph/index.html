@@ -19,27 +19,18 @@
     text-align: center;
     align-content: center;
   }
-  /* Set additional styling options for the columns*/
-  /* .column {
-    float: left;
-    width: 20%;
-  }
-
-  .row:after {
-    content: "";
-    display: table;
-    clear: both;
-  } */
 </style>
 </head>
 
 <body>
   <h3>Default formula: y = x^2</h3>
-  <h2 id="howFormulaLooks">y = 1 * ((1 / 1) * (x - 0)^2 + 0)</h2><button onclick="resetGraph(); drawBothVersionsOfGraph()">reset!</button>
+  <h2 id="howFormulaLooks">y = 1 * ((1 / 1) * (x - 0)^2 + 0)</h2>
+  <button onclick="resetGraph(); drawBothVersionsOfGraph()">reset!</button>
+  <button onclick="toggleShowDots()">Show Dots?!</button>
   <div style="white-space: nowrap; margin-bottom: 1rem;">
     <div style="display: inline-block">
       <label for="upOrDown">Up Down?:</label>
-      <select name="upOrDown" id="upOrDown" onchange="testUniversalFunction('upOrDown'); drawBothVersionsOfGraph()">
+      <select name="upOrDown" id="upOrDown" onchange="selectElementAndChangeValue('upOrDown'); drawBothVersionsOfGraph()">
         <option value="-35">-35</option>
         <option value="-30">-30</option>
         <option value="-25">-25</option>
@@ -58,7 +49,7 @@
     </div>
     <div style="display: inline-block">
         <label for="leftOrRight">Left or Right?:</label>
-        <select name="leftOrRight" id="leftOrRight" onchange="testUniversalFunction('leftOrRight'); drawBothVersionsOfGraph()">
+        <select name="leftOrRight" id="leftOrRight" onchange="selectElementAndChangeValue('leftOrRight'); drawBothVersionsOfGraph()">
           <option value="-20">-20</option>
           <option value="-16">-16</option>
           <option value="-12">-12</option>
@@ -75,7 +66,7 @@
     </div>
     <div style="display: inline-block">
       <label for="theWidthAdjuster">theWidthAdjuster:</label>
-      <select name="theWidthAdjuster" id="theWidthAdjuster" onchange="testUniversalFunction('theWidthAdjuster'); drawBothVersionsOfGraph()">
+      <select name="theWidthAdjuster" id="theWidthAdjuster" onchange="selectElementAndChangeValue('theWidthAdjuster'); drawBothVersionsOfGraph()">
         <option value="0.05">0.05</option>
         <option value="0.1">0.1</option>
         <option value="0.5">0.5</option>
@@ -97,7 +88,7 @@
         <option value="49">49</option>
         <option value="52">52</option>
       </select>
-        <button onclick="testUniversalFunction('signBeforeFormula'); drawBothVersionsOfGraph()" style="display: inline-block">Change Direction</button>
+        <button onclick="selectElementAndChangeValue('signBeforeFormula'); drawBothVersionsOfGraph()" style="display: inline-block">Change Direction</button>
         <p style="display: inline-block" id="signBeforeFormula">1</p>
     </div>
   </div>
