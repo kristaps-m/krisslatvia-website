@@ -21,7 +21,9 @@ const GAME_COLORS = [
   "lightblue",
   "lightgreen",
 ];
+const NUMBER_OF_COLORS_USED = 4;
 
+// const theSolution = new Solution();
 let gameField;
 let gameColors;
 let amazingList = [];
@@ -50,8 +52,8 @@ CANVAS.addEventListener(
         CTX.fillStyle = "black";
         const mom = 10;
         CTX.fillRect(elem.left + mom, elem.top + mom, elem.width - mom * 2, elem.height - mom * 2);
-        const textX = elem.left + elem.width / 2;
-        const textY = elem.top + elem.height / 2 + 2 * 3;
+        // const textX = elem.left + elem.width / 2;
+        // const textY = elem.top + elem.height / 2 + 2 * 3;
         // displayText(amazingList[elem.puzzleN].n, textX, textY);
         if (userClickedTwoNumbers.length <= 2) {
           userClickedTwoNumbers.push(elem.puzzleN);
@@ -67,7 +69,9 @@ CANVAS.addEventListener(
           // console.log(amazingList);
           // console.log(gameField);
           // gameClickableElements = swapNumbers(gameClickableElements, userClickedTwoNumbers);
-          checkHorizontalThreeInRow(amazingList);
+          amazingList = [...candyCrush(amazingList)];
+          console.log(amazingList);
+          // checkHorizontalThreeInRow(amazingList);
           // console.log(gameField);
           setTimeout(function () {
             renderElements();
@@ -87,13 +91,11 @@ function renderElements() {
   // CTX.clearRect(0,0,W,H);
   gameClickableElements.forEach(function (element, i) {
     // since just numbers swaping works. I swap numbers and access color (and num FOR NOW)
-    // CTX.fillStyle = amazingList[gameField[i]-1].c; // {n:1,c:red}
     CTX.fillStyle = amazingList[i].c; // {n:1,c:red}
     CTX.fillRect(element.left, element.top, element.width, element.height);
     const textX = element.left + element.width / 2;
     const textY = element.top + element.height / 2 + 2 * 3;
-    // displayText(amazingList[gameField[i]-1].n, textX, textY);
-    // displayText(amazingList[i].n, textX, textY);
+    displayText(amazingList[element.puzzleN].cV, textX, textY);
   });
 }
 
@@ -150,22 +152,6 @@ function swapNumbers(the_list, swap_numbers) {
   return new_array;
 }
 
-// function swapObjectsInListUsingSwapedNumsInGameField(AM,GL,UC){ // amazingList[], gameField[], userClicked[1,2(0,1)]
-//     let newAmazingList = [...AM];
-//     // for (let i = 0; i < 2; i++) {
-//     //     // @ index i comes new object from current amazingList what has been changed in gameField
-//     //     newAmazingList[i] = AM[GL[i]-1];
-//     //     // if(){
-
-//     //     // }
-//     // }
-//     // [1,2]
-//     newAmazingList[UC[0]-1] = AM[UC[1]-1];
-//     newAmazingList[UC[1]-1] = AM[UC[0]-1];
-
-//     return newAmazingList;
-// }
-
 function swapObjectsInAmazingList(theList, swapNumbers) {
   const index_1 = swapNumbers[0]; // Object index 1
   const index_2 = swapNumbers[1]; // Object index 2
@@ -198,6 +184,7 @@ function getRndInteger(min, max) {
 }
 
 function initGameFieldWithSizedArray(gameSize) {
+  let colorValue;
   if (gameSize === 3) {
     gameField = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     finishedGF = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -223,12 +210,13 @@ function initGameFieldWithSizedArray(gameSize) {
     gameField = [];
     gameColors = [];
     for (let index = 0; index < gameSize * gameSize; index++) {
-      // const randomColor = GAME_COLORS[getRndInteger(0, GAME_COLORS.length - 1)];
+      colorValue = getRndInteger(0, NUMBER_OF_COLORS_USED);
+      const randomColor = GAME_COLORS[colorValue];
       gameField.push(index + 1);
-      // amazingList.push({ n: index + 1, c: randomColor });
+      amazingList.push({ n: index + 1, c: randomColor, cV: colorValue + 1 });
     }
 
-    amazingList = [...createSpecificGameField(gameSize)];
+    // amazingList = [...createSpecificGameField(gameSize)];
   }
 
   return;
@@ -237,6 +225,7 @@ function initGameFieldWithSizedArray(gameSize) {
 function createSpecificGameField(gameSize) {
   const theList = [];
   let randomColor;
+  let colorValue;
   let testC = 1;
 
   for (let index = 0; index < gameSize; index++) {
@@ -247,23 +236,46 @@ function createSpecificGameField(gameSize) {
       // }
       if (index % 2 === 0) {
         randomColor = GAME_COLORS[col];
+        colorValue = col + 1;
       } else {
         randomColor = GAME_COLORS[GAME_COLORS.length - col - 1 - 1];
+        colorValue = GAME_COLORS.length - col - 1 - 1 + 1;
       }
 
-      theList.push({ n: index + 1, c: randomColor });
+      theList.push({ n: testC, c: randomColor, cV: colorValue });
       testC++;
     }
   }
+  /*
+
 
   // BASE
-  theList[0].c = "white";
-  theList[1].c = "white";
-  theList[3].c = "white";
-  theList[4].c = "white";
+  theList[8].c = "lightgreen";
+  theList[9].c = "lightgreen";
+  theList[11].c = "lightgreen";
+  theList[12].c = "lightgreen";
 
   // Swap ME:
-  theList[10].c = "white";
+  theList[18].c = "lightgreen";
+
+  // SetColorValue
+  theList[8].cV = 9;
+  theList[9].cV = 9;
+  theList[11].cV = 9;
+  theList[12].cV = 9;
+  theList[18].cV = 9;
+
+  // Some Vertical Candies
+  theList[39].c = "lightgreen";
+  theList[47].c = "lightgreen";
+  theList[55].c = "lightgreen";
+  theList[63].c = "lightgreen";
+
+  theList[39].cV = 9;
+  theList[47].cV = 9;
+  theList[55].cV = 9;
+  theList[63].cV = 9;
+  */
 
   return theList;
 }
