@@ -160,6 +160,7 @@
 // }
 
 function candyCrush(board) {
+  console.log("I AM TRIGERED!");
   let numRows = board.length;
   let numCols = board[0].length;
   let foundCrushableCandies = true;
@@ -212,14 +213,18 @@ function candyCrush(board) {
         // Move non-crushable candies down
         for (let row = numRows - 1; row >= 0; --row) {
           if (board[row][col].randomInteger > 0) {
-            board[fillPosition][col].randomInteger = board[row][col].randomInteger;
+            board[fillPosition][col].randomInteger =
+              board[row][col].randomInteger;
             fillPosition--;
           }
         }
 
         // Fill the remaining spaces with 0s
         for (let fill = fillPosition; fill >= 0; fill--) {
-          board[fill][col].randomInteger = getRndInteger(1, NUMBER_OF_COLORS_USED);
+          board[fill][col].randomInteger = getRndInteger(
+            1,
+            NUMBER_OF_COLORS_USED
+          );
         }
       }
     }

@@ -1,34 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="../../../css/style.css">
-  <link rel="stylesheet" href="../../../css/mobileScreen.css">
-  <title>Connected Files</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../../../css/style.css" />
+    <link rel="stylesheet" href="../../../css/mobileScreen.css" />
+    <title>Connected Files</title>
     <body>
       <!-- <br><br><br><br> -->
       <script id="replace_with_navbar" src="../../../navbar/nav.js"></script>
     </body>
-</head>
+  </head>
 
-<body>
-  <h3 style="color: white;">Hello, Candy Crush!</h3>
-  <!-- <div><button onclick="generateNewObjectsAndRender()">CLICK ME!</button><button onclick="printAmazingList()">Print AL</button></div> -->
-  <input type="number" value="0" id="n1r" min="0">
-  <input type="number" value="0" id="n1c" min="0">
-  <button onclick="swapButton()">Swap</button>
-  <input type="number" value="0" id="n2r" min="0">
-  <input type="number" value="1" id="n2c" min="0">
-  <br>
-  <canvas id="mainStage"></canvas>
-  <script src="../../../GAMES/Global Helper Classes/getRndInteger.js"></script>
-  <script src="../../../GAMES/Global Helper Classes/displayGrid.js"></script>
-  <script src="solution.js"></script>
-  <script src="main2.js"></script>
-  <!-- <script src="main.js"></script> -->
-</body>
-
+  <body>
+    <h3 style="color: white">Hello, Candy Crush!</h3>
+    <!-- <div><button onclick="generateNewObjectsAndRender()">CLICK ME!</button><button onclick="printAmazingList()">Print AL</button></div> -->
+    <input type="number" value="0" id="n1r" min="0" style="width: 3.5rem" />
+    <input type="number" value="0" id="n1c" min="0" style="width: 3.5rem" />
+    <button onclick="swapButton()">Swap</button>
+    <input type="number" value="0" id="n2r" min="0" style="width: 3.5rem" />
+    <input type="number" value="1" id="n2c" min="0" style="width: 3.5rem" />
+    <button onclick="userClickedNumberLog()">userClicked???</button>
+    <br />
+    <canvas id="mainStage"></canvas>
+    <script src="../../../GAMES/Global Helper Classes/getRndInteger.js"></script>
+    <script src="../../../GAMES/Global Helper Classes/displayGrid.js"></script>
+    <script src="solution.js"></script>
+    <script src="main2.js"></script>
+    <!-- <script src="main.js"></script> -->
+  </body>
 </html>

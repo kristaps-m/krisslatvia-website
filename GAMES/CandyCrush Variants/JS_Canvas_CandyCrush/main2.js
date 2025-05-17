@@ -22,12 +22,12 @@ const GAME_COLORS = [
   "lightblue",
   "lightgreen",
 ];
-const NUMBER_OF_COLORS_USED = 2;
+const NUMBER_OF_COLORS_USED = 9;
 let canClick = true;
 let userClickedTwoNumbers = [];
 let theGameField = generateDifferentCadiesForGame();
 theGameField = candyCrush(theGameField);
-console.log(theGameField);
+// console.log(theGameField);
 displayNumbersOnCanvas();
 
 CANVAS.addEventListener(
@@ -35,9 +35,10 @@ CANVAS.addEventListener(
   function (e) {
     // Get the bounding rectangle of the canvas
     const rect = CANVAS.getBoundingClientRect();
+    e.preventDefault(); // Prevent the default context menu from appearing
     let X = (e.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
     let Y = (e.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
-    console.log(X, Y);
+    console.log(X, Y, userClickedTwoNumbers.length, "userClickLen");
 
     theGameField.forEach((row) => {
       row.forEach((elem) => {
@@ -55,7 +56,7 @@ CANVAS.addEventListener(
             elem.width - mom * 2,
             elem.height - mom * 2
           );
-          console.log(elem);
+          // console.log(elem);
           if (userClickedTwoNumbers.length <= 2) {
             userClickedTwoNumbers.push(elem);
           }
@@ -65,18 +66,25 @@ CANVAS.addEventListener(
             const click1 = userClickedTwoNumbers[0];
             const click2 = userClickedTwoNumbers[1];
             theGameField = [
-              ...swapElements(theGameField, click1.row, click1.col, click2.row, click2.col),
+              ...swapElements(
+                theGameField,
+                click1.row,
+                click1.col,
+                click2.row,
+                click2.col
+              ),
             ];
             theGameField = [...candyCrush(theGameField)];
             // console.log(click1.row, click1.col, click2.row, click2.col);
-            setTimeout(function () {
-              displayNumbersOnCanvas();
-            }, 250);
+            // setTimeout(function () {
+            displayNumbersOnCanvas();
+            // }, 250);
             userClickedTwoNumbers = [];
           }
         }
       });
     });
+    console.log(userClickedTwoNumbers.length, "userClickLen");
   },
   false
 );
@@ -99,12 +107,22 @@ function displayNumbersOnCanvas() {
       const y = row * dx; // + dx / 1.5;
       // const randomInteger = theGameField[row][col];
       // {dx:dx, dy:dy, x:x, y:y, randomInteger:randomInteger}
-      if (row === 0 && col === 0) {
-        console.log(theGameField[row][col]);
-      }
+      // if (row === 0 && col === 0) {
+      //   console.log(theGameField[row][col]);
+      // }
       CTX.fillStyle = GAME_COLORS[theGameField[row][col].randomInteger - 1];
+      // CTX.fillRect(
+      //   theGameField[row][col].left,
+      //   theGameField[row][col].top,
+      //   theGameField[row][col].width,
+      //   theGameField[row][col].height
+      // );
       CTX.fillRect(x, y, dx, dy);
-      displayText(theGameField[row][col].randomInteger, x + dy / 4, y + dx / 1.5);
+      displayText(
+        theGameField[row][col].randomInteger,
+        x + dy / 4,
+        y + dx / 1.5
+      );
       // displayText(randomInteger, x, y);
     }
   }
@@ -134,10 +152,16 @@ function getNumbersForSpawing() {
 function swapButton() {
   const getN = getNumbersForSpawing();
 
-  theGameField = swapElements(theGameField, getN.n1r, getN.n1c, getN.n2r, getN.n2c);
+  theGameField = swapElements(
+    theGameField,
+    getN.n1r,
+    getN.n1c,
+    getN.n2r,
+    getN.n2c
+  );
   theGameField = candyCrush(theGameField);
   displayNumbersOnCanvas();
-  console.log(theGameField);
+  // console.log(theGameField);
 }
 
 function swapElements(arr, n1r, n1c, n2r, n2c) {
@@ -209,6 +233,10 @@ function generateDifferentCadiesForGame() {
   }
 
   return result;
+}
+
+function userClickedNumberLog() {
+  console.log(userClickedTwoNumbers.length, "<----");
 }
 
 // function createCandyCrushClickableElements() {
