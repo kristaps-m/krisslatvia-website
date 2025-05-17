@@ -22,8 +22,8 @@ const GAME_COLORS = [
   "lightblue",
   "lightgreen",
 ];
-const NUMBER_OF_COLORS_USED = 9;
-let canClick = true;
+let NUMBER_OF_COLORS_USED = 9;
+// let canClick = true;
 let userClickedTwoNumbers = [];
 let theGameField = generateDifferentCadiesForGame();
 theGameField = candyCrush(theGameField);
@@ -212,10 +212,13 @@ function swapElements(arr, n1r, n1c, n2r, n2c) {
     for (let key in temp1) obj2[key] = temp1[key];
 
     return arr;
+  } else {
+    return arr;
   }
 }
 
 function generateDifferentCadiesForGame() {
+  console.log("I AM TRIGERED!", NUMBER_OF_COLORS_USED);
   let result = [];
   let elemH = H / CANDIES_IN_ROW - SQUARE_OFF_SET * 2;
   let elemW = W / CANDIES_IN_COL - SQUARE_OFF_SET * 2;
@@ -251,4 +254,14 @@ function generateDifferentCadiesForGame() {
 
 function userClickedNumberLog() {
   console.log(userClickedTwoNumbers.length, "<----");
+}
+
+function changeNumberOfSides() {
+  var n = parseInt(document.getElementById("myRange")?.value);
+  NUMBER_OF_COLORS_USED = n;
+  userClickedTwoNumbers = [];
+  theGameField = generateDifferentCadiesForGame();
+  theGameField = candyCrush(theGameField);
+  displayNumbersOnCanvas();
+  console.log(n);
 }
