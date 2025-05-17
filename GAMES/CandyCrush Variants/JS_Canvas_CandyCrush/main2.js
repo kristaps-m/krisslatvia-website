@@ -164,41 +164,55 @@ function swapButton() {
   // console.log(theGameField);
 }
 
+function isItPossibleToSwapNumbers(theList, n1r, n1c, n2r, n2c) {
+  // Find the objects to swap
+  const objectOne = theList[n1r][n1c];
+  const objectTwo = theList[n2r][n2c];
+  // Check if both objects exist
+  if (!objectOne || !objectTwo) {
+    console.log("One or both objects not found.");
+    return theList; // Return the original list unchanged
+  }
+  // Perform the swap if conditions are met
+  if (
+    (Math.abs(n1r - n2r) === 0 && Math.abs(n1c - n2c) == 1) ||
+    (Math.abs(n1c - n2c) === 0 && Math.abs(n1r - n2r) === 1)
+  ) {
+    console.log("It is okay to swap");
+    return true;
+  } else {
+    console.log("It is not possible to swap");
+    return false;
+  }
+}
+
 function swapElements(arr, n1r, n1c, n2r, n2c) {
   console.log(n1r, n1c, n2r, n2c);
-  /**
-   *         randomInteger: randomInteger,
-        width: elemW,
-        height: elemH,
-        top: row + SQUARE_OFF_SET,
-        left: col + SQUARE_OFF_SET,
-        x: x,
-        y: y,
-   */
   // // Step 1
   // let temp = arr[n1r][n1c];
   // // Step 2
   // arr[n1r][n1c] = arr[n2r][n2c];
   // // Step 3
   // arr[n2r][n2c] = temp;
+  if (isItPossibleToSwapNumbers(arr, n1r, n1c, n2r, n2c)) {
+    const obj1 = arr[n1r][n1c];
+    const obj2 = arr[n2r][n2c];
 
-  const obj1 = arr[n1r][n1c];
-  const obj2 = arr[n2r][n2c];
+    // Make shallow copies of each
+    const temp1 = { ...obj1 };
+    const temp2 = { ...obj2 };
 
-  // Make shallow copies of each
-  const temp1 = { ...obj1 };
-  const temp2 = { ...obj2 };
+    // Clear original objects
+    for (let key in obj1) delete obj1[key];
+    for (let key in obj2) delete obj2[key];
 
-  // Clear original objects
-  for (let key in obj1) delete obj1[key];
-  for (let key in obj2) delete obj2[key];
+    // Copy values from temp2 to obj1
+    for (let key in temp2) obj1[key] = temp2[key];
+    // Copy values from temp1 to obj2
+    for (let key in temp1) obj2[key] = temp1[key];
 
-  // Copy values from temp2 to obj1
-  for (let key in temp2) obj1[key] = temp2[key];
-  // Copy values from temp1 to obj2
-  for (let key in temp1) obj2[key] = temp1[key];
-
-  return arr;
+    return arr;
+  }
 }
 
 function generateDifferentCadiesForGame() {
@@ -238,37 +252,3 @@ function generateDifferentCadiesForGame() {
 function userClickedNumberLog() {
   console.log(userClickedTwoNumbers.length, "<----");
 }
-
-// function createCandyCrushClickableElements() {
-//   let elemH = H / CANDIES_IN_ROW - SQUARE_OFF_SET * 2;
-//   let elemW = W / CANDIES_IN_COL - SQUARE_OFF_SET * 2;
-//   // let elemColor = DEFAULT_GRAY;
-//   let puzzleNrIndex = 0;
-//   let x = 0,
-//     y = 0;
-//   for (let row = 0; row < W; row += W / CANDIES_IN_ROW) {
-//     // let tempRow = [];
-//     y = 0;
-//     for (let col = 0; col < H; col += H / CANDIES_IN_COL) {
-//       // const randomColor = GAME_COLORS[getRndInteger(0, GAME_COLORS.length - 1)];
-//       const randomColor = GAME_COLORS[getRndInteger(0, GAME_COLORS.length - 1)];
-//       const oneElement = {
-//         colour: randomColor,
-//         width: elemW,
-//         height: elemH,
-//         top: row + SQUARE_OFF_SET,
-//         left: col + SQUARE_OFF_SET,
-//         puzzleN: puzzleNrIndex,
-//         row: x,
-//         col: y,
-//       };
-//       gameClickableElements.push(oneElement);
-//       // const pWorkO = {puzzleN:puzzleNrIndex, colour:randomColor};
-//       // gameField.push(pWorkO);
-//       // tempRow.push('');
-//       puzzleNrIndex++;
-//       y++;
-//     }
-//     x++;
-//   }
-// }
