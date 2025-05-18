@@ -41,45 +41,54 @@ CANVAS.addEventListener(
     let X = (e.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
     let Y = (e.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
     console.log(X, Y);
-
-    gameClickableElements.forEach((elem) => {
-      if (
-        X + SQUARE_OFF_SET > elem.left &&
-        X < elem.left + elem.width &&
-        Y + SQUARE_OFF_SET > elem.top &&
-        Y < elem.top + elem.height
-      ) {
-        CTX.fillStyle = "black";
-        const mom = 10;
-        CTX.fillRect(elem.left + mom, elem.top + mom, elem.width - mom * 2, elem.height - mom * 2);
-        // const textX = elem.left + elem.width / 2;
-        // const textY = elem.top + elem.height / 2 + 2 * 3;
-        // displayText(amazingList[elem.puzzleN].n, textX, textY);
-        if (userClickedTwoNumbers.length <= 2) {
-          userClickedTwoNumbers.push(elem.puzzleN);
-          // userClickedTwoNumbers.push(gameField[elem.puzzleN]);
+    if (userClickedTwoNumbers.length != 2) {
+      gameClickableElements.forEach((elem) => {
+        if (
+          X + SQUARE_OFF_SET > elem.left &&
+          X < elem.left + elem.width &&
+          Y + SQUARE_OFF_SET > elem.top &&
+          Y < elem.top + elem.height
+        ) {
+          CTX.fillStyle = "black";
+          const mom = 10;
+          CTX.fillRect(
+            elem.left + mom,
+            elem.top + mom,
+            elem.width - mom * 2,
+            elem.height - mom * 2
+          );
+          // const textX = elem.left + elem.width / 2;
+          // const textY = elem.top + elem.height / 2 + 2 * 3;
+          // displayText(amazingList[elem.puzzleN].n, textX, textY);
+          if (userClickedTwoNumbers.length <= 2) {
+            userClickedTwoNumbers.push(elem.puzzleN);
+            // userClickedTwoNumbers.push(gameField[elem.puzzleN]);
+          }
+          if (userClickedTwoNumbers.length == 2) {
+            // gameField = swapNumbers(gameField, userClickedTwoNumbers);
+            // console.log(amazingList);
+            // console.log(gameField);
+            // console.log(elem.puzzleN);
+            // amazingList = swapObjectsInListUsingSwapedNumsInGameField(amazingList,gameField,userClickedTwoNumbers);
+            gameClickableElements = swapObjectsInAmazingList(
+              gameClickableElements,
+              userClickedTwoNumbers
+            );
+            // console.log(amazingList);
+            // console.log(gameField);
+            // gameClickableElements = swapNumbers(gameClickableElements, userClickedTwoNumbers);
+            gameClickableElements = [...candyCrush(gameClickableElements)];
+            // console.log(amazingList);
+            // checkHorizontalThreeInRow(amazingList);
+            // console.log(gameField);
+            setTimeout(function () {
+              renderElements();
+              userClickedTwoNumbers = [];
+            }, 500);
+          }
         }
-        if (userClickedTwoNumbers.length == 2) {
-          // gameField = swapNumbers(gameField, userClickedTwoNumbers);
-          // console.log(amazingList);
-          // console.log(gameField);
-          // console.log(elem.puzzleN);
-          // amazingList = swapObjectsInListUsingSwapedNumsInGameField(amazingList,gameField,userClickedTwoNumbers);
-          amazingList = swapObjectsInAmazingList(amazingList, userClickedTwoNumbers);
-          // console.log(amazingList);
-          // console.log(gameField);
-          // gameClickableElements = swapNumbers(gameClickableElements, userClickedTwoNumbers);
-          amazingList = [...candyCrush(amazingList)];
-          console.log(amazingList);
-          // checkHorizontalThreeInRow(amazingList);
-          // console.log(gameField);
-          setTimeout(function () {
-            renderElements();
-          }, 500);
-          userClickedTwoNumbers = [];
-        }
-      }
-    });
+      });
+    }
   },
   false
 );
@@ -91,11 +100,11 @@ function renderElements() {
   // CTX.clearRect(0,0,W,H);
   gameClickableElements.forEach(function (element, i) {
     // since just numbers swaping works. I swap numbers and access color (and num FOR NOW)
-    CTX.fillStyle = amazingList[i].c; // {n:1,c:red}
+    CTX.fillStyle = GAME_COLORS[element.colour]; //amazingList[i].c; // {n:1,c:red}
     CTX.fillRect(element.left, element.top, element.width, element.height);
     const textX = element.left + element.width / 2;
     const textY = element.top + element.height / 2 + 2 * 3;
-    displayText(amazingList[element.puzzleN].cV, textX, textY);
+    displayText(element.colour + 1, textX, textY);
   });
 }
 
@@ -111,7 +120,7 @@ function createCandyCrushClickableElements() {
     y = 0;
     for (let col = 0; col < H; col += H / CANDIES_IN_COL) {
       // const randomColor = GAME_COLORS[getRndInteger(0, GAME_COLORS.length - 1)];
-      const randomColor = GAME_COLORS[getRndInteger(0, GAME_COLORS.length - 1)];
+      const randomColor = getRndInteger(0, GAME_COLORS.length - 1); //GAME_COLORS[getRndInteger(0, GAME_COLORS.length - 1)];
       const oneElement = {
         colour: randomColor,
         width: elemW,
@@ -213,7 +222,7 @@ function initGameFieldWithSizedArray(gameSize) {
       colorValue = getRndInteger(0, NUMBER_OF_COLORS_USED);
       const randomColor = GAME_COLORS[colorValue];
       gameField.push(index + 1);
-      amazingList.push({ n: index + 1, c: randomColor, cV: colorValue + 1 });
+      amazingList.push({ n: index + 1, randomInteger: randomColor, cV: colorValue + 1 });
     }
 
     // amazingList = [...createSpecificGameField(gameSize)];
@@ -242,7 +251,7 @@ function createSpecificGameField(gameSize) {
         colorValue = GAME_COLORS.length - col - 1 - 1 + 1;
       }
 
-      theList.push({ n: testC, c: randomColor, cV: colorValue });
+      theList.push({ n: testC, randomInteger: randomColor, cV: colorValue });
       testC++;
     }
   }
@@ -384,7 +393,7 @@ function generateNewObjectsAndRender(arrOfIndexes, row_OR_col_index, hor_OR_ver)
     } else if (hor_OR_ver === "ver") {
       const AM_OBJECT = {
         n: arrOfIndexes[index] * CANDIES_IN_COL + addToGetCorrectIndex + 1,
-        c: randomColor,
+        randomInteger: randomColor,
       };
       arrayInsert(arrOfIndexes[index] * CANDIES_IN_COL + addToGetCorrectIndex, AM_OBJECT);
     }

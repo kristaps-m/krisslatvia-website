@@ -22,7 +22,7 @@ const GAME_COLORS = [
   "lightblue",
   "lightgreen",
 ];
-let NUMBER_OF_COLORS_USED = 9;
+let NUMBER_OF_COLORS_USED = 5;
 // let canClick = true;
 let userClickedTwoNumbers = [];
 let theGameField = generateDifferentCadiesForGame();
@@ -39,52 +39,47 @@ CANVAS.addEventListener(
     let X = (e.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
     let Y = (e.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
     console.log(X, Y, userClickedTwoNumbers.length, "userClickLen");
-
-    theGameField.forEach((row) => {
-      row.forEach((elem) => {
-        if (
-          X + SQUARE_OFF_SET > elem.left &&
-          X < elem.left + elem.width &&
-          Y + SQUARE_OFF_SET > elem.top &&
-          Y < elem.top + elem.height
-        ) {
-          CTX.fillStyle = "black";
-          const mom = 10;
-          CTX.fillRect(
-            elem.left + mom,
-            elem.top + mom,
-            elem.width - mom * 2,
-            elem.height - mom * 2
-          );
-          // console.log(elem);
-          if (userClickedTwoNumbers.length <= 2) {
-            userClickedTwoNumbers.push(elem);
+    if (userClickedTwoNumbers != 2) {
+      theGameField.forEach((row) => {
+        row.forEach((elem) => {
+          if (
+            X + SQUARE_OFF_SET > elem.left &&
+            X < elem.left + elem.width &&
+            Y + SQUARE_OFF_SET > elem.top &&
+            Y < elem.top + elem.height
+          ) {
+            CTX.fillStyle = "black";
+            const mom = 10;
+            CTX.fillRect(
+              elem.left + mom,
+              elem.top + mom,
+              elem.width - mom * 2,
+              elem.height - mom * 2
+            );
+            // console.log(elem);
+            if (userClickedTwoNumbers.length <= 2) {
+              userClickedTwoNumbers.push(elem);
+            }
+            if (userClickedTwoNumbers.length == 2) {
+              //   // amazingList = swapObjectsInAmazingList(amazingList, userClickedTwoNumbers);
+              //   // amazingList = [...candyCrush(amazingList)];
+              const click1 = userClickedTwoNumbers[0];
+              const click2 = userClickedTwoNumbers[1];
+              theGameField = [
+                ...swapElements(theGameField, click1.row, click1.col, click2.row, click2.col),
+              ];
+              theGameField = [...candyCrush(theGameField)];
+              // console.log(click1.row, click1.col, click2.row, click2.col);
+              setTimeout(function () {
+                displayNumbersOnCanvas();
+                userClickedTwoNumbers = [];
+              }, 500);
+            }
           }
-          if (userClickedTwoNumbers.length == 2) {
-            //   // amazingList = swapObjectsInAmazingList(amazingList, userClickedTwoNumbers);
-            //   // amazingList = [...candyCrush(amazingList)];
-            const click1 = userClickedTwoNumbers[0];
-            const click2 = userClickedTwoNumbers[1];
-            theGameField = [
-              ...swapElements(
-                theGameField,
-                click1.row,
-                click1.col,
-                click2.row,
-                click2.col
-              ),
-            ];
-            theGameField = [...candyCrush(theGameField)];
-            // console.log(click1.row, click1.col, click2.row, click2.col);
-            // setTimeout(function () {
-            displayNumbersOnCanvas();
-            // }, 250);
-            userClickedTwoNumbers = [];
-          }
-        }
+        });
       });
-    });
-    console.log(userClickedTwoNumbers.length, "userClickLen");
+      console.log(userClickedTwoNumbers.length, "userClickLen");
+    }
   },
   false
 );
@@ -118,11 +113,7 @@ function displayNumbersOnCanvas() {
       //   theGameField[row][col].height
       // );
       CTX.fillRect(x, y, dx, dy);
-      displayText(
-        theGameField[row][col].randomInteger,
-        x + dy / 4,
-        y + dx / 1.5
-      );
+      displayText(theGameField[row][col].randomInteger, x + dy / 4, y + dx / 1.5);
       // displayText(randomInteger, x, y);
     }
   }
@@ -149,16 +140,10 @@ function getNumbersForSpawing() {
   return result;
 }
 
-function swapButton() {
+function swapButton(testMode = false) {
   const getN = getNumbersForSpawing();
 
-  theGameField = swapElements(
-    theGameField,
-    getN.n1r,
-    getN.n1c,
-    getN.n2r,
-    getN.n2c
-  );
+  theGameField = swapElements(theGameField, getN.n1r, getN.n1c, getN.n2r, getN.n2c, testMode);
   theGameField = candyCrush(theGameField);
   displayNumbersOnCanvas();
   // console.log(theGameField);
@@ -186,15 +171,8 @@ function isItPossibleToSwapNumbers(theList, n1r, n1c, n2r, n2c) {
   }
 }
 
-function swapElements(arr, n1r, n1c, n2r, n2c) {
-  console.log(n1r, n1c, n2r, n2c);
-  // // Step 1
-  // let temp = arr[n1r][n1c];
-  // // Step 2
-  // arr[n1r][n1c] = arr[n2r][n2c];
-  // // Step 3
-  // arr[n2r][n2c] = temp;
-  if (isItPossibleToSwapNumbers(arr, n1r, n1c, n2r, n2c)) {
+function swapElements(arr, n1r, n1c, n2r, n2c, testMode = false) {
+  function performSwap(arr, n1r, n1c, n2r, n2c) {
     const obj1 = arr[n1r][n1c];
     const obj2 = arr[n2r][n2c];
 
@@ -212,6 +190,12 @@ function swapElements(arr, n1r, n1c, n2r, n2c) {
     for (let key in temp1) obj2[key] = temp1[key];
 
     return arr;
+  }
+  if (testMode) {
+    return performSwap(arr, n1r, n1c, n2r, n2c);
+  }
+  if (isItPossibleToSwapNumbers(arr, n1r, n1c, n2r, n2c)) {
+    return performSwap(arr, n1r, n1c, n2r, n2c);
   } else {
     return arr;
   }

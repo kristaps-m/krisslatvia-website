@@ -28,15 +28,16 @@
   <button onclick="resetGraph(); drawBothVersionsOfGraph()">reset!</button>
   <button onclick="toggleShowDots()">Show Dots?!</button>
   <div style="white-space: nowrap; margin-bottom: 1rem;">
-    <div style="display: inline-block">
+    <div style="display: inline-block;">
       <label for="upOrDown">Up Down?:</label>
       <select name="upOrDown" id="upOrDown" onchange="selectElementAndChangeValue('upOrDown'); drawBothVersionsOfGraph()">
+        <option value="-90">-90</option>
+        <option value="-70">-70</option>
+        <option value="-55">-55</option>
+        <option value="-45">-45</option>
         <option value="-35">-35</option>
-        <option value="-30">-30</option>
         <option value="-25">-25</option>
         <option value="-20">-20</option>
-        <option value="-16">-16</option>
-        <option value="-12">-12</option>
         <option value="-12">-12</option>
         <option value="-8">-8</option>
         <option value="-4">-4</option>
@@ -45,11 +46,16 @@
         <option value="8">8</option>
         <option value="10">10</option>
         <option value="12">12</option>
+        <option value="30">30</option>
+        <option value="60">60</option>
       </select>
     </div>
-    <div style="display: inline-block">
+    <div style="display: inline-block;">
         <label for="leftOrRight">Left or Right?:</label>
         <select name="leftOrRight" id="leftOrRight" onchange="selectElementAndChangeValue('leftOrRight'); drawBothVersionsOfGraph()">
+          <option value="-80">-80</option>
+          <option value="-60">-60</option>
+          <option value="-40">-40</option>
           <option value="-20">-20</option>
           <option value="-16">-16</option>
           <option value="-12">-12</option>
@@ -62,6 +68,9 @@
           <option value="16">16</option>
           <option value="20">20</option>
           <option value="24">24</option>
+          <option value="35">35</option>
+          <option value="50">50</option>
+          <option value="70">70</option>
         </select>
     </div>
     <div style="display: inline-block">
@@ -88,8 +97,31 @@
         <option value="49">49</option>
         <option value="52">52</option>
       </select>
-        <button onclick="selectElementAndChangeValue('signBeforeFormula'); drawBothVersionsOfGraph()" style="display: inline-block">Change Direction</button>
-        <p style="display: inline-block" id="signBeforeFormula">1</p>
+    </div><div style="display: inline-block; margin-left: 1rem">
+      <label for="theExponentValue">theExponentValue:</label>
+      <select name="theExponentValue" id="theExponentValue"
+        onchange="selectElementAndChangeValue('theExponentValue'); drawBothVersionsOfGraph()">
+        <option value="-4">-4</option>
+        <option value="-3">-3</option>
+        <option value="-2">-2</option>
+        <option value="0.1">0.1</option>
+        <option value="0.4">0.4</option>
+        <option value="0.5">0.5</option>
+        <option value="0.6">0.6</option>
+        <option value="0.7">0.7</option>
+        <option value="0.8">0.8</option>
+        <option value="0.9">0.9</option>
+        <option value="1">1</option>
+        <option value="1.5">1.5</option>
+        <option value="2" selected>2</option>
+        <option value="2.1">2.1</option>
+        <option value="2.2">2.2</option>
+        <option value="2.5">2.5</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select><button onclick="selectElementAndChangeValue('signBeforeFormula'); drawBothVersionsOfGraph()"
+        style="display: inline-block;  margin-left: 1rem">Change Direction</button>
+      <p style="display: inline-block" id="signBeforeFormula">1</p>
     </div>
   </div>
   <canvas id="myCanvas3" width="800" height="800" style="border:4px solid #000000; background-color: white;"></canvas>
