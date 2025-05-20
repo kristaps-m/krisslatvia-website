@@ -6,10 +6,12 @@ let theYchange = 0;
 let theXchange = 0;
 let theWidthAdjusterChange = 1;
 let theSignBeforeFormula = 1;
+let theExponentValue = 2;
 // WARNING! Do not pass `true, true` inside drawBothVersionsOfGraph()
 let showDots = true;
 const showLines = true;
 const step = 4;
+const theScale = 20;
 const s = (n) => Math.floor(n / step);
 const rnd = (n) => Math.round(n * 100) / 100;
 
@@ -22,7 +24,7 @@ function drawXandYaxis() {
   // Y axis
   ctx.beginPath();
   ctx.strokeStyle = "#000000";
-  ctx.lineWidth = "2";
+  ctx.lineWidth = "0.5";
   ctx.moveTo(w / 2, 0);
   ctx.lineTo(w / 2, w);
   ctx.stroke();
@@ -30,21 +32,25 @@ function drawXandYaxis() {
   // X axis
   ctx.beginPath();
   ctx.strokeStyle = "#000000";
-  ctx.lineWidth = "2";
+  ctx.lineWidth = "0.5";
   ctx.moveTo(0, h / 2);
   ctx.lineTo(w, h / 2);
   ctx.stroke();
   ctx.closePath();
+
+  ctx.font = "bold 20px Comic Sans MS";
+  ctx.fillStyle = "blue";
+  ctx.fillText("X ➨", 6, h / 2 + 20);
+  ctx.fillText("Y 🠱", w / 2 + 5, h - 6);
 }
 
 // Parabola? y = x^2
 const xValuesList = [];
 
-for (let i = -100; i < 100; i += 2) {
+for (let i = -51; i < 51; i += 0.25) {
   xValuesList.push(i);
 }
-// const newXPluss = xValuesList.map((x) => x * 10);
-// const yValuesList = xValuesList.map((x) => Math.pow(x, 2));
+
 ctx.clearRect(0, 0, w, h);
 drawTheGraph(showLines, false);
 drawTheGraph(false, showDots);
@@ -54,13 +60,15 @@ function resetGraph() {
   theXchange = 0;
   theWidthAdjusterChange = 1;
   theSignBeforeFormula = 1;
+  theExponentValue = 2;
   let howFormulaLooks = document.getElementById("howFormulaLooks");
-  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
+  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^${theExponentValue} + ${theYchange})`;
 
   document.getElementById("upOrDown").value = theYchange;
   document.getElementById("leftOrRight").value = theXchange;
   document.getElementById("theWidthAdjuster").value = theWidthAdjusterChange;
   document.getElementById("signBeforeFormula").value = theSignBeforeFormula;
+  document.getElementById("theExponentValue").value = theExponentValue;
 }
 
 function selectElementAndChangeValue(getThisID) {
@@ -77,6 +85,9 @@ function selectElementAndChangeValue(getThisID) {
     case "theWidthAdjuster":
       theWidthAdjusterChange = parseFloat(getGraphElement);
       break;
+    case "theExponentValue":
+      theExponentValue = parseFloat(getGraphElement);
+      break;
     case "signBeforeFormula":
       theSignBeforeFormula = theSignBeforeFormula * -1;
       let x = document.getElementById("signBeforeFormula");
@@ -85,7 +96,7 @@ function selectElementAndChangeValue(getThisID) {
     default:
       break;
   }
-  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^2 + ${theYchange})`;
+  howFormulaLooks.textContent = `y = ${theSignBeforeFormula} * ((1 / ${theWidthAdjusterChange}) * (x - ${theXchange})^${theExponentValue} + ${theYchange})`;
 }
 
 function drawBothVersionsOfGraph() {
@@ -94,65 +105,76 @@ function drawBothVersionsOfGraph() {
   drawTheGraph(false, showDots);
 }
 
+c.addEventListener("click", (e) => {
+  const rect = c.getBoundingClientRect();
+  let xHor = rnd((e.clientX - rect.left) * (c.width / rect.width));
+  let yVert = rnd((e.clientY - rect.top) * (c.height / rect.height));
+  // console.log(xHor, yVert);
+  const realX = rnd((xHor - w / 2) / theScale);
+  const realY = rnd(-((yVert - h / 2) / theScale));
+  // console.log(realX, realY);
+  drawBothVersionsOfGraph();
+  drawCircle(xHor, yVert, 6, "lightblue");
+  let showXandYvalues = document.getElementById("showValuesOnClick");
+  showXandYvalues.textContent = `(${realX}, ${realY}) (${xHor}, ${yVert})`;
+});
+
 function drawTheGraph(drawLines = true, drawDots = false) {
-  const firstLineStartPoints = [];
   drawXandYaxis();
-  // THE FORMULA .........................
-  // from y = x^2
-  // to....
-  // y = theSignBeforeFormula * ((1 / theWidthAdjusterChange) * (x - theXchange)^2 + theYchange)
   const yValuesList = xValuesList.map(
     (x) =>
       theSignBeforeFormula *
-      ((1 / theWidthAdjusterChange) * Math.pow(x - theXchange, 2) + theYchange)
+      ((1 / theWidthAdjusterChange) * Math.pow(x - theXchange, theExponentValue) + theYchange)
   );
-  //----------------------------------------------------------------------------
 
   ctx.beginPath();
-  ctx.moveTo(firstLineStartPoints[0], firstLineStartPoints[1]);
-  for (let i = 0; i < w; i += step) {
-    for (let j = 0; j < h; j += step) {
-      ctx.font = "bold 12px Comic Sans MS";
-      // ctx.textAlign = "center";
+  ctx.strokeStyle = "darkgreen";
+  ctx.lineWidth = 2;
+
+  for (let i = 0; i < xValuesList.length; i++) {
+    const x = xValuesList[i];
+    const y = yValuesList[i];
+    const [canvasX, canvasY] = mapToCanvas(x, y, theScale);
+
+    if (drawLines) {
+      if (i === 0) {
+        ctx.moveTo(canvasX, canvasY);
+      } else {
+        ctx.lineTo(canvasX, canvasY);
+      }
+    }
+
+    if (drawDots) {
+      drawCircle(canvasX, canvasY, 3);
+      ctx.font = "bold 10px Comic Sans MS";
       ctx.fillStyle = "red";
-      const x = s(i - 400);
-      const y = s(j - 400) * -1;
-      // ctx.fillText(`*${x} ${y}`, i, j);
-      for (let index = 0; index < xValuesList.length; index++) {
-        if (
-          (xValuesList[index] === x && yValuesList[index] === y) ||
-          (Math.floor(xValuesList[index]) === x && Math.floor(yValuesList[index]) === y)
-        ) {
-          // ctx.fillText(`*${x} ${y}`, i, j);
-          if (drawDots) {
-            ctx.fillText(` ${rnd(xValuesList[index])} ${rnd(yValuesList[index])}`, i, j);
-            drawCircle(i, j, 3);
-          }
-          if (drawLines) {
-            if (firstLineStartPoints.length === 0) {
-              firstLineStartPoints.push(i);
-              firstLineStartPoints.push(j);
-            }
-            // Draw Line?!
-            ctx.strokeStyle = "#000000";
-            ctx.lineWidth = "1";
-            ctx.lineTo(i, j);
-          }
-        }
+      if (x >= 0) {
+        ctx.fillText(`${rnd(x)}, ${rnd(y)}`, canvasX + 9, canvasY - 5);
+      } else {
+        ctx.fillText(`${rnd(x)}, ${rnd(y)}`, canvasX - 75, canvasY - 5);
       }
     }
   }
-  ctx.stroke();
+
+  if (drawLines) {
+    ctx.stroke();
+  }
   ctx.closePath();
 }
 
-function drawCircle(x, y, r) {
+function mapToCanvas(x, y, scale) {
+  const canvasX = w / 2 + x * scale;
+  const canvasY = h / 2 - y * scale;
+  return [canvasX, canvasY];
+}
+
+function drawCircle(x, y, r, color = "#663300") {
   // Circle
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
-  ctx.strokeStyle = "#663300";
+  ctx.strokeStyle = color;
   ctx.lineWidth = 3;
-  ctx.fillStyle = "#663300";
+  ctx.fillStyle = color;
   ctx.fill();
   ctx.stroke();
 }
