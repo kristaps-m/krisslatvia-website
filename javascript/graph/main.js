@@ -11,6 +11,7 @@ let theExponentValue = 2;
 let showDots = true;
 const showLines = true;
 const step = 4;
+const theScale = 20;
 const s = (n) => Math.floor(n / step);
 const rnd = (n) => Math.round(n * 100) / 100;
 
@@ -49,8 +50,7 @@ const xValuesList = [];
 for (let i = -51; i < 51; i += 0.25) {
   xValuesList.push(i);
 }
-// const newXPluss = xValuesList.map((x) => x * 10);
-// const yValuesList = xValuesList.map((x) => Math.pow(x, 2));
+
 ctx.clearRect(0, 0, w, h);
 drawTheGraph(showLines, false);
 drawTheGraph(false, showDots);
@@ -105,26 +105,28 @@ function drawBothVersionsOfGraph() {
   drawTheGraph(false, showDots);
 }
 
+c.addEventListener("click", (e) => {
+  const rect = c.getBoundingClientRect();
+  let xHor = rnd((e.clientX - rect.left) * (c.width / rect.width));
+  let yVert = rnd((e.clientY - rect.top) * (c.height / rect.height));
+  // console.log(xHor, yVert);
+  const realX = rnd((xHor - w / 2) / theScale);
+  const realY = rnd(-((yVert - h / 2) / theScale));
+  // console.log(realX, realY);
+  drawBothVersionsOfGraph();
+  drawCircle(xHor, yVert, 6, "lightblue");
+  let showXandYvalues = document.getElementById("showValuesOnClick");
+  showXandYvalues.textContent = `(${realX}, ${realY}) (${xHor}, ${yVert})`;
+});
+
 function drawTheGraph(drawLines = true, drawDots = false) {
   drawXandYaxis();
-  console.log(drawLines, "drawLines");
-
   const yValuesList = xValuesList.map(
     (x) =>
       theSignBeforeFormula *
       ((1 / theWidthAdjusterChange) * Math.pow(x - theXchange, theExponentValue) + theYchange)
   );
 
-  // Compute max absolute x and y for scaling
-  const maxX = Math.max(...xValuesList.map(Math.abs));
-  const maxY = Math.max(...yValuesList.map(Math.abs));
-
-  // Determine scaling factor to fit graph within canvas
-  // const margin = 60000; // pixels padding
-  // const scaleX = Math.abs(w / 2 - margin) / maxX;
-  // const scaleY = Math.abs(h / 2 - margin) / maxY;
-  // const scale = Math.min(scaleX, scaleY); // uniform scale
-  // console.log(scale);
   ctx.beginPath();
   ctx.strokeStyle = "darkgreen";
   ctx.lineWidth = 2;
@@ -132,15 +134,13 @@ function drawTheGraph(drawLines = true, drawDots = false) {
   for (let i = 0; i < xValuesList.length; i++) {
     const x = xValuesList[i];
     const y = yValuesList[i];
-    const [canvasX, canvasY] = mapToCanvas(x, y, 20);
+    const [canvasX, canvasY] = mapToCanvas(x, y, theScale);
 
     if (drawLines) {
       if (i === 0) {
         ctx.moveTo(canvasX, canvasY);
-        // console.log("MOVE TO AVTIVATED!");
       } else {
         ctx.lineTo(canvasX, canvasY);
-        // console.log(`Line point ${i}: (${canvasX}, ${canvasY})`);
       }
     }
 
@@ -168,126 +168,13 @@ function mapToCanvas(x, y, scale) {
   return [canvasX, canvasY];
 }
 
-function drawCircle(x, y, r) {
+function drawCircle(x, y, r, color = "#663300") {
   // Circle
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
-  ctx.strokeStyle = "#663300";
+  ctx.strokeStyle = color;
   ctx.lineWidth = 3;
-  ctx.fillStyle = "#663300";
+  ctx.fillStyle = color;
   ctx.fill();
   ctx.stroke();
 }
-
-// function drawTheGraph(drawLines = true, drawDots = false) {
-//   const firstLineStartPoints = [];
-//   drawXandYaxis();
-//   // THE FORMULA .........................
-//   // from y = x^2
-//   // to....
-//   // y = theSignBeforeFormula * ((1 / theWidthAdjusterChange) * (x - theXchange)^theExponentValue + theYchange)
-//   const yValuesList = xValuesList.map(
-//     (x) =>
-//       theSignBeforeFormula *
-//       ((1 / theWidthAdjusterChange) * Math.pow(x - theXchange, theExponentValue) + theYchange)
-//   );
-//   //----------------------------------------------------------------------------
-
-//   ctx.beginPath();
-//   ctx.moveTo(firstLineStartPoints[0], firstLineStartPoints[1]);
-//   for (let i = 0; i < w; i += step) {
-//     for (let j = 0; j < h; j += step) {
-//       ctx.font = "bold 12px Comic Sans MS";
-//       // ctx.textAlign = "center";
-//       ctx.fillStyle = "red";
-//       const m = 1;
-//       const x = s(i - 400 * m);
-//       const y = s(j - 400 * m) * -1;
-
-//       for (let index = 0; index < xValuesList.length; index++) {
-//         if (
-//           (xValuesList[index] === x && yValuesList[index] === y) ||
-//           (Math.floor(xValuesList[index]) === x && Math.floor(yValuesList[index]) === y)
-//         ) {
-//           if (drawDots) {
-//             ctx.fillText(` ${rnd(xValuesList[index])} ${rnd(yValuesList[index])}`, i, j);
-//             drawCircle(i, j, 3);
-//           }
-//           if (drawLines) {
-//             if (firstLineStartPoints.length === 0) {
-//               firstLineStartPoints.push(i);
-//               firstLineStartPoints.push(j);
-//             }
-//             // Draw Line?!
-//             ctx.strokeStyle = "darkgreen";
-//             ctx.lineWidth = "5";
-//             // ctx.lineTo(x, y);
-//             ctx.lineTo(i, j);
-//             // how to from i and j to x and y?
-//             // , 2, 4, 6, 8, 10,
-//             // , 16, 256, 1296, 4096, 10000, 2073
-//             console.log(xValuesList.length, yValuesList.length, i, j, x, y);
-//           }
-//         }
-//       }
-//     }
-//   }
-//   ctx.stroke();
-//   ctx.closePath();
-//   console.log(xValuesList);
-//   console.log(yValuesList);
-// }
-
-// function drawTheGraph(drawLines = true, drawDots = false) {
-//   ctx.clearRect(0, 0, w, h);
-//   drawXandYaxis();
-
-//   // Compute y values from the current formula
-//   const yValuesList = xValuesList.map(
-//     (x) =>
-//       theSignBeforeFormula *
-//       ((1 / theWidthAdjusterChange) * Math.pow(x - theXchange, theExponentValue) + theYchange)
-//   );
-
-//   // Compute min/max values for scaling
-//   const xMin = Math.min(...xValuesList);
-//   const xMax = Math.max(...xValuesList);
-//   const yMin = Math.min(...yValuesList);
-//   const yMax = Math.max(...yValuesList);
-
-//   ctx.beginPath();
-//   ctx.strokeStyle = "darkgreen";
-//   ctx.lineWidth = 2;
-
-//   for (let i = 0; i < xValuesList.length; i++) {
-//     const x = xValuesList[i];
-//     const y = yValuesList[i];
-
-//     // Convert graph values to canvas coordinates
-//     const [canvasX, canvasY] = mapToCanvas(x, y, xMin, xMax, yMin, yMax, w, h);
-
-//     if (drawLines) {
-//       if (i === 0) {
-//         ctx.moveTo(canvasX, canvasY);
-//       } else {
-//         ctx.lineTo(canvasX, canvasY);
-//       }
-//     }
-
-//     if (drawDots) {
-//       drawCircle(canvasX, canvasY, 3);
-//       ctx.font = "bold 12px Comic Sans MS";
-//       ctx.fillStyle = "red";
-//       ctx.fillText(`(${rnd(x)}, ${rnd(y)})`, canvasX + 5, canvasY - 5);
-//     }
-//   }
-
-//   if (drawLines) ctx.stroke();
-//   ctx.closePath();
-// }
-
-// function mapToCanvas(x, y, xMin, xMax, yMin, yMax, canvasWidth, canvasHeight) {
-//   const canvasX = ((x - xMin) / (xMax - xMin)) * canvasWidth;
-//   const canvasY = canvasHeight - ((y - yMin) / (yMax - yMin)) * canvasHeight;
-//   return [canvasX, canvasY];
-// }
