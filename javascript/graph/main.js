@@ -37,18 +37,7 @@ function drawXandYaxis() {
   ctx.stroke();
   ctx.closePath();
 
-  // // TEST axis
-  // ctx.beginPath();
-  // ctx.strokeStyle = "brown";
-  // ctx.lineWidth = "0.5";
-  // ctx.moveTo(11, 11);
-  // ctx.lineTo(w - 50, h - 50);
-  // ctx.lineTo(w - 50, -300);
-  // ctx.stroke();
-  // ctx.closePath();
-
   ctx.font = "bold 20px Comic Sans MS";
-  // ctx.textAlign = "center";
   ctx.fillStyle = "blue";
   ctx.fillText("X ➨", 6, h / 2 + 20);
   ctx.fillText("Y 🠱", w / 2 + 5, h - 6);
@@ -57,7 +46,7 @@ function drawXandYaxis() {
 // Parabola? y = x^2
 const xValuesList = [];
 
-for (let i = -100; i < 100; i += 2) {
+for (let i = -51; i < 51; i += 0.25) {
   xValuesList.push(i);
 }
 // const newXPluss = xValuesList.map((x) => x * 10);
@@ -117,10 +106,8 @@ function drawBothVersionsOfGraph() {
 }
 
 function drawTheGraph(drawLines = true, drawDots = false) {
-  ctx.clearRect(0, 0, w, h);
   drawXandYaxis();
   console.log(drawLines, "drawLines");
-  // ctx.beginPath();
 
   const yValuesList = xValuesList.map(
     (x) =>
@@ -133,11 +120,11 @@ function drawTheGraph(drawLines = true, drawDots = false) {
   const maxY = Math.max(...yValuesList.map(Math.abs));
 
   // Determine scaling factor to fit graph within canvas
-  const margin = 40; // pixels padding
-  const scaleX = (w / 2 - margin) / maxX;
-  const scaleY = (h / 2 - margin) / maxY;
-  const scale = Math.min(scaleX, scaleY); // uniform scale
-
+  // const margin = 60000; // pixels padding
+  // const scaleX = Math.abs(w / 2 - margin) / maxX;
+  // const scaleY = Math.abs(h / 2 - margin) / maxY;
+  // const scale = Math.min(scaleX, scaleY); // uniform scale
+  // console.log(scale);
   ctx.beginPath();
   ctx.strokeStyle = "darkgreen";
   ctx.lineWidth = 2;
@@ -145,28 +132,33 @@ function drawTheGraph(drawLines = true, drawDots = false) {
   for (let i = 0; i < xValuesList.length; i++) {
     const x = xValuesList[i];
     const y = yValuesList[i];
-    const [canvasX, canvasY] = mapToCanvas(x, y, 10);
+    const [canvasX, canvasY] = mapToCanvas(x, y, 20);
 
     if (drawLines) {
       if (i === 0) {
         ctx.moveTo(canvasX, canvasY);
-        console.log("MOVE TO AVTIVATED!");
+        // console.log("MOVE TO AVTIVATED!");
       } else {
         ctx.lineTo(canvasX, canvasY);
-        console.log(`Line point ${i}: (${canvasX}, ${canvasY})`);
+        // console.log(`Line point ${i}: (${canvasX}, ${canvasY})`);
       }
     }
 
     if (drawDots) {
       drawCircle(canvasX, canvasY, 3);
-      ctx.font = "bold 12px Comic Sans MS";
+      ctx.font = "bold 10px Comic Sans MS";
       ctx.fillStyle = "red";
-      ctx.fillText(`(${rnd(x)}, ${rnd(y)})`, canvasX + 5, canvasY - 5);
-      // console.log(`Line point ${i}: (${canvasX}, ${canvasY})`);
+      if (x >= 0) {
+        ctx.fillText(`${rnd(x)}, ${rnd(y)}`, canvasX + 9, canvasY - 5);
+      } else {
+        ctx.fillText(`${rnd(x)}, ${rnd(y)}`, canvasX - 75, canvasY - 5);
+      }
     }
   }
 
-  if (drawLines) ctx.stroke();
+  if (drawLines) {
+    ctx.stroke();
+  }
   ctx.closePath();
 }
 
@@ -174,16 +166,6 @@ function mapToCanvas(x, y, scale) {
   const canvasX = w / 2 + x * scale;
   const canvasY = h / 2 - y * scale;
   return [canvasX, canvasY];
-}
-
-function drawOneLine(x, y) {
-  ctx.beginPath();
-  ctx.strokeStyle = "darkgreen";
-  ctx.lineWidth = 2;
-  ctx.moveTo(x, y);
-  ctx.lineTo(x, y);
-  ctx.stroke();
-  ctx.closePath();
 }
 
 function drawCircle(x, y, r) {
