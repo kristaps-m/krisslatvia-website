@@ -47,15 +47,17 @@ window.addEventListener("keydown", (event) => {
   const indexOfEmptyNumber = gameField.indexOf(emptyNumber);
   let twoSwapingNumbers = [
     emptyNumber,
-    gameField[indexOfEmptyNumber + GetTwoDirectionalSwapingNumbers(k)],
+    gameField[indexOfEmptyNumber + GetAdjusterForSecondNumberToSwap(k)],
   ];
   gameField = swapNumbers(gameField, twoSwapingNumbers);
   renderElements();
-  console.log(gameField.indexOf(emptyNumber));
-  console.log(twoSwapingNumbers);
+  if (compareTwoLists(gameField, finishedGF)) {
+    displayText("--- YOU WON! ---", W / 2, H / 2);
+    alert("YOU WON");
+  }
 });
 
-function GetTwoDirectionalSwapingNumbers(userPress) {
+function GetAdjusterForSecondNumberToSwap(userPress) {
   let result = 0;
 
   switch (userPress) {
@@ -63,10 +65,10 @@ function GetTwoDirectionalSwapingNumbers(userPress) {
       result = 1;
       break;
     case "w":
-      result = -1 * game_side_size;
+      result = 1 * game_side_size;
       break;
     case "s":
-      result = 1 * game_side_size;
+      result = -1 * game_side_size;
       break;
     case "d":
       result = -1;
@@ -134,6 +136,7 @@ CANVAS.addEventListener(
       }
     });
     if (compareTwoLists(gameField, finishedGF)) {
+      displayText("--- YOU WON! ---", W / 2, H / 2);
       alert("YOU WON");
     }
   },
@@ -185,13 +188,21 @@ function swapNumbers(the_list, swap_numbers) {
   let new_array = [...the_list];
 
   if (
-    Math.abs(x_index - y_index) == 1 ||
-    Math.abs(x_index - y_index) == game_side_size
+    Math.abs((x_index % game_side_size) - (y_index % game_side_size)) === 1 ||
+    Math.abs((x_index % game_side_size) - (y_index % game_side_size)) === 0
   ) {
-    // console.log("It is okay to swap");
-    // now swap?
-    new_array[x_index] = y;
-    new_array[y_index] = x;
+    // console.log("IT IS POSSIBLE TO SWAP By % % ");
+    if (Math.abs(x_index - y_index) == 1 || Math.abs(x_index - y_index) == game_side_size) {
+      // console.log("It is okay to swap");
+      // now swap?
+      new_array[x_index] = y;
+      new_array[y_index] = x;
+    }
+    // else {
+    //   console.log(
+    //     "IT IS ---NOT--- POSSIBLE TO SWAP by Math.abs(x_index - y_index) == 1 || Math.abs(x_index - y_index) == game_side_size"
+    //   );
+    // }
   } else {
     console.log("IT IS NOT POSSIBLE TO SWAP");
   }
@@ -222,10 +233,7 @@ function isSolvable(puzzle) {
       continue;
     }
     for (let j = i + 1; j < puzzle.length; j++) {
-      if (
-        puzzle[j] !== game_side_size * game_side_size &&
-        puzzle[i] > puzzle[j]
-      ) {
+      if (puzzle[j] !== game_side_size * game_side_size && puzzle[i] > puzzle[j]) {
         inversions++;
       }
     }
@@ -256,11 +264,7 @@ function displayText(theText, x, y) {
   CTX.font = `italic bold ${fSize}px Comic Sans MS`;
   CTX.textAlign = "center";
   CTX.fillStyle = "white";
-  CTX.fillText(
-    theText === game_side_size * game_side_size ? "" : theText,
-    x,
-    y
-  );
+  CTX.fillText(theText === game_side_size * game_side_size ? "" : theText, x, y);
 }
 
 function initGameFieldWithSizedArray(gameSize) {
@@ -272,12 +276,10 @@ function initGameFieldWithSizedArray(gameSize) {
     finishedGF = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
   } else if (gameSize === 5) {
     gameField = [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-      22, 23, 24, 25,
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ];
     finishedGF = [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-      22, 23, 24, 25,
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     ];
   }
 
