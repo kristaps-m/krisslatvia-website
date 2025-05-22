@@ -4,10 +4,13 @@ const sc_Width = window.screen.width;
 const sc_Height = window.screen.height;
 let W;
 let H;
-if (sc_Width <= 600){
+if (sc_Width <= 600) {
   W = sc_Width - 10;
   H = sc_Width - 10;
-} else{ W = 500; H = 500}
+} else {
+  W = 500;
+  H = 500;
+}
 const SQUARE_OFF_SET = 10;
 CANVAS.width = W;
 CANVAS.height = H;
@@ -36,6 +39,43 @@ function newGame() {
   create15PuzzleClickableElements();
   // Render elements.
   renderElements();
+}
+
+window.addEventListener("keydown", (event) => {
+  const k = event.key; // wasd.
+  const emptyNumber = game_side_size * game_side_size;
+  const indexOfEmptyNumber = gameField.indexOf(emptyNumber);
+  let twoSwapingNumbers = [
+    emptyNumber,
+    gameField[indexOfEmptyNumber + GetTwoDirectionalSwapingNumbers(k)],
+  ];
+  gameField = swapNumbers(gameField, twoSwapingNumbers);
+  renderElements();
+  console.log(gameField.indexOf(emptyNumber));
+  console.log(twoSwapingNumbers);
+});
+
+function GetTwoDirectionalSwapingNumbers(userPress) {
+  let result = 0;
+
+  switch (userPress) {
+    case "a":
+      result = 1;
+      break;
+    case "w":
+      result = -1 * game_side_size;
+      break;
+    case "s":
+      result = 1 * game_side_size;
+      break;
+    case "d":
+      result = -1;
+      break;
+    default:
+      break;
+  }
+
+  return result;
 }
 
 // Add event listener for `click` events.
@@ -77,6 +117,7 @@ CANVAS.addEventListener(
           userClickedTwoNumbers.includes(game_side_size * game_side_size)
         ) {
           gameField = swapNumbers(gameField, userClickedTwoNumbers);
+          console.log(userClickedTwoNumbers);
           setTimeout(function () {
             renderElements();
           }, 150);
@@ -176,12 +217,15 @@ function isSolvable(puzzle) {
   let emptyRow = 0;
 
   for (let i = 0; i < puzzle.length; i++) {
-    if (puzzle[i] === game_side_size*game_side_size) {
+    if (puzzle[i] === game_side_size * game_side_size) {
       emptyRow = Math.floor(i / size) + 1; // Find row of the empty space (game_side_size*game_side_size)
       continue;
     }
     for (let j = i + 1; j < puzzle.length; j++) {
-      if (puzzle[j] !== game_side_size*game_side_size && puzzle[i] > puzzle[j]) {
+      if (
+        puzzle[j] !== game_side_size * game_side_size &&
+        puzzle[i] > puzzle[j]
+      ) {
         inversions++;
       }
     }
@@ -196,8 +240,9 @@ function isSolvable(puzzle) {
   }
 }
 
-function shuffle() { // shuffleSolvable
-  let numbers = gameField;//[...Array(15).keys()].map(n => n + 1).concat(16); // 1 to 16
+function shuffle() {
+  // shuffleSolvable
+  let numbers = gameField; //[...Array(15).keys()].map(n => n + 1).concat(16); // 1 to 16
   do {
     numbers = numbers.sort(() => Math.random() - 0.5);
   } while (!isSolvable(numbers));
