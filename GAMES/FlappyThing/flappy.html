@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connected Files</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/mobileScreen.css" />
+    <body>
+      <script id="replace_with_navbar" src="../../navbar/nav.js"></script>
+    </body>
+  </head>
+
+  <body>
+    <h1>Hello, Flappy!</h1>
+    <style>
+      * {
+        margin: "0px";
+        padding: "0px";
+      }
+
+      body {
+        align-items: center;
+        text-align: center;
+        align-content: center;
+      }
+
+      #flappyCanvas {
+        border: 2px solid black;
+      }
+    </style>
+    <br />
+    <canvas id="flappyCanvas"></canvas>
+    <p>Use Mouse (click) or Keyboard (all keys?) to play!</p>
+    <p>Refresh page to restart game!</p>
+    <script src="../Global Helper Classes/Position.js"></script>
+    <script src="../Global Helper Classes/getRndInteger.js"></script>
+    <script src="pipe.js"></script>
+    <script src="flappy.js"></script>
+    <script src="flappyMain.js"></script>
+  </body>
+</html>
