@@ -86,14 +86,7 @@ CANVAS.addEventListener(
 
 function displayNumbersOnCanvas() {
   CTX.clearRect(0, 0, W, H);
-  displayGrid({
-    ctx: CTX,
-    strokeStyle: "red",
-    // girdLineWidth: (girdLineWidth = 1),
-    oneSquareSize: W / CANDIES_IN_ROW,
-    canvasHeight: H,
-    canvasWidth: W,
-  });
+
   for (let row = 0; row < CANDIES_IN_ROW; row++) {
     for (let col = 0; col < CANDIES_IN_COL; col++) {
       const dx = W / CANDIES_IN_ROW;
@@ -117,6 +110,14 @@ function displayNumbersOnCanvas() {
       // displayText(randomInteger, x, y);
     }
   }
+  displayGrid({
+    ctx: CTX,
+    strokeStyle: "black",
+    girdLineWidth: (girdLineWidth = 3),
+    oneSquareSize: W / CANDIES_IN_ROW,
+    canvasHeight: H,
+    canvasWidth: W,
+  });
 }
 
 function displayText(theText, x, y) {
