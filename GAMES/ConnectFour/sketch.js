@@ -66,7 +66,8 @@ function mouseClicked() {
   const theR = Math.floor(mouseY / oneSqSize);
   // gameField[theR][theC] = currentColor;
   putPieceToBottom(theC);
-  console.log(theR, theC, currentColor);
+  isWiner();
+  // console.log(theR, theC, currentColor);
 }
 
 function putPieceToBottom(c) {
@@ -96,13 +97,238 @@ function getEmptyRowIndex(c) {
 
 function toggleCurrentColorMove() {
   let currentColorMove = document.getElementById("currentColorMove");
-  console.log(currentColorMove);
+  // console.log(currentColorMove);
   // console.log(currentColorMove.textContent);
-  if (currentColorMove.textContent == "RED") {
+  if (currentColor == 1) {
+    // if (currentColorMove.textContent == "RED") {
     currentColor = 2;
-    currentColorMove.textContent = "BLUE";
-  } else if (currentColorMove.textContent == "BLUE") {
-    currentColor = 1;
     currentColorMove.textContent = "RED";
+  } else if (currentColor == 2) {
+    currentColor = 1;
+    currentColorMove.textContent = "BLUE";
   }
+}
+
+function isWiner() {
+  if (isHorizontal()) {
+    console.log("Horizontal", currentColor == 1 ? "RED" : "BLUE");
+  } else if (isVertical()) {
+    console.log("Vertical", currentColor == 1 ? "RED" : "BLUE");
+  } else if (isDiagonal_1()) {
+    console.log("isDiagonal_1", currentColor == 1 ? "RED" : "BLUE");
+  } else if (isDiagonal_2()) {
+    console.log("isDiagonal_2", currentColor == 1 ? "RED" : "BLUE");
+  }
+}
+
+function isHorizontal() {
+  for (let row = 0; row < gameField.length; row++) {
+    let equalInRow = 1;
+    for (let col = 0; col < gameField[0].length - 1; col++) {
+      if (gameField[row][col] == gameField[row][col + 1] && gameField[row][col] != 0) {
+        equalInRow++;
+      } else {
+        equalInRow = 1;
+      }
+      if (equalInRow == 4) {
+        console.log("WE GOT 4: ", currentColor);
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function isVertical() {
+  for (let row = 0; row < gameField[0].length; row++) {
+    let equalInCol = 1;
+    for (let col = 0; col < gameField.length - 1; col++) {
+      if (gameField[col][row] == gameField[col + 1][row] && gameField[col][row] != 0) {
+        equalInCol++;
+      } else {
+        equalInCol = 1;
+      }
+      if (equalInCol == 4) {
+        console.log("WE GOT 4: ", currentColor);
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function isDiagonal_1() {
+  /*
+    20 -> 31 -> 42 -> 53
+    10 -> 21 -> 32 -> 43
+    --00 -> 11 -> 22 -> 33--
+    01 -> 12 -> 23 -> 34
+    02 -> 13 -> 24 -> 35
+  */
+  for (let row = 0; row < gameField.length; row++) {
+    if (helper(row)) {
+      return true;
+    } else {
+      for (let i = 2; i > 0; i--) {
+        if (helper(row, i)) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+function helper(r, theX = 0) {
+  let equalInDiag_1 = 1;
+  for (let col = 0; col < gameField[0].length - 1; col++) {
+    // for (let col = 0; col < gameField[0].length - 1; col++) {
+    // console.log(col + 1 + theX, col + 1 + r);
+    if (col < gameRows && col + 1 + theX < gameRows) {
+      // FROM gameRows - 1 to gameRows
+      // console.log("inside", col + 1 + theX, col + 1 + r);
+
+      // console.log(gameField[col + 1 + theX][col + 1 + r], col + 1 + theX, col + 1 + r);
+      if (
+        /*
+          00, 01, 02, 03, 04
+          10, 11, 12, 13, 14
+        */
+        gameField[col + theX][col + r] == gameField[col + 1 + theX][col + 1 + r] &&
+        gameField[col + theX][col + r] != 0 &&
+        gameField[col + theX][col + r]
+      ) {
+        // console.log(
+        //   `${gameField[col][col]} r: ${r} c: ${col}`,
+        //   gameField[col][col + r],
+        //   gameField[col + 1][col + 1 + r],
+        //   gameField[col][col + r] != 0
+        // );
+        equalInDiag_1++;
+        // console.log(`r: ${row} c: ${col}`);
+      } else {
+        equalInDiag_1 = 1;
+      }
+      if (equalInDiag_1 == 4) {
+        console.log("WE GOT 4: ", currentColor, `equalInDiag_1 ${equalInDiag_1} r: ${r} c: ${col}`);
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function isDiagonal_2() {
+  /*
+    r: 6, c: 7
+    04 -> 13 -> 22 -> 31
+    05 -> 14 -> 23 -> 32
+    --06 -> 15 -> 24 -> 33--
+    16 -> 25 -> 34 -> 43
+    26 -> 35 -> 44 -> 53
+  */
+  function helper3(c = 0) {
+    let debug = [];
+    let equalInDiag_2 = 1;
+    // for (let i = 0; i < gameCols; i++) {
+    for (let j = 0; j < gameCols; j++) {
+      // console.log(j, gameCols - j - 2, j + 1);
+      if (gameCols - j - 2 >= 0 && j + 1 + c < gameRows) {
+        if (
+          /**
+            c = 1
+            16 25 34
+           */
+          gameField[j + c][gameCols - j - 1] == gameField[j + 1 + c][gameCols - j - 2] &&
+          gameField[j + c][gameCols - j - 1] != 0 &&
+          gameField[j + c][gameCols - j - 1]
+        ) {
+          debug.push([j + c, gameCols - j - 1]);
+          equalInDiag_2++;
+        } else {
+          equalInDiag_2 = 1;
+        }
+        if (equalInDiag_2 == 4) {
+          console.log("WE GOT 4: ", currentColor, `equalInDiag_2 ${equalInDiag_2} r: {r} c: {col}`);
+          console.log(debug);
+          return true;
+        }
+      }
+    }
+  }
+
+  for (let index = 0; index <= 2; index++) {
+    if (helper3(index)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  // }
+  // for (let row = 0; row < gameField.length; row++) {
+  //   if (helper2(row,c)) {
+  //     return true;
+  //   }
+  //   // else {
+  //   //   for (let i = 2; i > 0; i--) {
+  //   //     if (helper2(row, i)) {
+  //   //       return true;
+  //   //     }
+  //   //   }
+  //   // }
+  // }
+
+  return false;
+}
+
+function helper2(r, theX = 0) {
+  let debug = [];
+  let equalInDiag_2 = 1;
+  let c = 0;
+  for (let col = gameField[0].length - 1; col >= 0; col--) {
+    // console.log(col + 1 + theX, col + 1 + r);
+    if (col < gameRows && col + 1 + theX < gameRows) {
+      // console.log("inside", col + 1 + theX, col + 1 + r);
+
+      // console.log(gameField[col + 1 + theX][col + 1 + r], col + 1 + theX, col + 1 + r);
+      if (
+        /*
+          06, 05, 04, 03, 02
+          16, 15, 14, 13, 12
+          / r ..0 0 0 0
+          / c ..6 5 4 3
+        */
+        gameField[c][col] == gameField[c + 1][col - 1] &&
+        gameField[c][col] != 0 &&
+        gameField[c][col]
+        // gameField[r + theX][col + r] == gameField[r + 1 + theX][col + 1 + r] &&
+        // gameField[r + theX][col + r] != 0 &&
+        // gameField[r + theX][col + r]
+      ) {
+        // console.log(
+        //   `${gameField[r][col]} r: ${r} c: ${col}`,
+        //   gameField[r][col + r],
+        //   gameField[r + 1][col + 1 + r],
+        //   gameField[r][col + r] != 0
+        // );
+        equalInDiag_2++;
+        debug.push([r + theX, col + r]);
+        // console.log(`r: ${row} c: ${col}`);
+      } else {
+        equalInDiag_2 = 1;
+      }
+      if (equalInDiag_2 == 4) {
+        console.log("WE GOT 4: ", currentColor, `equalInDiag_2 ${equalInDiag_2} r: ${r} c: ${col}`);
+        console.log(debug);
+        return true;
+      }
+    }
+    c++;
+  }
+
+  return false;
 }
