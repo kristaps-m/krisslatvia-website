@@ -49,6 +49,8 @@ function draw() {
         fill("blue");
         rect(r * oneSqSize, c * oneSqSize, oneSqSize, oneSqSize);
       }
+      fill("black");
+      text(`${c - 1}, ${r}`, r * oneSqSize + 10, c * oneSqSize - 70);
     });
   });
   // myObj.update();
@@ -222,113 +224,107 @@ function helper(r, theX = 0) {
   return false;
 }
 
+function helper3(c = 0, index = 0) {
+  let debug = [];
+  let equalInDiag_2 = 1;
+  // for (let i = 0; i < gameCols; i++) {
+  for (let j = 0; j < gameCols; j++) {
+    // console.log(j, gameCols - j - 2, j + 1);
+    if (gameCols - j - 2 + index >= 0 && j + 1 + c < gameRows) {
+      if (
+        /**
+          c = 1
+          16 25 34
+         */
+        gameField[j + c][gameCols - j - 1 + index] ==
+          gameField[j + 1 + c][gameCols - j - 2 + index] &&
+        gameField[j + c][gameCols - j - 1 + index] != 0 &&
+        gameField[j + c][gameCols - j - 1 + index]
+      ) {
+        debug.push([j + c, gameCols - j - 1 + index]);
+        equalInDiag_2++;
+      } else {
+        equalInDiag_2 = 1;
+      }
+      if (equalInDiag_2 == 4) {
+        console.log("WE GOT 4: ", currentColor, `equalInDiag_2 ${equalInDiag_2} r: {r} c: {col}`);
+        console.log(debug);
+        return true;
+      }
+    }
+  }
+}
+
 function isDiagonal_2() {
   /*
     r: 6, c: 7
+    03 -> 12 -> 21 -> 30
     04 -> 13 -> 22 -> 31
     05 -> 14 -> 23 -> 32
     --06 -> 15 -> 24 -> 33--
     16 -> 25 -> 34 -> 43
     26 -> 35 -> 44 -> 53
   */
-  function helper3(c = 0) {
-    let debug = [];
-    let equalInDiag_2 = 1;
-    // for (let i = 0; i < gameCols; i++) {
-    for (let j = 0; j < gameCols; j++) {
-      // console.log(j, gameCols - j - 2, j + 1);
-      if (gameCols - j - 2 >= 0 && j + 1 + c < gameRows) {
-        if (
-          /**
-            c = 1
-            16 25 34
-           */
-          gameField[j + c][gameCols - j - 1] == gameField[j + 1 + c][gameCols - j - 2] &&
-          gameField[j + c][gameCols - j - 1] != 0 &&
-          gameField[j + c][gameCols - j - 1]
-        ) {
-          debug.push([j + c, gameCols - j - 1]);
-          equalInDiag_2++;
-        } else {
-          equalInDiag_2 = 1;
-        }
-        if (equalInDiag_2 == 4) {
-          console.log("WE GOT 4: ", currentColor, `equalInDiag_2 ${equalInDiag_2} r: {r} c: {col}`);
-          console.log(debug);
+
+  for (let index = 0; index <= 2; index++) {
+    if (helper3(index)) {
+      return true;
+    } else {
+      for (let i = -1; i >= -3; i--) {
+        if (helper3(0, i)) {
           return true;
         }
       }
     }
   }
 
-  for (let index = 0; index <= 2; index++) {
-    if (helper3(index)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  // }
-  // for (let row = 0; row < gameField.length; row++) {
-  //   if (helper2(row,c)) {
-  //     return true;
-  //   }
-  //   // else {
-  //   //   for (let i = 2; i > 0; i--) {
-  //   //     if (helper2(row, i)) {
-  //   //       return true;
-  //   //     }
-  //   //   }
-  //   // }
-  // }
-
   return false;
 }
 
-function helper2(r, theX = 0) {
-  let debug = [];
-  let equalInDiag_2 = 1;
-  let c = 0;
-  for (let col = gameField[0].length - 1; col >= 0; col--) {
-    // console.log(col + 1 + theX, col + 1 + r);
-    if (col < gameRows && col + 1 + theX < gameRows) {
-      // console.log("inside", col + 1 + theX, col + 1 + r);
+// function helper2(r, theX = 0) {
+//   let debug = [];
+//   let equalInDiag_2 = 1;
+//   let c = 0;
+//   for (let col = gameField[0].length - 1; col >= 0; col--) {
+//     // console.log(col + 1 + theX, col + 1 + r);
+//     if (col < gameRows && col + 1 + theX < gameRows) {
+//       // console.log("inside", col + 1 + theX, col + 1 + r);
 
-      // console.log(gameField[col + 1 + theX][col + 1 + r], col + 1 + theX, col + 1 + r);
-      if (
-        /*
-          06, 05, 04, 03, 02
-          16, 15, 14, 13, 12
-          / r ..0 0 0 0
-          / c ..6 5 4 3
-        */
-        gameField[c][col] == gameField[c + 1][col - 1] &&
-        gameField[c][col] != 0 &&
-        gameField[c][col]
-        // gameField[r + theX][col + r] == gameField[r + 1 + theX][col + 1 + r] &&
-        // gameField[r + theX][col + r] != 0 &&
-        // gameField[r + theX][col + r]
-      ) {
-        // console.log(
-        //   `${gameField[r][col]} r: ${r} c: ${col}`,
-        //   gameField[r][col + r],
-        //   gameField[r + 1][col + 1 + r],
-        //   gameField[r][col + r] != 0
-        // );
-        equalInDiag_2++;
-        debug.push([r + theX, col + r]);
-        // console.log(`r: ${row} c: ${col}`);
-      } else {
-        equalInDiag_2 = 1;
-      }
-      if (equalInDiag_2 == 4) {
-        console.log("WE GOT 4: ", currentColor, `equalInDiag_2 ${equalInDiag_2} r: ${r} c: ${col}`);
-        console.log(debug);
-        return true;
-      }
-    }
-    c++;
-  }
+//       // console.log(gameField[col + 1 + theX][col + 1 + r], col + 1 + theX, col + 1 + r);
+//       if (
+//         /*
+//           06, 05, 04, 03, 02
+//           16, 15, 14, 13, 12
+//           / r ..0 0 0 0
+//           / c ..6 5 4 3
+//         */
+//         gameField[c][col] == gameField[c + 1][col - 1] &&
+//         gameField[c][col] != 0 &&
+//         gameField[c][col]
+//         // gameField[r + theX][col + r] == gameField[r + 1 + theX][col + 1 + r] &&
+//         // gameField[r + theX][col + r] != 0 &&
+//         // gameField[r + theX][col + r]
+//       ) {
+//         // console.log(
+//         //   `${gameField[r][col]} r: ${r} c: ${col}`,
+//         //   gameField[r][col + r],
+//         //   gameField[r + 1][col + 1 + r],
+//         //   gameField[r][col + r] != 0
+//         // );
+//         equalInDiag_2++;
+//         debug.push([r + theX, col + r]);
+//         // console.log(`r: ${row} c: ${col}`);
+//       } else {
+//         equalInDiag_2 = 1;
+//       }
+//       if (equalInDiag_2 == 4) {
+//         console.log("WE GOT 4: ", currentColor, `equalInDiag_2 ${equalInDiag_2} r: ${r} c: ${col}`);
+//         console.log(debug);
+//         return true;
+//       }
+//     }
+//     c++;
+//   }
 
-  return false;
-}
+//   return false;
+// }
