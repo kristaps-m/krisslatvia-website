@@ -10,7 +10,8 @@ const oneSqSize = 100;
 let myObj;
 let gameField = [];
 let currentColor;
-// let ca
+let drawWiningLine = [];
+let isGameWon = false;
 
 function setup() {
   // myObj = new MyObject(20, 20, 20, 20);
@@ -44,15 +45,28 @@ function draw() {
       */
       if (e == 1) {
         fill("red");
+        strokeWeight(1);
         rect(r * oneSqSize, c * oneSqSize, oneSqSize, oneSqSize);
       } else if (e == 2) {
         fill("blue");
+        strokeWeight(1);
         rect(r * oneSqSize, c * oneSqSize, oneSqSize, oneSqSize);
       }
       fill("black");
       text(`${c - 1}, ${r}`, r * oneSqSize + 10, c * oneSqSize - 70);
     });
   });
+  if (isGameWon) {
+    // Style the line.
+    // stroke("magenta");
+    strokeWeight(5);
+    line(
+      drawWiningLine[0][0] * oneSqSize,
+      drawWiningLine[0][1] * oneSqSize + oneSqSize,
+      drawWiningLine[drawWiningLine.length - 1][0] * oneSqSize,
+      drawWiningLine[drawWiningLine.length - 1][1] * oneSqSize + oneSqSize
+    );
+  }
   // myObj.update();
   // myObj.draw();
   // drawGrid();
@@ -124,16 +138,23 @@ function isWiner() {
 }
 
 function isHorizontal() {
+  let debug = [];
   for (let row = 0; row < gameField.length; row++) {
     let equalInRow = 1;
     for (let col = 0; col < gameField[0].length - 1; col++) {
       if (gameField[row][col] == gameField[row][col + 1] && gameField[row][col] != 0) {
+        debug.push([col, row]);
         equalInRow++;
       } else {
         equalInRow = 1;
+        debug = [];
       }
       if (equalInRow == 4) {
         console.log("WE GOT 4: ", currentColor);
+        debug.push([col + 1, row]);
+        console.log(debug);
+        isGameWon = true;
+        drawWiningLine = [...debug];
         return true;
       }
     }
@@ -143,16 +164,23 @@ function isHorizontal() {
 }
 
 function isVertical() {
+  let debug = [];
   for (let row = 0; row < gameField[0].length; row++) {
     let equalInCol = 1;
     for (let col = 0; col < gameField.length - 1; col++) {
       if (gameField[col][row] == gameField[col + 1][row] && gameField[col][row] != 0) {
+        debug.push([row, col]);
         equalInCol++;
       } else {
         equalInCol = 1;
+        debug = [];
       }
       if (equalInCol == 4) {
         console.log("WE GOT 4: ", currentColor);
+        debug.push([row, col + 1]);
+        console.log(debug);
+        isGameWon = true;
+        drawWiningLine = [...debug];
         return true;
       }
     }
@@ -185,6 +213,7 @@ function isDiagonal_1() {
 }
 
 function helper(r, theX = 0) {
+  let debug = [];
   let equalInDiag_1 = 1;
   for (let col = 0; col < gameField[0].length - 1; col++) {
     // for (let col = 0; col < gameField[0].length - 1; col++) {
@@ -203,19 +232,17 @@ function helper(r, theX = 0) {
         gameField[col + theX][col + r] != 0 &&
         gameField[col + theX][col + r]
       ) {
-        // console.log(
-        //   `${gameField[col][col]} r: ${r} c: ${col}`,
-        //   gameField[col][col + r],
-        //   gameField[col + 1][col + 1 + r],
-        //   gameField[col][col + r] != 0
-        // );
+        debug.push([col + theX, col + r]);
         equalInDiag_1++;
-        // console.log(`r: ${row} c: ${col}`);
       } else {
         equalInDiag_1 = 1;
+        debug = [];
       }
       if (equalInDiag_1 == 4) {
         console.log("WE GOT 4: ", currentColor, `equalInDiag_1 ${equalInDiag_1} r: ${r} c: ${col}`);
+        debug.push([col + theX + 1, col + r + 1]);
+        isGameWon = true;
+        drawWiningLine = [...debug];
         return true;
       }
     }
@@ -245,10 +272,14 @@ function helper3(c = 0, index = 0) {
         equalInDiag_2++;
       } else {
         equalInDiag_2 = 1;
+        debug = [];
       }
       if (equalInDiag_2 == 4) {
         console.log("WE GOT 4: ", currentColor, `equalInDiag_2 ${equalInDiag_2} r: {r} c: {col}`);
+        debug.push([j + 1 + c, gameCols - j - 2 + index]);
         console.log(debug);
+        isGameWon = true;
+        drawWiningLine = [...debug];
         return true;
       }
     }
@@ -280,51 +311,3 @@ function isDiagonal_2() {
 
   return false;
 }
-
-// function helper2(r, theX = 0) {
-//   let debug = [];
-//   let equalInDiag_2 = 1;
-//   let c = 0;
-//   for (let col = gameField[0].length - 1; col >= 0; col--) {
-//     // console.log(col + 1 + theX, col + 1 + r);
-//     if (col < gameRows && col + 1 + theX < gameRows) {
-//       // console.log("inside", col + 1 + theX, col + 1 + r);
-
-//       // console.log(gameField[col + 1 + theX][col + 1 + r], col + 1 + theX, col + 1 + r);
-//       if (
-//         /*
-//           06, 05, 04, 03, 02
-//           16, 15, 14, 13, 12
-//           / r ..0 0 0 0
-//           / c ..6 5 4 3
-//         */
-//         gameField[c][col] == gameField[c + 1][col - 1] &&
-//         gameField[c][col] != 0 &&
-//         gameField[c][col]
-//         // gameField[r + theX][col + r] == gameField[r + 1 + theX][col + 1 + r] &&
-//         // gameField[r + theX][col + r] != 0 &&
-//         // gameField[r + theX][col + r]
-//       ) {
-//         // console.log(
-//         //   `${gameField[r][col]} r: ${r} c: ${col}`,
-//         //   gameField[r][col + r],
-//         //   gameField[r + 1][col + 1 + r],
-//         //   gameField[r][col + r] != 0
-//         // );
-//         equalInDiag_2++;
-//         debug.push([r + theX, col + r]);
-//         // console.log(`r: ${row} c: ${col}`);
-//       } else {
-//         equalInDiag_2 = 1;
-//       }
-//       if (equalInDiag_2 == 4) {
-//         console.log("WE GOT 4: ", currentColor, `equalInDiag_2 ${equalInDiag_2} r: ${r} c: ${col}`);
-//         console.log(debug);
-//         return true;
-//       }
-//     }
-//     c++;
-//   }
-
-//   return false;
-// }
