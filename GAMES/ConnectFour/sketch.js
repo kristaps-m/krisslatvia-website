@@ -11,17 +11,17 @@ let myObj;
 let gameField = [];
 let currentColor;
 let drawWiningLine = [];
-let isGameWon = false;
+let isGameWon = { isWon: false, h: false, v: false, d1: false, d2: false };
 
 function setup() {
   // myObj = new MyObject(20, 20, 20, 20);
   gameField = [
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [1, 2, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0],
+    [1, 0, 0, 0, 0, 2, 1],
+    [1, 1, 1, 0, 2, 1, 2],
+    [1, 2, 1, 2, 1, 2, 1],
   ];
   currentColor = 1;
   cnv = createCanvas(W, H);
@@ -44,6 +44,7 @@ function draw() {
       60, 61
       */
       if (e == 1) {
+        stroke("black");
         fill("red");
         strokeWeight(1);
         rect(r * oneSqSize, c * oneSqSize, oneSqSize, oneSqSize);
@@ -52,26 +53,33 @@ function draw() {
         strokeWeight(1);
         rect(r * oneSqSize, c * oneSqSize, oneSqSize, oneSqSize);
       }
+      noStroke();
+      strokeWeight(1);
+      stroke("black");
       fill("black");
       text(`${c - 1}, ${r}`, r * oneSqSize + 10, c * oneSqSize - 70);
     });
   });
-  if (isGameWon) {
+  if (isGameWon.isWon) {
     // Style the line.
-    // stroke("magenta");
-    strokeWeight(5);
+    stroke("green");
+    strokeWeight(7);
+    let addX = 0;
+    let addY = 0;
+    if (isGameWon.v || isGameWon.h) {
+      addX = oneSqSize / 2;
+      addY = -oneSqSize / 2;
+    } else if (isGameWon.d1 || isGameWon.d2) {
+      addX = oneSqSize / 2;
+      addY = -oneSqSize / 2;
+    }
     line(
-      drawWiningLine[0][0] * oneSqSize,
-      drawWiningLine[0][1] * oneSqSize + oneSqSize,
-      drawWiningLine[drawWiningLine.length - 1][0] * oneSqSize,
-      drawWiningLine[drawWiningLine.length - 1][1] * oneSqSize + oneSqSize
+      drawWiningLine[0][0] * oneSqSize + addX,
+      drawWiningLine[0][1] * oneSqSize + oneSqSize + addY,
+      drawWiningLine[drawWiningLine.length - 1][0] * oneSqSize + addX,
+      drawWiningLine[drawWiningLine.length - 1][1] * oneSqSize + oneSqSize + addY
     );
   }
-  // myObj.update();
-  // myObj.draw();
-  // drawGrid();
-  // select("#score").html(score);
-  // console.log(x);
 }
 
 function mouseClicked() {
@@ -153,7 +161,8 @@ function isHorizontal() {
         console.log("WE GOT 4: ", currentColor);
         debug.push([col + 1, row]);
         console.log(debug);
-        isGameWon = true;
+        isGameWon.isWon = true;
+        isGameWon.h = true;
         drawWiningLine = [...debug];
         return true;
       }
@@ -179,7 +188,8 @@ function isVertical() {
         console.log("WE GOT 4: ", currentColor);
         debug.push([row, col + 1]);
         console.log(debug);
-        isGameWon = true;
+        isGameWon.isWon = true;
+        isGameWon.v = true;
         drawWiningLine = [...debug];
         return true;
       }
@@ -232,7 +242,7 @@ function helper(r, theX = 0) {
         gameField[col + theX][col + r] != 0 &&
         gameField[col + theX][col + r]
       ) {
-        debug.push([col + theX, col + r]);
+        debug.push([col + r, col + theX]);
         equalInDiag_1++;
       } else {
         equalInDiag_1 = 1;
@@ -240,8 +250,10 @@ function helper(r, theX = 0) {
       }
       if (equalInDiag_1 == 4) {
         console.log("WE GOT 4: ", currentColor, `equalInDiag_1 ${equalInDiag_1} r: ${r} c: ${col}`);
-        debug.push([col + theX + 1, col + r + 1]);
-        isGameWon = true;
+        debug.push([col + r + 1, (col + theX + 1) * 1]);
+        console.log(debug);
+        isGameWon.isWon = true;
+        isGameWon.d1 = true;
         drawWiningLine = [...debug];
         return true;
       }
@@ -268,7 +280,7 @@ function helper3(c = 0, index = 0) {
         gameField[j + c][gameCols - j - 1 + index] != 0 &&
         gameField[j + c][gameCols - j - 1 + index]
       ) {
-        debug.push([j + c, gameCols - j - 1 + index]);
+        debug.push([gameCols - j - 1 + index, j + c]);
         equalInDiag_2++;
       } else {
         equalInDiag_2 = 1;
@@ -276,9 +288,10 @@ function helper3(c = 0, index = 0) {
       }
       if (equalInDiag_2 == 4) {
         console.log("WE GOT 4: ", currentColor, `equalInDiag_2 ${equalInDiag_2} r: {r} c: {col}`);
-        debug.push([j + 1 + c, gameCols - j - 2 + index]);
+        debug.push([gameCols - j - 2 + index, j + 1 + c]);
         console.log(debug);
-        isGameWon = true;
+        isGameWon.isWon = true;
+        isGameWon.d2 = true;
         drawWiningLine = [...debug];
         return true;
       }
