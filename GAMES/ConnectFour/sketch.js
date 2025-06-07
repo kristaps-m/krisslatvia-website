@@ -1,5 +1,6 @@
 /*
   TODO - Do you use getElementById in p5.js?
+  TODO - Create falling animation
 */
 const W = 700;
 const H = 600;
@@ -149,13 +150,18 @@ function isVertical() {
 }
 
 function isDiagonal_1() {
-  // from (0,0) to (widht, height)
+  // from (0,0) to (width, height)
+  /*
+  [*
+     *
+       *]
+  */
   for (let row = 0; row < gameField.length; row++) {
-    if (helper(row)) {
+    if (diagonal_1_HelperFunction(row)) {
       return true;
     } else {
       for (let i = 2; i > 0; i--) {
-        if (helper(row, i)) {
+        if (diagonal_1_HelperFunction(row, i)) {
           return true;
         }
       }
@@ -165,7 +171,7 @@ function isDiagonal_1() {
   return false;
 }
 
-function helper(r, theX = 0) {
+function diagonal_1_HelperFunction(r, theX = 0) {
   let equalColorsArrayIndexes = [];
   let equalInDiag_1 = 1;
   for (let col = 0; col < gameField[0].length - 1; col++) {
@@ -195,7 +201,7 @@ function helper(r, theX = 0) {
   return false;
 }
 
-function helper2(c = 0, index = 0) {
+function diagonal_2_HelperFunction(c = 0, index = 0) {
   let equalColorsArrayIndexes = [];
   let equalInDiag_2 = 1;
   for (let j = 0; j < gameCols; j++) {
@@ -226,11 +232,11 @@ function helper2(c = 0, index = 0) {
 function isDiagonal_2() {
   // from (0,width) to (0, height)
   for (let index = 0; index <= 2; index++) {
-    if (helper2(index)) {
+    if (diagonal_2_HelperFunction(index)) {
       return true;
     } else {
       for (let i = -1; i >= -3; i--) {
-        if (helper2(0, i)) {
+        if (diagonal_2_HelperFunction(0, i)) {
           return true;
         }
       }
