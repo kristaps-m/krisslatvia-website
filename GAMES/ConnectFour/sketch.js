@@ -33,12 +33,11 @@ function setup() {
   currentColor = 1;
   cnv = createCanvas(W, H);
   let newCanvasX = (windowWidth - W) / 2;
-  let newCanvasY = (windowHeight - H) / 2;
+  let newCanvasY = (windowHeight - H) / 2 + 100;
   cnv.position(newCanvasX, newCanvasY);
 
   // frameRate(200);
   // noLoop();
-  // updateCanvas();
 }
 
 function mouseClicked() {
@@ -109,9 +108,7 @@ function isHorizontal() {
         equalColorsArrayIndexes = [];
       }
       if (equalInRow == 4) {
-        // console.log("WE GOT 4: ", currentColor);
         equalColorsArrayIndexes.push([col + 1, row]);
-        // console.log(equalColorsArrayIndexes);
         isGameWon.isWon = true;
         isGameWon.h = true;
         drawWiningLine = [...equalColorsArrayIndexes];
@@ -139,9 +136,7 @@ function isVertical() {
         equalColorsArrayIndexes = [];
       }
       if (equalInCol == 4) {
-        // console.log("WE GOT 4: ", currentColor);
         equalColorsArrayIndexes.push([row, col + 1]);
-        // console.log(equalColorsArrayIndexes);
         isGameWon.isWon = true;
         isGameWon.v = true;
         drawWiningLine = [...equalColorsArrayIndexes];
@@ -188,13 +183,7 @@ function helper(r, theX = 0) {
         equalColorsArrayIndexes = [];
       }
       if (equalInDiag_1 == 4) {
-        // console.log(
-        //   "WE GOT 4: ",
-        //   currentColor,
-        //   `equalInDiag_1 ${equalInDiag_1} r: ${r} c: ${col}`
-        // );
         equalColorsArrayIndexes.push([col + r + 1, (col + theX + 1) * 1]);
-        // console.log(equalColorsArrayIndexes);
         isGameWon.isWon = true;
         isGameWon.d1 = true;
         drawWiningLine = [...equalColorsArrayIndexes];
@@ -224,13 +213,7 @@ function helper2(c = 0, index = 0) {
         equalColorsArrayIndexes = [];
       }
       if (equalInDiag_2 == 4) {
-        // console.log(
-        //   "WE GOT 4: ",
-        //   currentColor,
-        //   `equalInDiag_2 ${equalInDiag_2} r: {r} c: {col}`
-        // );
         equalColorsArrayIndexes.push([gameCols - j - 2 + index, j + 1 + c]);
-        // console.log(equalColorsArrayIndexes);
         isGameWon.isWon = true;
         isGameWon.d2 = true;
         drawWiningLine = [...equalColorsArrayIndexes];
