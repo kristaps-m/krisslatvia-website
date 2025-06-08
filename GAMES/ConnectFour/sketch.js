@@ -35,6 +35,7 @@ function setup() {
   cnv = createCanvas(W, H);
   let newCanvasX = (windowWidth - W) / 2;
   let newCanvasY = (windowHeight - H) / 2 + 100;
+  // cnv.mouseMoved(rectHoverWhenMouseOver());
   cnv.position(newCanvasX, newCanvasY);
 
   // frameRate(200);
@@ -50,6 +51,10 @@ function mouseClicked() {
     putPieceToBottom(theC);
     isWiner();
   }
+}
+
+function mouseMoved() {
+  rectHoverWhenMouseOver();
 }
 
 function putPieceToBottom(c) {
@@ -98,10 +103,7 @@ function isHorizontal() {
   for (let row = 0; row < gameField.length; row++) {
     let equalInRow = 1;
     for (let col = 0; col < gameField[0].length - 1; col++) {
-      if (
-        gameField[row][col] == gameField[row][col + 1] &&
-        gameField[row][col] != 0
-      ) {
+      if (gameField[row][col] == gameField[row][col + 1] && gameField[row][col] != 0) {
         equalColorsArrayIndexes.push([col, row]);
         equalInRow++;
       } else {
@@ -126,10 +128,7 @@ function isVertical() {
   for (let row = 0; row < gameField[0].length; row++) {
     let equalInCol = 1;
     for (let col = 0; col < gameField.length - 1; col++) {
-      if (
-        gameField[col][row] == gameField[col + 1][row] &&
-        gameField[col][row] != 0
-      ) {
+      if (gameField[col][row] == gameField[col + 1][row] && gameField[col][row] != 0) {
         equalColorsArrayIndexes.push([row, col]);
         equalInCol++;
       } else {
@@ -177,8 +176,7 @@ function diagonal_1_HelperFunction(r, theX = 0) {
   for (let col = 0; col < gameField[0].length - 1; col++) {
     if (col < gameRows && col + 1 + theX < gameRows) {
       if (
-        gameField[col + theX][col + r] ==
-          gameField[col + 1 + theX][col + 1 + r] &&
+        gameField[col + theX][col + r] == gameField[col + 1 + theX][col + 1 + r] &&
         gameField[col + theX][col + r] != 0 &&
         gameField[col + theX][col + r]
       ) {
