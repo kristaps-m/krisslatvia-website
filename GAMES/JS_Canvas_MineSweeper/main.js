@@ -33,6 +33,8 @@ let msHandler;
 let gameTimer = 1;
 let cheat = [],
   isCheatEnabled = false;
+const cheatSquareSidePx = 150;
+let cheatKeyDown = false;
 
 msHandler = new MineSweeperCellsHander();
 gameMinesHandler = new GamesMinesHandler();
@@ -133,14 +135,14 @@ CANVAS.addEventListener("contextmenu", function (event) {
 // render cells
 function renderCellsFunction(cellsToDraw) {
   cellsToDraw.forEach(function (cell) {
-    CTX.fillStyle = cell.squareRender.colour;
+    CTX.fillStyle = cell.isOpen ? "gray" : "pink"; //cell.squareRender.colour;
     CTX.fillRect(
       cell.squareRender.left,
       cell.squareRender.top,
       cell.squareRender.width,
       cell.squareRender.height
     );
-    if (cell.minesAround > 0) {
+    if (cell.minesAround > 0 && cell.isOpen) {
       CTX.font = "bold 15px Comic Sans MS";
       CTX.textAlign = "center";
       CTX.fillStyle = "black";
@@ -180,3 +182,80 @@ setInterval(() => {
     }
   }
 }, 1000);
+
+CANVAS.addEventListener("mousemove", (event) => {
+  if (cheatKeyDown) {
+    // CTX.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    // renderCellsFunction(transformArray(minesweeperCells));
+    // console.log(minesweeperCells);
+    // console.log(gameFieldForLogic);
+    renderCellsFunction(gameFieldForLogic.flat());
+    // renderCellsFunction(MS_Reveal_Cells);
+    const rect = CANVAS.getBoundingClientRect();
+    // Calculate the click position relative to the canvas
+    let x = (event.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
+    let y = (event.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
+    // console.log(x, y);
+    CTX.strokeStyle = "black";
+    CTX.lineWidth = 1;
+    CTX.beginPath();
+    CTX.rect(x, y, cheatSquareSidePx, cheatSquareSidePx);
+    CTX.stroke();
+    isCellsInsideSquare(gameFieldForLogic.flat(), x, y);
+  }
+});
+
+function isCellsInsideSquare(a, mx, my) {
+  a.forEach((c) => {
+    const cs = c.squareRender;
+    if (
+      cs.left > mx &&
+      cs.top > my &&
+      cs.left + cs.width < mx + cheatSquareSidePx &&
+      cs.top + cs.height < my + cheatSquareSidePx
+    ) {
+      // console.log(c);
+      CTX.strokeStyle = "red";
+      CTX.lineWidth = 3;
+      CTX.beginPath();
+      CTX.rect(cs.left, cs.top, cs.width, cs.height);
+      CTX.stroke();
+      // -----------
+      if (c.minesAround > 0 && !c.isMine) {
+        // console.log(c);
+        CTX.font = "bold 15px Comic Sans MS";
+        CTX.textAlign = "center";
+        CTX.fillStyle = "black";
+        const textX = c.squareRender.left + c.squareRender.width / 2;
+        const textY =
+          c.squareRender.top + c.squareRender.height / 2 + CELL_OFF_SET * 3;
+        CTX.fillText(c.minesAround, textX, textY);
+      } else if (c.isMine) {
+        CTX.fillStyle = "darkblue";
+        const bSqOffS = 5;
+        CTX.fillRect(
+          cs.left + bSqOffS,
+          cs.top + bSqOffS,
+          cs.width - bSqOffS * 2,
+          cs.height - bSqOffS * 2
+        );
+      }
+    }
+  });
+}
+
+window.addEventListener("keydown", (e) => {
+  const k = e.key;
+  if (k == "q") {
+    cheatKeyDown = true;
+    // console.log(k);
+  }
+});
+
+window.addEventListener("keyup", (e) => {
+  const k = e.key;
+  if (k == "q") {
+    // console.log(k);
+    cheatKeyDown = false;
+  }
+});
