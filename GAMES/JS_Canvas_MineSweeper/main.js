@@ -14,15 +14,9 @@ let isGameOver = false;
 let isPaused = true;
 let withFirstClickYouCanHitMine = false;
 let doesClickDigs = true;
-let gameFieldHeight = parseInt(
-  (document.getElementById("theHeight").value = difficulty[0])
-);
-let gameFieldWidth = parseInt(
-  (document.getElementById("theWidth").value = difficulty[1])
-);
-let minesInDaGame = parseInt(
-  (document.getElementById("minesCount").value = difficulty[2])
-);
+let gameFieldHeight = parseInt((document.getElementById("theHeight").value = difficulty[0]));
+let gameFieldWidth = parseInt((document.getElementById("theWidth").value = difficulty[1]));
+let minesInDaGame = parseInt((document.getElementById("minesCount").value = difficulty[2]));
 document.getElementById("minesLeft").textContent = minesInDaGame;
 // let elemLeft = CANVAS.offsetLeft;
 // let elemTop = CANVAS.offsetTop;
@@ -33,7 +27,8 @@ let msHandler;
 let gameTimer = 1;
 let cheat = [],
   isCheatEnabled = false;
-const cheatSquareSidePx = 150;
+const cheatSquareSidePx = 220;
+const cheatSquareOffSet = 20;
 let cheatKeyDown = false;
 
 msHandler = new MineSweeperCellsHander();
@@ -46,16 +41,9 @@ if (withFirstClickYouCanHitMine) {
   let rRow = gameMinesHandler.getRandomInt(gameFieldForLogic.length);
   let rCol = gameMinesHandler.getRandomInt(gameFieldForLogic[0].length);
   gameFieldForLogic = [
-    ...gameMinesHandler.addMinesToField(
-      minesInDaGame,
-      gameFieldForLogic,
-      rRow,
-      rCol
-    ),
+    ...gameMinesHandler.addMinesToField(minesInDaGame, gameFieldForLogic, rRow, rCol),
   ];
-  gameFieldForLogic = [
-    ...gameMinesHandler.addMineCountNumbers(gameFieldForLogic),
-  ];
+  gameFieldForLogic = [...gameMinesHandler.addMineCountNumbers(gameFieldForLogic)];
 }
 
 function newGame() {
@@ -86,16 +74,9 @@ function newGame() {
     let rRow = gameMinesHandler.getRandomInt(gameFieldForLogic.length);
     let rCol = gameMinesHandler.getRandomInt(gameFieldForLogic[0].length);
     gameFieldForLogic = [
-      ...gameMinesHandler.addMinesToField(
-        minesInDaGame,
-        gameFieldForLogic,
-        rRow,
-        rCol
-      ),
+      ...gameMinesHandler.addMinesToField(minesInDaGame, gameFieldForLogic, rRow, rCol),
     ];
-    gameFieldForLogic = [
-      ...gameMinesHandler.addMineCountNumbers(gameFieldForLogic),
-    ];
+    gameFieldForLogic = [...gameMinesHandler.addMineCountNumbers(gameFieldForLogic)];
   }
   renderCellsFunction(transformArray(minesweeperCells));
 }
@@ -134,7 +115,18 @@ CANVAS.addEventListener("contextmenu", function (event) {
 
 // render cells
 function renderCellsFunction(cellsToDraw) {
+  // CTX.fillStyle = "black";
+  // CTX.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   cellsToDraw.forEach(function (cell) {
+    const textX = cell.squareRender.left + cell.squareRender.width / 2;
+    const textY = cell.squareRender.top + cell.squareRender.height / 2 + CELL_OFF_SET * 3;
+    CTX.fillStyle = "black";
+    CTX.fillRect(
+      cell.squareRender.left - 2,
+      cell.squareRender.top - 2,
+      cell.squareRender.width + 2,
+      cell.squareRender.height + 2
+    );
     CTX.fillStyle = cell.isOpen ? "gray" : "pink"; //cell.squareRender.colour;
     CTX.fillRect(
       cell.squareRender.left,
@@ -146,10 +138,10 @@ function renderCellsFunction(cellsToDraw) {
       CTX.font = "bold 15px Comic Sans MS";
       CTX.textAlign = "center";
       CTX.fillStyle = "black";
-      const textX = cell.squareRender.left + cell.squareRender.width / 2;
-      const textY =
-        cell.squareRender.top + cell.squareRender.height / 2 + CELL_OFF_SET * 3;
       CTX.fillText(cell.minesAround, textX, textY);
+    }
+    if (!cell.isOpen && cell.isFlaged) {
+      CTX.fillText("🚩", textX, textY);
     }
   });
 }
@@ -193,15 +185,17 @@ CANVAS.addEventListener("mousemove", (event) => {
     // renderCellsFunction(MS_Reveal_Cells);
     const rect = CANVAS.getBoundingClientRect();
     // Calculate the click position relative to the canvas
-    let x = (event.clientX - rect.left) * (CANVAS.width / rect.width); // Normalize x
-    let y = (event.clientY - rect.top) * (CANVAS.height / rect.height); // Normalize y
+    let x = (event.clientX - rect.left) * (CANVAS.width / rect.width) - cheatSquareOffSet; // Normalize x
+    let y = (event.clientY - rect.top) * (CANVAS.height / rect.height) - cheatSquareOffSet; // Normalize y
     // console.log(x, y);
     CTX.strokeStyle = "black";
-    CTX.lineWidth = 1;
+    CTX.lineWidth = 2;
     CTX.beginPath();
-    CTX.rect(x, y, cheatSquareSidePx, cheatSquareSidePx);
+    CTX.rect(x, y, cheatSquareSidePx - cheatSquareOffSet, cheatSquareSidePx - cheatSquareOffSet);
     CTX.stroke();
     isCellsInsideSquare(gameFieldForLogic.flat(), x, y);
+  } else {
+    renderCellsFunction(gameFieldForLogic.flat());
   }
 });
 
@@ -211,10 +205,9 @@ function isCellsInsideSquare(a, mx, my) {
     if (
       cs.left > mx &&
       cs.top > my &&
-      cs.left + cs.width < mx + cheatSquareSidePx &&
-      cs.top + cs.height < my + cheatSquareSidePx
+      cs.left + cs.width < mx + cheatSquareSidePx - cheatSquareOffSet &&
+      cs.top + cs.height < my + cheatSquareSidePx - cheatSquareOffSet
     ) {
-      // console.log(c);
       CTX.strokeStyle = "red";
       CTX.lineWidth = 3;
       CTX.beginPath();
@@ -222,13 +215,11 @@ function isCellsInsideSquare(a, mx, my) {
       CTX.stroke();
       // -----------
       if (c.minesAround > 0 && !c.isMine) {
-        // console.log(c);
         CTX.font = "bold 15px Comic Sans MS";
         CTX.textAlign = "center";
         CTX.fillStyle = "black";
         const textX = c.squareRender.left + c.squareRender.width / 2;
-        const textY =
-          c.squareRender.top + c.squareRender.height / 2 + CELL_OFF_SET * 3;
+        const textY = c.squareRender.top + c.squareRender.height / 2 + CELL_OFF_SET * 3;
         CTX.fillText(c.minesAround, textX, textY);
       } else if (c.isMine) {
         CTX.fillStyle = "darkblue";
@@ -244,18 +235,17 @@ function isCellsInsideSquare(a, mx, my) {
   });
 }
 
-window.addEventListener("keydown", (e) => {
-  const k = e.key;
-  if (k == "q") {
+const keysPressed = {};
+
+window.addEventListener("keydown", (event) => {
+  keysPressed[event.key.toLowerCase()] = true;
+
+  if (keysPressed["q"] && keysPressed["t"]) {
     cheatKeyDown = true;
-    // console.log(k);
   }
 });
 
-window.addEventListener("keyup", (e) => {
-  const k = e.key;
-  if (k == "q") {
-    // console.log(k);
-    cheatKeyDown = false;
-  }
+window.addEventListener("keyup", (event) => {
+  keysPressed[event.key.toLowerCase()] = false;
+  cheatKeyDown = false;
 });
