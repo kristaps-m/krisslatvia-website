@@ -79,7 +79,7 @@ function newGame() {
     ];
     gameFieldForLogic = [...gameMinesHandler.addMineCountNumbers(gameFieldForLogic)];
   }
-  renderCellsFunction(gameFieldForLogic.flat());
+  renderCellsFunction(gameFieldForLogic);
 }
 
 document.addEventListener("keyup", (e) => {
@@ -89,7 +89,7 @@ document.addEventListener("keyup", (e) => {
       isCheatEnabled = !isCheatEnabled;
       console.log(`CHEAT ${isCheatEnabled ? "EN" : "DIS"}ABLED`);
       // gameMinesHandler.supCheat(gameFieldForLogic);
-      renderCellsFunction(gameFieldForLogic.flat());
+      renderCellsFunction(gameFieldForLogic);
       cheat = [];
     }
   }
@@ -119,39 +119,42 @@ CANVAS.addEventListener("contextmenu", function (event) {
 function renderCellsFunction(cellsToDraw) {
   // CTX.fillStyle = "black";
   // CTX.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  cellsToDraw.forEach(function (cell) {
-    const textX = cell.squareRender.left + cell.squareRender.width / 2;
-    const textY = cell.squareRender.top + cell.squareRender.height / 2 + CELL_OFF_SET * 3;
-    CTX.fillStyle = "black";
-    CTX.fillRect(
-      cell.squareRender.left - CELL_OFF_SET,
-      cell.squareRender.top - CELL_OFF_SET,
-      cell.squareRender.width + CELL_OFF_SET,
-      cell.squareRender.height + CELL_OFF_SET
-    );
-    CTX.fillStyle = cell.isOpen ? "gray" : "pink"; //cell.squareRender.colour;
-    CTX.fillRect(
-      cell.squareRender.left,
-      cell.squareRender.top,
-      cell.squareRender.width,
-      cell.squareRender.height
-    );
-    if (isCheatEnabled) {
-      CTX.fillStyle = "#ff64e2";
-      if (cell.isMine === true) {
-        CTX.fillRect(cell.squareRender.left + 2, cell.squareRender.top + 2, 6, 6);
-      }
-    }
-
-    if (cell.minesAround > 0 && cell.isOpen) {
-      CTX.font = "bold 15px Comic Sans MS";
-      CTX.textAlign = "center";
+  cellsToDraw.forEach((row) => {
+    // console.log(row);
+    row.forEach((cell) => {
+      const textX = cell.squareRender.left + cell.squareRender.width / 2;
+      const textY = cell.squareRender.top + cell.squareRender.height / 2 + CELL_OFF_SET * 3;
       CTX.fillStyle = "black";
-      CTX.fillText(cell.minesAround, textX, textY);
-    }
-    if (!cell.isOpen && cell.isFlaged) {
-      CTX.fillText("🚩", textX, textY);
-    }
+      CTX.fillRect(
+        cell.squareRender.left - 2,
+        cell.squareRender.top - 2,
+        cell.squareRender.width + 2,
+        cell.squareRender.height + 2
+      );
+      CTX.fillStyle = cell.isOpen ? "gray" : "pink"; //cell.squareRender.colour;
+      CTX.fillRect(
+        cell.squareRender.left,
+        cell.squareRender.top,
+        cell.squareRender.width,
+        cell.squareRender.height
+      );
+      if (isCheatEnabled) {
+        CTX.fillStyle = "#ff64e2";
+        if (cell.isMine === true) {
+          CTX.fillRect(cell.squareRender.left + 2, cell.squareRender.top + 2, 6, 6);
+        }
+      }
+
+      if (cell.minesAround > 0 && cell.isOpen) {
+        CTX.font = "bold 15px Comic Sans MS";
+        CTX.textAlign = "center";
+        CTX.fillStyle = "black";
+        CTX.fillText(cell.minesAround, textX, textY);
+      }
+      if (!cell.isOpen && cell.isFlaged) {
+        CTX.fillText("🚩", textX, textY);
+      }
+    });
   });
 }
 function gameOverAllMinesReveal(cellsToDraw) {
@@ -172,7 +175,7 @@ function gameOverAllMinesReveal(cellsToDraw) {
 }
 
 // renderCellsFunction(transformArray(minesweeperCells));
-renderCellsFunction(gameFieldForLogic.flat());
+renderCellsFunction(gameFieldForLogic);
 
 setInterval(() => {
   if (!isPaused) {
@@ -187,7 +190,7 @@ setInterval(() => {
 
 CANVAS.addEventListener("mousemove", (event) => {
   if (cheatKeyDown && !isGameOver) {
-    renderCellsFunction(gameFieldForLogic.flat());
+    renderCellsFunction(gameFieldForLogic);
     const rect = CANVAS.getBoundingClientRect();
     // Calculate the click position relative to the canvas
     let x = (event.clientX - rect.left) * (CANVAS.width / rect.width) - cheatSquareOffSet; // Normalize x
@@ -197,46 +200,48 @@ CANVAS.addEventListener("mousemove", (event) => {
     CTX.beginPath();
     CTX.rect(x, y, cheatSquareSidePx - cheatSquareOffSet, cheatSquareSidePx - cheatSquareOffSet);
     CTX.stroke();
-    isCellsInsideSquare(gameFieldForLogic.flat(), x, y);
+    isCellsInsideSquare(gameFieldForLogic, x, y);
   } else if (!cheatKeyDown && !isGameOver) {
-    renderCellsFunction(gameFieldForLogic.flat());
+    renderCellsFunction(gameFieldForLogic);
     // gameMinesHandler.supCheat(gameFieldForLogic);
   }
 });
 
 function isCellsInsideSquare(a, mx, my) {
-  a.forEach((c) => {
-    const cs = c.squareRender;
-    if (
-      cs.left > mx &&
-      cs.top > my &&
-      cs.left + cs.width < mx + cheatSquareSidePx - cheatSquareOffSet &&
-      cs.top + cs.height < my + cheatSquareSidePx - cheatSquareOffSet
-    ) {
-      CTX.strokeStyle = "red";
-      CTX.lineWidth = 3;
-      CTX.beginPath();
-      CTX.rect(cs.left, cs.top, cs.width, cs.height);
-      CTX.stroke();
-      // -----------
-      if (c.minesAround > 0 && !c.isMine) {
-        CTX.font = "bold 15px Comic Sans MS";
-        CTX.textAlign = "center";
-        CTX.fillStyle = "black";
-        const textX = c.squareRender.left + c.squareRender.width / 2;
-        const textY = c.squareRender.top + c.squareRender.height / 2 + CELL_OFF_SET * 3;
-        CTX.fillText(c.minesAround, textX, textY);
-      } else if (c.isMine) {
-        CTX.fillStyle = "darkblue";
-        const bSqOffS = 5;
-        CTX.fillRect(
-          cs.left + bSqOffS,
-          cs.top + bSqOffS,
-          cs.width - bSqOffS * 2,
-          cs.height - bSqOffS * 2
-        );
+  a.forEach((r) => {
+    r.forEach((c) => {
+      const cs = c.squareRender;
+      if (
+        cs.left > mx &&
+        cs.top > my &&
+        cs.left + cs.width < mx + cheatSquareSidePx - cheatSquareOffSet &&
+        cs.top + cs.height < my + cheatSquareSidePx - cheatSquareOffSet
+      ) {
+        CTX.strokeStyle = "red";
+        CTX.lineWidth = 3;
+        CTX.beginPath();
+        CTX.rect(cs.left, cs.top, cs.width, cs.height);
+        CTX.stroke();
+        // -----------
+        if (c.minesAround > 0 && !c.isMine) {
+          CTX.font = "bold 15px Comic Sans MS";
+          CTX.textAlign = "center";
+          CTX.fillStyle = "black";
+          const textX = c.squareRender.left + c.squareRender.width / 2;
+          const textY = c.squareRender.top + c.squareRender.height / 2 + CELL_OFF_SET * 3;
+          CTX.fillText(c.minesAround, textX, textY);
+        } else if (c.isMine) {
+          CTX.fillStyle = "darkblue";
+          const bSqOffS = 5;
+          CTX.fillRect(
+            cs.left + bSqOffS,
+            cs.top + bSqOffS,
+            cs.width - bSqOffS * 2,
+            cs.height - bSqOffS * 2
+          );
+        }
       }
-    }
+    });
   });
 }
 

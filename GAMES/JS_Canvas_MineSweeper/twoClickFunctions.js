@@ -120,7 +120,7 @@ function mainLeftClick(event) {
     });
   }
 
-  renderCellsFunction(MS_Reveal_Cells);
+  renderCellsFunction([MS_Reveal_Cells]);
   MS_Reveal_Cells = [];
   if (msHandler.checkIfGameWon(gameFieldForLogic, minesInDaGame)) {
     isGameOver = true;
@@ -174,7 +174,7 @@ function putFlagInCell(event) {
       }
     });
   }
-  renderCellsFunction(gameFieldForLogic.flat());
+  renderCellsFunction(gameFieldForLogic);
 
   // In two lines below we set new value to Mines left every time we right click field :)
   let minesFlaged = gameMinesHandler.minesFlagedOnField(gameFieldForLogic);

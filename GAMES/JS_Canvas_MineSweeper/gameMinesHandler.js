@@ -85,43 +85,6 @@ function GamesMinesHandler() {
     return minesFlaged;
   };
 
-  // this.supCheat = function (theGameField, cheatColor = "#ff64e2") {
-  //   if (isCheatEnabled) {
-  //     for (let row = 0; row < theGameField.length; row++) {
-  //       for (let col = 0; col < theGameField[0].length; col++) {
-  //         const c = theGameField[row][col];
-  //         const textX = c.squareRender.left;
-  //         const textY = c.squareRender.top;
-  //         if (c.isMine === true) {
-  //           CTX.fillStyle = cheatColor;
-  //           CTX.fillRect(textX + 2, textY + 2, 6, 6);
-  //         }
-  //       }
-  //     }
-  //   } else {
-  //     for (let row = 0; row < theGameField.length; row++) {
-  //       for (let col = 0; col < theGameField[0].length; col++) {
-  //         const c = theGameField[row][col];
-  //         const textX = c.squareRender.left;
-  //         const textY = c.squareRender.top;
-  //         if (c.isMine === true && !c.isFlaged) {
-  //           CTX.fillStyle = "pink";
-  //           CTX.fillRect(textX + 1, textY + 1, 8, 8);
-  //         } else if (c.isMine === true && c.isFlaged === true) {
-  //           CTX.fillStyle = "pink";
-  //           CTX.fillRect(textX + 1, textY + 1, 8, 8);
-  //           CTX.font = "bold 15px Comic Sans MS";
-  //           CTX.textAlign = "center";
-  //           CTX.fillStyle = "green";
-  //           const tX = textX + c.squareRender.width / 2;
-  //           const tY = textY + c.squareRender.height / 2 + CELL_OFF_SET * 3;
-  //           CTX.fillText("🚩", tX, tY);
-  //         }
-  //       }
-  //     }
-  //   }
-  // };
-
   this.getRandomInt = function (max) {
     return Math.floor(Math.random() * max);
   };
