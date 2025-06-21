@@ -3,7 +3,7 @@ const CTX = CANVAS.getContext("2d");
 const CANVAS_TIMER = document.getElementById("theTimer");
 const CTX_TIMER = CANVAS_TIMER.getContext("2d");
 let difficulty = document.getElementById("difficulty").value.split(" ");
-const isInsaneDifficulty = difficulty.join(",") === "30,30,150"; // vlues from html file
+const isInsaneDifficulty = difficulty.join(",") === "30,30,150"; // values from html file
 const defaultWandH = 500;
 let CANVAS_WIDTH = defaultWandH;
 let CANVAS_HEIGHT = defaultWandH;
@@ -20,13 +20,14 @@ let minesInDaGame = parseInt((document.getElementById("minesCount").value = diff
 document.getElementById("minesLeft").textContent = minesInDaGame;
 // let elemLeft = CANVAS.offsetLeft;
 // let elemTop = CANVAS.offsetTop;
-let minesweeperCells = [];
+// let minesweeperCells = []; // Why am using these two :@ #1
 let MS_Reveal_Cells = [];
-let gameFieldForLogic = [];
+// seams like I have fixed fact that I had two lists for rendering cells
+let gameFieldForLogic = []; // Why am using these two :@ #2
 let msHandler;
 let gameTimer = 1;
-let cheat = [],
-  isCheatEnabled = false;
+let cheat = [];
+let isCheatEnabled = false;
 const cheatSquareSidePx = 220;
 const cheatSquareOffSet = 20;
 let cheatKeyDown = false;
@@ -78,7 +79,7 @@ function newGame() {
     ];
     gameFieldForLogic = [...gameMinesHandler.addMineCountNumbers(gameFieldForLogic)];
   }
-  renderCellsFunction(transformArray(minesweeperCells));
+  renderCellsFunction(gameFieldForLogic.flat());
 }
 
 document.addEventListener("keyup", (e) => {
@@ -87,7 +88,8 @@ document.addEventListener("keyup", (e) => {
     if (cheatIfCheatEntered()) {
       isCheatEnabled = !isCheatEnabled;
       console.log(`CHEAT ${isCheatEnabled ? "EN" : "DIS"}ABLED`);
-      gameMinesHandler.supCheat(gameFieldForLogic);
+      // gameMinesHandler.supCheat(gameFieldForLogic);
+      renderCellsFunction(gameFieldForLogic.flat());
       cheat = [];
     }
   }
@@ -122,10 +124,10 @@ function renderCellsFunction(cellsToDraw) {
     const textY = cell.squareRender.top + cell.squareRender.height / 2 + CELL_OFF_SET * 3;
     CTX.fillStyle = "black";
     CTX.fillRect(
-      cell.squareRender.left - 2,
-      cell.squareRender.top - 2,
-      cell.squareRender.width + 2,
-      cell.squareRender.height + 2
+      cell.squareRender.left - CELL_OFF_SET,
+      cell.squareRender.top - CELL_OFF_SET,
+      cell.squareRender.width + CELL_OFF_SET,
+      cell.squareRender.height + CELL_OFF_SET
     );
     CTX.fillStyle = cell.isOpen ? "gray" : "pink"; //cell.squareRender.colour;
     CTX.fillRect(
@@ -134,6 +136,13 @@ function renderCellsFunction(cellsToDraw) {
       cell.squareRender.width,
       cell.squareRender.height
     );
+    if (isCheatEnabled) {
+      CTX.fillStyle = "#ff64e2";
+      if (cell.isMine === true) {
+        CTX.fillRect(cell.squareRender.left + 2, cell.squareRender.top + 2, 6, 6);
+      }
+    }
+
     if (cell.minesAround > 0 && cell.isOpen) {
       CTX.font = "bold 15px Comic Sans MS";
       CTX.textAlign = "center";
@@ -162,7 +171,8 @@ function gameOverAllMinesReveal(cellsToDraw) {
   }
 }
 
-renderCellsFunction(transformArray(minesweeperCells));
+// renderCellsFunction(transformArray(minesweeperCells));
+renderCellsFunction(gameFieldForLogic.flat());
 
 setInterval(() => {
   if (!isPaused) {
@@ -176,7 +186,7 @@ setInterval(() => {
 }, 1000);
 
 CANVAS.addEventListener("mousemove", (event) => {
-  if (cheatKeyDown) {
+  if (cheatKeyDown && !isGameOver) {
     renderCellsFunction(gameFieldForLogic.flat());
     const rect = CANVAS.getBoundingClientRect();
     // Calculate the click position relative to the canvas
@@ -188,8 +198,9 @@ CANVAS.addEventListener("mousemove", (event) => {
     CTX.rect(x, y, cheatSquareSidePx - cheatSquareOffSet, cheatSquareSidePx - cheatSquareOffSet);
     CTX.stroke();
     isCellsInsideSquare(gameFieldForLogic.flat(), x, y);
-  } else {
+  } else if (!cheatKeyDown && !isGameOver) {
     renderCellsFunction(gameFieldForLogic.flat());
+    // gameMinesHandler.supCheat(gameFieldForLogic);
   }
 });
 

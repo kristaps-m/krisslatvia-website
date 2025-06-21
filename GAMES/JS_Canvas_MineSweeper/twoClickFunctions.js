@@ -46,12 +46,12 @@ function mainLeftClick(event) {
     gameFieldForLogic = [...gameMinesHandler.addMineCountNumbers(gameFieldForLogic)];
   }
   if (!isGameOver && !isPaused) {
-    minesweeperCells.forEach(function (cell) {
+    gameFieldForLogic.flat().forEach(function (cell) {
       if (
-        yVert > cell.top &&
-        yVert < cell.top + cell.height &&
-        xHor > cell.left &&
-        xHor < cell.left + cell.width
+        yVert > cell.squareRender.top &&
+        yVert < cell.squareRender.top + cell.squareRender.height &&
+        xHor > cell.squareRender.left &&
+        xHor < cell.squareRender.left + cell.squareRender.width
       ) {
         // yVert in line below is fliped with xHor else do not work.
         let CELL_CLICKED =
@@ -62,7 +62,12 @@ function mainLeftClick(event) {
         if (!CELL_CLICKED.isFlaged && CELL_CLICKED.isMine) {
           gameOverAllMinesReveal(gameFieldForLogic);
           CTX.fillStyle = "darkred";
-          CTX.fillRect(cell.left, cell.top, cell.width, cell.height);
+          CTX.fillRect(
+            cell.squareRender.left,
+            cell.squareRender.top,
+            cell.squareRender.width,
+            cell.squareRender.height
+          );
           isGameOver = true;
           isPaused = true;
           alert("GAME OVER");
@@ -138,12 +143,12 @@ function putFlagInCell(event) {
 
   if (!isPaused) {
     // Determine the cell clicked based on coordinates
-    minesweeperCells.forEach(function (cell) {
+    gameFieldForLogic.flat().forEach(function (cell) {
       if (
-        y > cell.top &&
-        y < cell.top + cell.height &&
-        x > cell.left &&
-        x < cell.left + cell.width
+        y > cell.squareRender.top &&
+        y < cell.squareRender.top + cell.squareRender.height &&
+        x > cell.squareRender.left &&
+        x < cell.squareRender.left + cell.squareRender.width
       ) {
         // yVert in line below is fliped with xHor else do not work.
         let CELL_CLICKED =
@@ -159,21 +164,11 @@ function putFlagInCell(event) {
           // CTX.font = "bold 15px Comic Sans MS";
           // CTX.textAlign = "center";
           // CTX.fillStyle = "green";
-          // const textX = cell.left + cell.width / 2;
-          // const textY = cell.top + cell.height / 2 + CELL_OFF_SET * 3;
-          // CTX.fillText("🚩", textX, textY);
         } else if (!CELL_CLICKED.isOpen && CELL_CLICKED.isFlaged) {
           gameFieldForLogic[CELL_CLICKED.row][CELL_CLICKED.col] = {
             ...CELL_CLICKED,
             isFlaged: false,
           }; // Toggle the flagged state
-          CTX.fillStyle = "pink";
-          CTX.fillRect(
-            CELL_CLICKED.squareRender.left,
-            CELL_CLICKED.squareRender.top,
-            CELL_CLICKED.squareRender.width,
-            CELL_CLICKED.squareRender.height
-          );
         }
         return; // Exit the loop after flagging the cell
       }
