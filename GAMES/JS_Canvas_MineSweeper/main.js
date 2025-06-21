@@ -177,17 +177,11 @@ setInterval(() => {
 
 CANVAS.addEventListener("mousemove", (event) => {
   if (cheatKeyDown) {
-    // CTX.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    // renderCellsFunction(transformArray(minesweeperCells));
-    // console.log(minesweeperCells);
-    // console.log(gameFieldForLogic);
     renderCellsFunction(gameFieldForLogic.flat());
-    // renderCellsFunction(MS_Reveal_Cells);
     const rect = CANVAS.getBoundingClientRect();
     // Calculate the click position relative to the canvas
     let x = (event.clientX - rect.left) * (CANVAS.width / rect.width) - cheatSquareOffSet; // Normalize x
     let y = (event.clientY - rect.top) * (CANVAS.height / rect.height) - cheatSquareOffSet; // Normalize y
-    // console.log(x, y);
     CTX.strokeStyle = "black";
     CTX.lineWidth = 2;
     CTX.beginPath();

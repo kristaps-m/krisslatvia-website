@@ -30,16 +30,9 @@ function mainLeftClick(event) {
     let rRow = gameMinesHandler.getRandomInt(gameFieldForLogic.length);
     let rCol = gameMinesHandler.getRandomInt(gameFieldForLogic[0].length);
     gameFieldForLogic = [
-      ...gameMinesHandler.addMinesToField(
-        minesInDaGame,
-        gameFieldForLogic,
-        rRow,
-        rCol
-      ),
+      ...gameMinesHandler.addMinesToField(minesInDaGame, gameFieldForLogic, rRow, rCol),
     ];
-    gameFieldForLogic = [
-      ...gameMinesHandler.addMineCountNumbers(gameFieldForLogic),
-    ];
+    gameFieldForLogic = [...gameMinesHandler.addMineCountNumbers(gameFieldForLogic)];
   } else {
     // row & col you clicked on field will NEVER be mine. So you always win if H=10, W=10, mines=99;
     gameFieldForLogic = [
@@ -50,9 +43,7 @@ function mainLeftClick(event) {
         colIndxClick
       ),
     ];
-    gameFieldForLogic = [
-      ...gameMinesHandler.addMineCountNumbers(gameFieldForLogic),
-    ];
+    gameFieldForLogic = [...gameMinesHandler.addMineCountNumbers(gameFieldForLogic)];
   }
   if (!isGameOver && !isPaused) {
     minesweeperCells.forEach(function (cell) {
@@ -64,9 +55,9 @@ function mainLeftClick(event) {
       ) {
         // yVert in line below is fliped with xHor else do not work.
         let CELL_CLICKED =
-          gameFieldForLogic[
-            Math.floor(yVert / (CANVAS_WIDTH / gameFieldHeight))
-          ][Math.floor(xHor / (CANVAS_HEIGHT / gameFieldWidth))];
+          gameFieldForLogic[Math.floor(yVert / (CANVAS_WIDTH / gameFieldHeight))][
+            Math.floor(xHor / (CANVAS_HEIGHT / gameFieldWidth))
+          ];
         // Cell reaveal ...
         if (!CELL_CLICKED.isFlaged && CELL_CLICKED.isMine) {
           gameOverAllMinesReveal(gameFieldForLogic);
@@ -84,10 +75,7 @@ function mainLeftClick(event) {
 
             if (CURRENT_CELL) {
               const { row, col } = CURRENT_CELL;
-              if (
-                !TEMP_MINE_FIELD[row][col].isOpen &&
-                !TEMP_MINE_FIELD[row][col].isFlaged
-              ) {
+              if (!TEMP_MINE_FIELD[row][col].isOpen && !TEMP_MINE_FIELD[row][col].isFlaged) {
                 TEMP_MINE_FIELD[row][col] = {
                   ...TEMP_MINE_FIELD[row][col],
                   isOpen: true,
@@ -168,12 +156,12 @@ function putFlagInCell(event) {
             ...CELL_CLICKED,
             isFlaged: true,
           }; // Toggle the flagged state
-          CTX.font = "bold 15px Comic Sans MS";
-          CTX.textAlign = "center";
-          CTX.fillStyle = "green";
-          const textX = cell.left + cell.width / 2;
-          const textY = cell.top + cell.height / 2 + CELL_OFF_SET * 3;
-          CTX.fillText("🚩", textX, textY);
+          // CTX.font = "bold 15px Comic Sans MS";
+          // CTX.textAlign = "center";
+          // CTX.fillStyle = "green";
+          // const textX = cell.left + cell.width / 2;
+          // const textY = cell.top + cell.height / 2 + CELL_OFF_SET * 3;
+          // CTX.fillText("🚩", textX, textY);
         } else if (!CELL_CLICKED.isOpen && CELL_CLICKED.isFlaged) {
           gameFieldForLogic[CELL_CLICKED.row][CELL_CLICKED.col] = {
             ...CELL_CLICKED,
@@ -191,9 +179,9 @@ function putFlagInCell(event) {
       }
     });
   }
+  renderCellsFunction(gameFieldForLogic.flat());
 
-  // In two lines be low we set new value to Mines left every time we right click field :)
+  // In two lines below we set new value to Mines left every time we right click field :)
   let minesFlaged = gameMinesHandler.minesFlagedOnField(gameFieldForLogic);
-  document.getElementById("minesLeft").textContent =
-    minesInDaGame - minesFlaged;
+  document.getElementById("minesLeft").textContent = minesInDaGame - minesFlaged;
 }
