@@ -20,7 +20,6 @@ let minesInDaGame = parseInt((document.getElementById("minesCount").value = diff
 document.getElementById("minesLeft").textContent = minesInDaGame;
 // let elemLeft = CANVAS.offsetLeft;
 // let elemTop = CANVAS.offsetTop;
-// let minesweeperCells = []; // Why am using these two :@ #1
 let MS_Reveal_Cells = [];
 // seams like I have fixed fact that I had two lists for rendering cells
 let gameFieldForLogic = []; // Why am using these two :@ #2
@@ -51,10 +50,16 @@ function newGame() {
   gameFieldHeight = parseInt(document.getElementById("theHeight").value);
   gameFieldWidth = parseInt(document.getElementById("theWidth").value);
   minesInDaGame = parseInt(document.getElementById("minesCount").value);
-  const isInsaneDifficulty =
-    `${gameFieldHeight},${gameFieldWidth},${minesInDaGame}` === "30,30,150";
-  CANVAS_WIDTH = !isInsaneDifficulty ? defaultWandH : 800;
-  CANVAS_HEIGHT = !isInsaneDifficulty ? defaultWandH : 800;
+  if (gameFieldHeight >= 60 && gameFieldWidth >= 60) {
+    CANVAS_WIDTH = 1600;
+    CANVAS_HEIGHT = 1600;
+  } else if (gameFieldHeight >= 30 && gameFieldWidth >= 30) {
+    CANVAS_WIDTH = 800;
+    CANVAS_HEIGHT = 800;
+  } else {
+    CANVAS_WIDTH = defaultWandH;
+    CANVAS_HEIGHT = defaultWandH;
+  }
   CANVAS.width = CANVAS_WIDTH;
   CANVAS.height = CANVAS_HEIGHT;
   CTX.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -157,36 +162,9 @@ function renderCellsFunction(cellsToDraw) {
     });
   });
 }
-function gameOverAllMinesReveal(cellsToDraw) {
-  for (let row = 0; row < cellsToDraw.length; row++) {
-    for (let col = 0; col < cellsToDraw[0].length; col++) {
-      const CELL = cellsToDraw[row][col];
-      if (CELL.isMine) {
-        CTX.fillStyle = "red";
-        CTX.fillRect(
-          CELL.squareRender.left,
-          CELL.squareRender.top,
-          CELL.squareRender.width,
-          CELL.squareRender.height
-        );
-      }
-    }
-  }
-}
 
 // renderCellsFunction(transformArray(minesweeperCells));
 renderCellsFunction(gameFieldForLogic);
-
-setInterval(() => {
-  if (!isPaused) {
-    CTX_TIMER.clearRect(0, 0, 100, 30);
-    updateGameTimer();
-    gameTimer++;
-    if (gameTimer % 20 === 0) {
-      cheat = [];
-    }
-  }
-}, 1000);
 
 CANVAS.addEventListener("mousemove", (event) => {
   if (cheatKeyDown && !isGameOver) {
@@ -200,50 +178,11 @@ CANVAS.addEventListener("mousemove", (event) => {
     CTX.beginPath();
     CTX.rect(x, y, cheatSquareSidePx - cheatSquareOffSet, cheatSquareSidePx - cheatSquareOffSet);
     CTX.stroke();
-    isCellsInsideSquare(gameFieldForLogic, x, y);
+    isCellsInsideMinesRevealSquare(gameFieldForLogic, x, y);
   } else if (!cheatKeyDown && !isGameOver) {
     renderCellsFunction(gameFieldForLogic);
-    // gameMinesHandler.supCheat(gameFieldForLogic);
   }
 });
-
-function isCellsInsideSquare(a, mx, my) {
-  a.forEach((r) => {
-    r.forEach((c) => {
-      const cs = c.squareRender;
-      if (
-        cs.left > mx &&
-        cs.top > my &&
-        cs.left + cs.width < mx + cheatSquareSidePx - cheatSquareOffSet &&
-        cs.top + cs.height < my + cheatSquareSidePx - cheatSquareOffSet
-      ) {
-        CTX.strokeStyle = "red";
-        CTX.lineWidth = 3;
-        CTX.beginPath();
-        CTX.rect(cs.left, cs.top, cs.width, cs.height);
-        CTX.stroke();
-        // -----------
-        if (c.minesAround > 0 && !c.isMine) {
-          CTX.font = "bold 15px Comic Sans MS";
-          CTX.textAlign = "center";
-          CTX.fillStyle = "black";
-          const textX = c.squareRender.left + c.squareRender.width / 2;
-          const textY = c.squareRender.top + c.squareRender.height / 2 + CELL_OFF_SET * 3;
-          CTX.fillText(c.minesAround, textX, textY);
-        } else if (c.isMine) {
-          CTX.fillStyle = "darkblue";
-          const bSqOffS = 5;
-          CTX.fillRect(
-            cs.left + bSqOffS,
-            cs.top + bSqOffS,
-            cs.width - bSqOffS * 2,
-            cs.height - bSqOffS * 2
-          );
-        }
-      }
-    });
-  });
-}
 
 const keysPressed = {};
 

@@ -161,9 +161,6 @@ function putFlagInCell(event) {
             ...CELL_CLICKED,
             isFlaged: true,
           }; // Toggle the flagged state
-          // CTX.font = "bold 15px Comic Sans MS";
-          // CTX.textAlign = "center";
-          // CTX.fillStyle = "green";
         } else if (!CELL_CLICKED.isOpen && CELL_CLICKED.isFlaged) {
           gameFieldForLogic[CELL_CLICKED.row][CELL_CLICKED.col] = {
             ...CELL_CLICKED,

@@ -24,7 +24,6 @@ function MineSweeperCellsHander() {
           left: col + CELL_OFF_SET,
         };
 
-        // minesweeperCells.push(ONE_CELL);
         tempRow.push({
           isMine: false,
           isFlaged: false,
