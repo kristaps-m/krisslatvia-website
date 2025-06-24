@@ -121,11 +121,21 @@ c.addEventListener("click", (e) => {
 
 function drawTheGraph(drawLines = true, drawDots = false) {
   drawXandYaxis();
+  /*
+  THE FORMULA ..
+  place where we turn x values to y values
+  */
   const yValuesList = xValuesList.map(
     (x) =>
       theSignBeforeFormula *
-      ((1 / theWidthAdjusterChange) * Math.pow(x - theXchange, theExponentValue) + theYchange)
+      ((1 / theWidthAdjusterChange) *
+        Math.pow(x - theXchange, theExponentValue) +
+        theYchange)
   );
+  // const yValuesList = xValuesList.map((x) => Math.sin(x)); // Waves
+
+  // (x - 0)^2 + (y + 0)^2 = 49
+  // const yValuesList = xValuesList.map((x) => Math.sqrt(49 - Math.pow(x, 2))); // Half Circle?
 
   ctx.beginPath();
   ctx.strokeStyle = "darkgreen";
