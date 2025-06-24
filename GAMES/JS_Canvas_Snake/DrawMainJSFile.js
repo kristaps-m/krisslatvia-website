@@ -8,7 +8,10 @@ let oneSquareSize = parseInt(document.getElementById("squareSize").value);
 // Game speed is from 1 to 20. If player enters 20 he draws snake very fast
 // meaning his speed is max....
 let gameSpeedDivider =
-  21 - maxAndMinGameSpeedHelper(parseInt(document.getElementById("gameSpeedDivider").value));
+  21 -
+  maxAndMinGameSpeedHelper(
+    parseInt(document.getElementById("gameSpeedDivider").value)
+  );
 let canvasWidth;
 let canvasHeight;
 
@@ -35,9 +38,22 @@ let isGameOver = false;
 let isPaused = false;
 let gameIsStarted = isGodModeON ? true : false;
 let theGameFrameCount = 0;
-let gameFieldFullNumber = (canvasWidth / oneSquareSize) * (canvasHeight / oneSquareSize);
-let snake = new Snake(ctx, oneSquareSize, canvasWidth, canvasHeight, isGodModeON);
-let food = new Food(oneSquareSize, gameFieldFullNumber, canvasWidth, canvasHeight, isGodModeON);
+let gameFieldFullNumber =
+  (canvasWidth / oneSquareSize) * (canvasHeight / oneSquareSize);
+let snake = new Snake(
+  ctx,
+  oneSquareSize,
+  canvasWidth,
+  canvasHeight,
+  isGodModeON
+);
+let food = new Food(
+  oneSquareSize,
+  gameFieldFullNumber,
+  canvasWidth,
+  canvasHeight,
+  isGodModeON
+);
 let variableScoreDisplay = document.getElementById("scoreDisplay");
 variableScoreDisplay.textContent = snake.tail.length;
 let isGridON = false;
@@ -56,7 +72,11 @@ function theSnakeGameLoop() {
       displayText("YOU WON!" + ` score: ${variableDisplay}`);
       isGameOver = true;
     }
-    if (snake.isSnakeHeadCrashedInTail() && snake.tail.length > 4 && snakeIsMoved) {
+    if (
+      snake.isSnakeHeadCrashedInTail() &&
+      snake.tail.length > 4 &&
+      snakeIsMoved
+    ) {
       var variableDisplay = document.getElementById("scoreDisplay").textContent;
       displayText("GAME OVER!" + ` score: ${variableDisplay}`);
       isGameOver = true;
@@ -103,6 +123,7 @@ function the_draw() {
   snake.drawSnakeHead(ctx, "red");
 
   if (food.isFoodEaten(snake.xLocation, snake.yLocation)) {
+    snake.setTheFoodCellEaten(food.x, food.y);
     food.createNewFood(ctx, "black", canvasWidth, canvasHeight, snake.tail);
     snake.updateTail();
     let variableDisplay = document.getElementById("scoreDisplay");
@@ -218,7 +239,10 @@ document.getElementById("newGame").onclick = function () {
     variableDisplay.textContent = 4;
     oneSquareSize = parseInt(document.getElementById("squareSize").value);
     gameSpeedDivider =
-      21 - maxAndMinGameSpeedHelper(parseInt(document.getElementById("gameSpeedDivider").value));
+      21 -
+      maxAndMinGameSpeedHelper(
+        parseInt(document.getElementById("gameSpeedDivider").value)
+      );
     if (oneSquareSize < 5) {
       oneSquareSize = 5;
       document.getElementById("squareSize").value = 5;
@@ -226,9 +250,22 @@ document.getElementById("newGame").onclick = function () {
       oneSquareSize = 100;
       document.getElementById("squareSize").value = 100;
     }
-    gameFieldFullNumber = (canvasWidth / oneSquareSize) * (canvasHeight / oneSquareSize);
-    snake = new Snake(ctx, oneSquareSize, canvasWidth, canvasHeight, isGodModeON);
-    food = new Food(oneSquareSize, gameFieldFullNumber, canvasWidth, canvasHeight, isGodModeON);
+    gameFieldFullNumber =
+      (canvasWidth / oneSquareSize) * (canvasHeight / oneSquareSize);
+    snake = new Snake(
+      ctx,
+      oneSquareSize,
+      canvasWidth,
+      canvasHeight,
+      isGodModeON
+    );
+    food = new Food(
+      oneSquareSize,
+      gameFieldFullNumber,
+      canvasWidth,
+      canvasHeight,
+      isGodModeON
+    );
     let variableScoreDisplay = document.getElementById("scoreDisplay");
     variableScoreDisplay.textContent = snake.tail.length;
     isGridON = false;
@@ -255,7 +292,9 @@ function setWidthToBeDivisibleBy100(n) {
 function updateVariableDisplay() {
   let variableDisplay = document.getElementById("toggleAutoSnakePlayOnOff");
   variableDisplay.className = isAutoSnakePlayON ? "autoPlayON" : "autoPlayOFF";
-  variableDisplay.textContent = !isAutoSnakePlayON ? "AutoPlay Enabled!" : "Enable AutoPlay?";
+  variableDisplay.textContent = !isAutoSnakePlayON
+    ? "AutoPlay Enabled!"
+    : "Enable AutoPlay?";
 }
 
 function isPasswordEntered(passwordToCheck = '"Secret Password!!"') {

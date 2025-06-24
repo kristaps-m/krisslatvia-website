@@ -24,17 +24,6 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// async function changeColorTest() {
-//     for (let row = 0; row < gameWidth; row++) {
-//         const cellId = `cell-id-${0}-${row}`
-//         console.log(cellId);
-//         var cell = document.getElementById(cellId);
-//         cell.className = "snake-head";
-//         await sleep(sleepSetTimeout_ctrl);
-//         cell.className = "grid-item";
-//     }
-// }
-
 function updateContent(cellId) {
   var cell = document.getElementById(cellId);
   cell.className = "snake-head";
@@ -59,8 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
       let cellId = `cell-id-${row}-${col}`;
       newDiv.id = cellId;
       newDiv.textContent = "";
-      // newDiv.onclick = function() {updateContent(`${cellId}`); }
-      // newDiv.onclick = function() {updateContent(`${cellId}`); }
       newParagraph.appendChild(newDiv);
       tempRow.push("");
     }
