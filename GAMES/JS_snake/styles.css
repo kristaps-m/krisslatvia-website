@@ -19,7 +19,7 @@ p {
 }
 
 .game_field {
-  color: red
+  color: red;
 }
 
 /* https: //www.w3schools.com/css/tryit.asp?filename=trycss_grid */
@@ -32,7 +32,7 @@ p {
   /* width: 400px;
   height: 400px; */
   width: fit-content;
-    height: fit-content;
+  height: fit-content;
 }
 
 .grid-item {
@@ -48,6 +48,22 @@ p {
   width: 10px;
   height: 10px;
   border: 1px solid #868686;
+}
+
+.the-food {
+  background-color: green;
+  display: grid;
+  width: 10px;
+  height: 10px;
+  border: 1px solid #868686;
+}
+
+.food-eaten {
+  background-color: rgb(118, 1, 1);
+  display: grid;
+  width: 10px;
+  height: 10px;
+  border: 2px solid black;
 }
 /* .grid-container {
   display: grid;

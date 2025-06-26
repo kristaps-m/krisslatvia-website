@@ -2,7 +2,13 @@ import { Cell } from "./cell.js";
 import { SnakeDrawHelper } from "./snakeDrawHelper.js";
 
 export class Snake {
-  constructor(ctx, squareSize, canvasWidth, canvasHeight, isGodModeEnabled = false) {
+  constructor(
+    ctx,
+    squareSize,
+    canvasWidth,
+    canvasHeight,
+    isGodModeEnabled = false
+  ) {
     this.ctx = ctx;
     this.squareSize = squareSize;
     this.xLocation = this.squareSize * 3; // location of head - movement speed
@@ -45,15 +51,35 @@ export class Snake {
     } else if (this.yLocation + this.squareSize > this.canvasHeight) {
       this.yLocation = 0;
     }
-    context.fillRect(this.xLocation, this.yLocation, this.squareSize, this.squareSize);
-    this.snakeDrawHelper.drawSnakeEyes(context, this.xLocation, this.yLocation, this.snakeMoveDir);
+    context.fillRect(
+      this.xLocation,
+      this.yLocation,
+      this.squareSize,
+      this.squareSize
+    );
+    this.snakeDrawHelper.drawSnakeEyes(
+      context,
+      this.xLocation,
+      this.yLocation,
+      this.snakeMoveDir
+    );
     this.tail.push(new Cell(this.xLocation, this.yLocation, this.snakeMoveDir));
   }
 
   drawTail(ctx, color) {
-    ctx.fillStyle = color;
     this.tail.forEach((cell, i) => {
+      ctx.fillStyle = color;
       ctx.fillRect(cell.x, cell.y, this.squareSize, this.squareSize);
+      if (cell.isColorAsFoodEaten) {
+        ctx.fillStyle = "blue";
+        const efos = this.squareSize / 6; // Eaten Food of set
+        ctx.fillRect(
+          cell.x + efos,
+          cell.y + efos,
+          this.squareSize - efos * 2,
+          this.squareSize - efos * 2
+        );
+      }
       if (this.squareSize >= 25) {
         // TOP CORNERS
         if (cell.isCornerPiece && cell.isTopRightCorner) {
@@ -100,7 +126,10 @@ export class Snake {
   isSnakeHeadCrashedInTail(add_X = 0, add_Y = 0) {
     for (let index = 0; index < this.tail.slice(0, -2).length; index++) {
       const element = this.tail[index];
-      if (element.x === this.xLocation + add_X && element.y === this.yLocation + add_Y) {
+      if (
+        element.x === this.xLocation + add_X &&
+        element.y === this.yLocation + add_Y
+      ) {
         return true;
       }
       if (
@@ -191,7 +220,10 @@ export class Snake {
   // if in theSnakeGameLoop this function is activated snake
   // automaticaly moves down in row to collect all food and WIN :) <3
   automaticalyMoveSnakeToCollectFood(theFood) {
-    if (this.xLocation === this.canvasWidth - this.squareSize && this.snakeMoveDir === "right") {
+    if (
+      this.xLocation === this.canvasWidth - this.squareSize &&
+      this.snakeMoveDir === "right"
+    ) {
       this.changeDirection("s");
     }
     if (
@@ -211,7 +243,9 @@ export class Snake {
       (this.ifDistanceFromHeadToTailEndShortMove() &&
         this.xLocation === 0 &&
         this.snakeMoveDir === "down") ||
-      (this.xLocation === 0 && this.snakeMoveDir === "down" && theFood.y === this.yLocation)
+      (this.xLocation === 0 &&
+        this.snakeMoveDir === "down" &&
+        theFood.y === this.yLocation)
     ) {
       this.changeDirection("d");
     }
@@ -243,7 +277,11 @@ export class Snake {
     this.xLocation = 0;
     this.yLocation = this.canvasHeight - this.squareSize * 2;
 
-    for (let y = 0; y < this.canvasHeight - this.squareSize * 2; y += this.squareSize) {
+    for (
+      let y = 0;
+      y < this.canvasHeight - this.squareSize * 2;
+      y += this.squareSize
+    ) {
       if (evenOrOddRow % 2 === 0) {
         // Moving RIGHT
         for (let x = 0; x < this.canvasWidth; x += this.squareSize) {
@@ -251,7 +289,11 @@ export class Snake {
         }
       } else {
         // Moving LEFT
-        for (let x = this.canvasWidth - this.squareSize; x >= 0; x -= this.squareSize) {
+        for (
+          let x = this.canvasWidth - this.squareSize;
+          x >= 0;
+          x -= this.squareSize
+        ) {
           newTail.push(new Cell(x, y, "left"));
         }
       }
@@ -262,5 +304,13 @@ export class Snake {
     newTail.push(new Cell(this.xLocation, this.yLocation, "right"));
 
     return newTail;
+  }
+
+  setTheFoodCellEaten(x, y) {
+    this.tail.forEach((c) => {
+      if (c.x == x && c.y == y) {
+        c.isColorAsFoodEaten = true;
+      }
+    });
   }
 }
