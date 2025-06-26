@@ -16,23 +16,23 @@ function MineSweeperCellsHander() {
         if (colIndex >= gameFieldWidth) {
           break;
         }
-        const ONE_CELL = {
-          colour: cellColor,
-          width: cellWidth,
-          height: cellHeight,
-          top: row + CELL_OFF_SET,
-          left: col + CELL_OFF_SET,
-        };
-
-        tempRow.push({
+        const ONE_CELL_TO_DRAW = new SquareRender(
+          cellColor,
+          cellWidth,
+          cellHeight,
+          row + CELL_OFF_SET,
+          col + CELL_OFF_SET
+        );
+        const GAME_CELL = new GameCell({
           isMine: false,
           isFlaged: false,
           isOpen: false,
           minesAround: 0,
           row: rowIndex,
           col: colIndex,
-          squareRender: { ...ONE_CELL },
+          squareRender: ONE_CELL_TO_DRAW,
         });
+        tempRow.push(GAME_CELL);
         colIndex++;
       }
       rowIndex++;

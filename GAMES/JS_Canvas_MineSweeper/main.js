@@ -134,7 +134,7 @@ function renderCellsFunction(cellsToDraw) {
         cell.squareRender.left - 2,
         cell.squareRender.top - 2,
         cell.squareRender.width + 2,
-        cell.squareRender.height + 2
+        cell.squareRender.height + 4
       );
       CTX.fillStyle = cell.isOpen ? "gray" : "pink"; //cell.squareRender.colour;
       CTX.fillRect(
@@ -163,7 +163,6 @@ function renderCellsFunction(cellsToDraw) {
   });
 }
 
-// renderCellsFunction(transformArray(minesweeperCells));
 renderCellsFunction(gameFieldForLogic);
 
 CANVAS.addEventListener("mousemove", (event) => {

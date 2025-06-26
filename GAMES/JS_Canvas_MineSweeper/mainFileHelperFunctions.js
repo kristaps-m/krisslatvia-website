@@ -37,9 +37,13 @@ function cheatIfCheatEntered() {
 }
 
 function toggleIsFirstClickMine() {
-  withFirstClickYouCanHitMine = !withFirstClickYouCanHitMine;
-  let firstClick = document.getElementById("isFirstClickMine");
-  firstClick.textContent = `${withFirstClickYouCanHitMine}`;
+  const areYouSure = confirm("This will start new game! Sure??");
+  if (areYouSure) {
+    withFirstClickYouCanHitMine = !withFirstClickYouCanHitMine;
+    let firstClick = document.getElementById("isFirstClickMine");
+    firstClick.textContent = `${withFirstClickYouCanHitMine}`;
+    newGame();
+  }
 }
 
 function toggleDigforminesOrFlag() {
