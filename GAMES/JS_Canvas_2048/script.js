@@ -11,6 +11,12 @@ const movementHandler = new Movement();
 let isGameOver = false;
 let game2DArray;
 let storeDirectionPressedAndPointsForGameOverHandling = [];
+// Mobile version playabilty
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+let touchStartedInsideCanvas = false; // Flag to check where touch started
 
 function gameSizeHandler() {
   if (cnvsSettings.gameSize === 2) {
@@ -99,11 +105,7 @@ window.addEventListener("keyup", function (event) {
     var isWon = document.getElementById("haveYouReached2048");
     isWon.style = "background-color: red;";
     isWon.textContent = "GAME OVER!!!";
-    displayText(
-      "GAME OVER!!!!",
-      cnvsSettings.width / 2,
-      cnvsSettings.height / 2
-    );
+    displayText("GAME OVER!!!!", cnvsSettings.width / 2, cnvsSettings.height / 2);
   }
 });
 
@@ -147,6 +149,59 @@ function doSomethingWhenKeyup(keyUP) {
   }
 }
 
+document.addEventListener(
+  "touchstart",
+  function (event) {
+    if (CANVAS.contains(event.target)) {
+      event.preventDefault(); // Stops the swipe from triggering page refresh
+      touchStartedInsideCanvas = true; // Allow swipes only if touch starts inside canvas
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+    } else {
+      touchStartedInsideCanvas = false; // Ignore touches outside canvas
+    }
+  },
+  { passive: false }
+);
+
+document.addEventListener("touchend", function (event) {
+  if (!touchStartedInsideCanvas) return; // Ignore touchend if touch didn't start inside the canvas
+
+  touchEndX = event.changedTouches[0].clientX;
+  touchEndY = event.changedTouches[0].clientY;
+
+  handleSwipe();
+});
+
+function handleSwipe() {
+  let deltaX = touchEndX - touchStartX;
+  let deltaY = touchEndY - touchStartY;
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    // Horizontal swipe
+    if (deltaX > 0) {
+      const generateNewNumberOrNot_d = movementHandler.moveAllNumbersRight();
+      drawGameFieldOnCanvas(generateNewNumberOrNot_d);
+      gameOverHandlerWhenDirectionButtonPressed("right");
+    } else {
+      const generateNewNumberOrNot_a = movementHandler.moveAllNumbersLeft();
+      drawGameFieldOnCanvas(generateNewNumberOrNot_a);
+      gameOverHandlerWhenDirectionButtonPressed("left");
+    }
+  } else {
+    // Vertical swipe
+    if (deltaY > 0) {
+      const generateNewNumberOrNot_s = movementHandler.moveAllNumbersDown();
+      drawGameFieldOnCanvas(generateNewNumberOrNot_s);
+      gameOverHandlerWhenDirectionButtonPressed("down");
+    } else {
+      const generateNewNumberOrNot_w = movementHandler.moveAllNumbersUp();
+      drawGameFieldOnCanvas(generateNewNumberOrNot_w);
+      gameOverHandlerWhenDirectionButtonPressed("up");
+    }
+  }
+}
+
 class DirectionAndScore {
   constructor(buttonPressed, score) {
     this.buttonPressed = buttonPressed;
@@ -156,10 +211,7 @@ class DirectionAndScore {
 
 function gameOverHandlerWhenDirectionButtonPressed(_buttonPressed) {
   var scoreToDisplay = document.getElementById("scoreDisplay");
-  let directionAndScore = new DirectionAndScore(
-    _buttonPressed,
-    scoreToDisplay.textContent
-  );
+  let directionAndScore = new DirectionAndScore(_buttonPressed, scoreToDisplay.textContent);
   if (countZerosInField() === 0) {
     storeDirectionPressedAndPointsForGameOverHandling.push(directionAndScore);
   } else {
@@ -239,10 +291,14 @@ function drawGameFieldOnCanvas(generateNumbBool) {
   if (generateNumbBool) {
     generateTwoOrFourAfterMovement();
   }
-  displayGrid({ctx:CTX, strokeStyle:"green", girdLineWidth: cnvsSettings.lineW,
-    oneSquareSize:cnvsSettings.width / cnvsSettings.gameSize,
-    canvasHeight:cnvsSettings.height,
-    canvasWidth:cnvsSettings.width});
+  displayGrid({
+    ctx: CTX,
+    strokeStyle: "green",
+    girdLineWidth: cnvsSettings.lineW,
+    oneSquareSize: cnvsSettings.width / cnvsSettings.gameSize,
+    canvasHeight: cnvsSettings.height,
+    canvasWidth: cnvsSettings.width,
+  });
   for (let row = 0; row < cnvsSettings.gameSize; row++) {
     for (let col = 0; col < cnvsSettings.gameSize; col++) {
       let n = game2DArray[row][col];
