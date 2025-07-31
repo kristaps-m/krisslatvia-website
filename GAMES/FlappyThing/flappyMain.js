@@ -35,6 +35,11 @@ function gameLoop() {
     arrayOfPipes.forEach((p) => {
       p.draw();
     });
+    // if (newFlappy.y > H - 100) {
+    //   newFlappy.jumpUp();
+    // }
+    // CTX.font = "italic bold 30px Comic Sans MS";
+    // CTX.fillText(`${newFlappy.start}`, W - 80, 50);
   }
 
   requestAnimationFrame(gameLoop);

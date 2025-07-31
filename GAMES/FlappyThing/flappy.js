@@ -3,6 +3,8 @@ class Flappy extends Position {
     super(x, y);
     this.w = w;
     this.h = h;
+    this.gravity = 0.08;
+    this.start = 2;
   }
 
   draw() {
@@ -11,13 +13,18 @@ class Flappy extends Position {
   }
 
   update() {
-    if (this.y + 3 + this.h < H) {
-      this.y += 2;
+    if (this.y + this.h + 8 <= H) {
+      this.y += this.start;
     }
+    this.start += this.gravity;
   }
 
   jumpUp() {
     this.y -= 60;
+    if (this.y < 0) {
+      this.y = 1;
+    }
+    this.start = 2;
   }
 
   detectIfHitPipe(pipes) {
