@@ -18,20 +18,63 @@
     <div style="align-items: center; text-align: center;">
       <h1>Pair Images trainer</h1>
       <h2 id="theRandomPair">...</h2>
-      <button id="startBtn" onclick="getPair()">START</button>
+      <button id="startBtn" onclick="getPairFromArray()">START</button>
       <br>
       <br>
-      <canvas id="myCanvas" style="border: solid black 1px" width="100" height="100"></canvas>
+      <canvas id="myCanvas" style="border: solid black 1px" width="240" height="240"></canvas>
     </div>
   </main> 
   <script src="../GAMES/Global Helper Classes/getRndInteger.js"></script>
   <script>
     const CANVAS = document.getElementById("myCanvas");
     const CTX = CANVAS.getContext("2d");
-    CTX.fillRect(20, 20, 20, 20);
+    // CTX.fillRect(20, 20, 20, 20);
 
     const IMAGE_LETTERS = "abcdefghijklmnoprstuvzāē".toUpperCase();
     const PAIR_LETTER_LEN = IMAGE_LETTERS.length;
+
+    let pairImagesArray = createPairImagesArray(IMAGE_LETTERS);
+
+    // console.log(pairImagesArray);
+
+    function shuffle(array) {
+      for (let i = array.length -1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]
+        
+      }
+
+      return array;
+    }
+
+    let shuffledPairArray = shuffle(pairImagesArray);
+    console.log(shuffledPairArray.length);
+    // console.log(shuffle(pairImagesArray).slice(0,100));
+
+    function createPairImagesArray(letterString) {
+      let result = [];
+      for (let i = 0; i < letterString.length; i++) {
+        for (let j = 0; j < letterString.length; j++) {
+          if(i != j){
+            result.push(`${letterString[i]}-${letterString[j]}::${i}-${j}`);
+          }
+        }
+      }
+
+      return result;
+    }
+
+    function getPairFromArray() {
+      const displayPair = document.getElementById("theRandomPair");
+      const thePairData = shuffledPairArray.pop().split("::");
+      const thePair = thePairData[0];
+      const pair_I = parseInt(thePairData[1].split("-")[0]);
+      const pair_J = parseInt(thePairData[1].split("-")[1]);
+
+      CTX.fillRect(pair_I*10,pair_J*10,10,10);
+      displayPair.textContent = thePair;
+      console.log(shuffledPairArray.length);
+    }
 
     function getPair(params) {
       const displayPair = document.getElementById("theRandomPair");
