@@ -17,6 +17,11 @@
   <main>
     <div style="align-items: center; text-align: center;" id="divInMain">
       <h2>Pair Images trainer</h2>
+      <p id="thePairImageLetters" style="display: inline-block">THE THING</p>
+      <div style="white-space: nowrap">
+        <input type="text" id="pairImagesValueInput" style="width: 18rem;">
+        <button style="display: inline-block" onclick="changePairImagesLetters()" id="editButton">EDIT</button>
+      </div>
       <p>Press any key to get random pair from all pairs.</p>
       <p>Or click button!</p>
       <h1 id="theRandomPair">...</h1>
@@ -32,15 +37,39 @@
     CANVAS.id = "myCanvas";
     CANVAS.style.border = "1px solid black";
     // const IMAGE_LETTERS = "abcde".toUpperCase(); // smaller string for testing
-    const IMAGE_LETTERS = "abcdefghijklmnoprstuvzāē".toUpperCase();
+    let IMAGE_LETTERS = "abcdefghijklmnoprstuvzāē".toUpperCase();
     const PAIR_LETTER_LEN = IMAGE_LETTERS.length;
     const STEP = 10;
     CANVAS.width = PAIR_LETTER_LEN * STEP;
     CANVAS.height = PAIR_LETTER_LEN * STEP;
-    const mainDiv = document.getElementById("divInMain");
+    let mainDiv = document.getElementById("divInMain");
     mainDiv.appendChild(CANVAS);
     const CTX = CANVAS.getContext("2d");
     let pairImagesArray = createPairImagesArray(IMAGE_LETTERS);
+
+    const thePairImageLetters = document.getElementById("thePairImageLetters");
+    thePairImageLetters.textContent = IMAGE_LETTERS;
+    const pairImagesValueInput = document.getElementById("pairImagesValueInput");
+    pairImagesValueInput.value = IMAGE_LETTERS;
+
+    function changePairImagesLetters() {
+      const isEditConfirmed = confirm("Are you sure?");
+      if(isEditConfirmed){
+        const pairImagesValueInput = document.getElementById("pairImagesValueInput");
+        // console.log(pairImagesValueInput.value);
+        IMAGE_LETTERS = pairImagesValueInput.value;
+        pairImagesArray = createPairImagesArray(IMAGE_LETTERS);
+        shuffledPairArray = shuffle(pairImagesArray);
+        CANVAS.width = IMAGE_LETTERS.length * STEP;
+        CANVAS.height = IMAGE_LETTERS.length * STEP;
+        // Draw square by diagonal where pair letter is it self ("AA", "DD")
+        for (let i = 0; i < IMAGE_LETTERS.length; i++) {
+          CTX.fillRect(i*STEP,i*STEP, STEP, STEP);
+        }
+        const editButton = document.getElementById("editButton");
+        editButton.textContent = "START OVER?"
+      }
+    }
 
     document.addEventListener("keyup", function(event) {
       getPairFromArray();
