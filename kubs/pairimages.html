@@ -22,11 +22,10 @@
   <main>
     <div style="align-items: center; text-align: center; margin: 1px;" id="divInMain">
       <h2 style="margin: 1px;">Pair Images trainer</h2>
-      <!-- <canvas style="border: 1px solid red; width: 80px; height: 80px" id="example"></canvas> -->
       <p id="thePairImageLetters" style="margin: 1px;">THE THING</p>
       <p id="thePairImageLetters_vert" style="margin: 1px;">THE THING</p>
       <div style="white-space: nowrap; margin: 1px;">
-        <p style="">Horizontal</p>
+        <p>Horizontal</p>
         <input type="text" id="pairImagesValueInput" style="width: 18rem;">
       </div>
       <div style="white-space: nowrap">
@@ -43,15 +42,9 @@
       <button id="startBtn" onclick="getPairFromArray()" style="width: 8rem; height: 4rem; font-size: medium;">Get Letter Pair</button>
       <br>
       <br>
-      <!-- <canvas id="myCanvas" style="border: solid black 1px; width: 100px; height: 100px;"></canvas> -->
     </div>
   </main> 
   <script src="../GAMES/Global Helper Classes/getRndInteger.js"></script>
-  <!-- <script>
-    const c = document.getElementById("example");
-    const ctx = c.getContext("2d");
-    ctx.fillRect(10,10,10,10);
-  </script> -->
   <script>
     const CANVAS = document.createElement('canvas');
     CANVAS.id = "myCanvas";
@@ -110,7 +103,7 @@
           }
         }
       }
-
+      // Draw letters horizontaly and verticaly in canvas
       CTX.fillStyle = "red";
       for (let i = 0; i < IMAGE_LETTERS.length; i++) {
         CTX.fillText(IMAGE_LETTERS[i], i*STEP, STEP);
@@ -157,7 +150,7 @@
         const pair_J = parseInt(thePairData[1].split("-")[1]);
   
         CTX.fillRect(pair_I*STEP,pair_J*STEP,STEP,STEP);
-        displayPair.textContent = thePair;
+        displayPair.textContent = thePair.toUpperCase();
         // console.log(shuffledPairArray.length);
       }else{
         alert("DONE");
