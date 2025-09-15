@@ -12,19 +12,34 @@
         <script id="replace_with_navbar" src="../navbar/nav.js"></script><!--Nav bar script;go:NB/nav.html-->
         <!-- prevuis menu bar-->
     </body>
+    <style>
+      p{
+        font-size: smaller;
+      }
+    </style>
     </head>
   </head>
   <main>
-    <div style="align-items: center; text-align: center;" id="divInMain">
-      <h2>Pair Images trainer</h2>
-      <p id="thePairImageLetters" style="display: inline-block">THE THING</p>
-      <div style="white-space: nowrap">
+    <div style="align-items: center; text-align: center; margin: 1px;" id="divInMain">
+      <h2 style="margin: 1px;">Pair Images trainer</h2>
+      <!-- <canvas style="border: 1px solid red; width: 80px; height: 80px" id="example"></canvas> -->
+      <p id="thePairImageLetters" style="margin: 1px;">THE THING</p>
+      <p id="thePairImageLetters_vert" style="margin: 1px;">THE THING</p>
+      <div style="white-space: nowrap; margin: 1px;">
+        <p style="">Horizontal</p>
         <input type="text" id="pairImagesValueInput" style="width: 18rem;">
-        <button style="display: inline-block" onclick="changePairImagesLetters()" id="editButton">EDIT</button>
       </div>
-      <p>Press any key to get random pair from all pairs.</p>
-      <p>Or click button!</p>
-      <h1 id="theRandomPair">...</h1>
+      <div style="white-space: nowrap">
+        <p>Vertical</p>
+        <input type="text" id="pairImagesValueInput_vert" style="width: 18rem;">
+      </div>
+      <br>
+      <button style="display: inline-block" onclick="changePairImagesLetters()" id="editButton">EDIT</button>
+      <p style="margin: 1px;">Press any key to get random pair from all pairs.</p>
+      <p style="margin: 1px;">Or click button!</p>
+      <p style="margin: 1px;">Feel free to edit training range.</p>
+      <p style="margin: 1px;">Vertical EFGH / Horizontal A..Z will help you train all leter pairs for letters E,F,G and H</p>
+      <h1 id="theRandomPair" style="margin: 1px;">---> ... <---</h1>
       <button id="startBtn" onclick="getPairFromArray()" style="width: 8rem; height: 4rem; font-size: medium;">Get Letter Pair</button>
       <br>
       <br>
@@ -32,40 +47,49 @@
     </div>
   </main> 
   <script src="../GAMES/Global Helper Classes/getRndInteger.js"></script>
+  <!-- <script>
+    const c = document.getElementById("example");
+    const ctx = c.getContext("2d");
+    ctx.fillRect(10,10,10,10);
+  </script> -->
   <script>
     const CANVAS = document.createElement('canvas');
     CANVAS.id = "myCanvas";
     CANVAS.style.border = "1px solid black";
     // const IMAGE_LETTERS = "abcde".toUpperCase(); // smaller string for testing
     let IMAGE_LETTERS = "abcdefghijklmnoprstuvzāē".toUpperCase();
-    const PAIR_LETTER_LEN = IMAGE_LETTERS.length;
+    let IMAGE_LETTERS_vert = "abcdefghijklmnoprstuvzāē".toUpperCase();
+    // const PAIR_LETTER_LEN = IMAGE_LETTERS.length;
     const STEP = 10;
-    CANVAS.width = PAIR_LETTER_LEN * STEP;
-    CANVAS.height = PAIR_LETTER_LEN * STEP;
+    CANVAS.width = IMAGE_LETTERS.length * STEP;
+    CANVAS.height = IMAGE_LETTERS_vert.length * STEP;
     let mainDiv = document.getElementById("divInMain");
     mainDiv.appendChild(CANVAS);
     const CTX = CANVAS.getContext("2d");
-    let pairImagesArray = createPairImagesArray(IMAGE_LETTERS);
+    let pairImagesArray = createPairImagesArray(IMAGE_LETTERS, IMAGE_LETTERS_vert);
 
     const thePairImageLetters = document.getElementById("thePairImageLetters");
     thePairImageLetters.textContent = IMAGE_LETTERS;
+    const thePairImageLetters_vert = document.getElementById("thePairImageLetters_vert");
+    thePairImageLetters_vert.textContent = IMAGE_LETTERS_vert;
     const pairImagesValueInput = document.getElementById("pairImagesValueInput");
+    const pairImagesValueInput_vert = document.getElementById("pairImagesValueInput_vert");
     pairImagesValueInput.value = IMAGE_LETTERS;
+    pairImagesValueInput_vert.value = IMAGE_LETTERS_vert;
 
     function changePairImagesLetters() {
       const isEditConfirmed = confirm("Are you sure?");
       if(isEditConfirmed){
         const pairImagesValueInput = document.getElementById("pairImagesValueInput");
+        const pairImagesValueInput_vert = document.getElementById("pairImagesValueInput_vert");
         // console.log(pairImagesValueInput.value);
         IMAGE_LETTERS = pairImagesValueInput.value;
-        pairImagesArray = createPairImagesArray(IMAGE_LETTERS);
+        IMAGE_LETTERS_vert = pairImagesValueInput_vert.value;
+        pairImagesArray = createPairImagesArray(IMAGE_LETTERS, IMAGE_LETTERS_vert);
         shuffledPairArray = shuffle(pairImagesArray);
         CANVAS.width = IMAGE_LETTERS.length * STEP;
-        CANVAS.height = IMAGE_LETTERS.length * STEP;
-        // Draw square by diagonal where pair letter is it self ("AA", "DD")
-        for (let i = 0; i < IMAGE_LETTERS.length; i++) {
-          CTX.fillRect(i*STEP,i*STEP, STEP, STEP);
-        }
+        CANVAS.height = IMAGE_LETTERS_vert.length * STEP;
+        drawSquareByDiagonalWherePairLetterIsItSelf();
         const editButton = document.getElementById("editButton");
         editButton.textContent = "START OVER?"
       }
@@ -75,9 +99,27 @@
       getPairFromArray();
     })
 
-    // Draw square by diagonal where pair letter is it self ("AA", "DD")
-    for (let i = 0; i < PAIR_LETTER_LEN; i++) {
-      CTX.fillRect(i*STEP,i*STEP, STEP, STEP);
+    drawSquareByDiagonalWherePairLetterIsItSelf();
+
+    function drawSquareByDiagonalWherePairLetterIsItSelf() {
+      // Draw square by diagonal where pair letter is it self ("AA", "DD")
+      for (let i = 0; i < IMAGE_LETTERS.length; i++) {
+        for (let j = 0; j < IMAGE_LETTERS_vert.length; j++) {
+          if(i == j){
+            CTX.fillRect(i*STEP,j*STEP, STEP, STEP);
+          }
+        }
+      }
+
+      CTX.fillStyle = "red";
+      for (let i = 0; i < IMAGE_LETTERS.length; i++) {
+        CTX.fillText(IMAGE_LETTERS[i], i*STEP, STEP);
+      }
+
+      for (let j = 0; j < IMAGE_LETTERS_vert.length; j++) {
+        CTX.fillText(IMAGE_LETTERS_vert[j], STEP/2, j*STEP + STEP/2);
+      }
+      CTX.fillStyle = "black";
     }
 
     function shuffle(array) {
@@ -92,12 +134,12 @@
     let shuffledPairArray = shuffle(pairImagesArray);
     // console.log(shuffledPairArray.length);
 
-    function createPairImagesArray(letterString) {
+    function createPairImagesArray(letterString, letterString_vert) {
       let result = [];
       for (let i = 0; i < letterString.length; i++) {
-        for (let j = 0; j < letterString.length; j++) {
+        for (let j = 0; j < letterString_vert.length; j++) {
           if(i != j){
-            result.push(`${letterString[i]}-${letterString[j]}::${i}-${j}`);
+            result.push(`${letterString[i]}-${letterString_vert[j]}::${i}-${j}`);
           }
         }
       }
@@ -125,8 +167,8 @@
 
     function getPair(params) {
       const displayPair = document.getElementById("theRandomPair");
-      const r1 = IMAGE_LETTERS[getRndInteger(0,PAIR_LETTER_LEN-1)];
-      const r2 = IMAGE_LETTERS[getRndInteger(0,PAIR_LETTER_LEN-1)];
+      const r1 = IMAGE_LETTERS[getRndInteger(0,IMAGE_LETTERS.length-1)];
+      const r2 = IMAGE_LETTERS_vert[getRndInteger(0,IMAGE_LETTERS_vert.length-1)];
       if(r1 != r2){
         displayPair.textContent = `${r1}-${r2}`;
       }      
