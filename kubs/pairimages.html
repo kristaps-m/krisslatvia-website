@@ -98,7 +98,7 @@
       // Draw square by diagonal where pair letter is it self ("AA", "DD")
       for (let i = 0; i < IMAGE_LETTERS.length; i++) {
         for (let j = 0; j < IMAGE_LETTERS_vert.length; j++) {
-          if(i == j){
+          if(IMAGE_LETTERS[i] == IMAGE_LETTERS_vert[j]){
             CTX.fillRect(i*STEP,j*STEP, STEP, STEP);
           }
         }
@@ -131,7 +131,7 @@
       let result = [];
       for (let i = 0; i < letterString.length; i++) {
         for (let j = 0; j < letterString_vert.length; j++) {
-          if(i != j){
+          if(letterString[i] != letterString_vert[j]){
             result.push(`${letterString[i]}-${letterString_vert[j]}::${i}-${j}`);
           }
         }
