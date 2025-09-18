@@ -43,8 +43,10 @@
       <br>
       <br>
     </div>
+    <h2 id="theRandomPairAnswer" style="margin: 1px; margin-left: 2rem; margin-top: 10rem; color: gray;">---> ... <---</h2>
   </main> 
   <script src="../GAMES/Global Helper Classes/getRndInteger.js"></script>
+  <script src="./2D_pair_images.js"></script>
   <script>
     const CANVAS = document.createElement('canvas');
     CANVAS.id = "myCanvas";
@@ -142,6 +144,7 @@
 
     function getPairFromArray() {
       const displayPair = document.getElementById("theRandomPair");
+      const theRandomPairAnswer = document.getElementById("theRandomPairAnswer");
       let thePairData;
       if(shuffledPairArray.length > 0){
         thePairData = shuffledPairArray.pop().split("::");
@@ -151,20 +154,12 @@
   
         CTX.fillRect(pair_I*STEP,pair_J*STEP,STEP,STEP);
         displayPair.textContent = thePair.toUpperCase();
+        theRandomPairAnswer.textContent = `\n${pair_images_2d[pair_J][pair_I]}`;
         // console.log(shuffledPairArray.length);
       }else{
         alert("DONE");
         displayPair.textContent = "YOU ARE DONE";
       }
-    }
-
-    function getPair(params) {
-      const displayPair = document.getElementById("theRandomPair");
-      const r1 = IMAGE_LETTERS[getRndInteger(0,IMAGE_LETTERS.length-1)];
-      const r2 = IMAGE_LETTERS_vert[getRndInteger(0,IMAGE_LETTERS_vert.length-1)];
-      if(r1 != r2){
-        displayPair.textContent = `${r1}-${r2}`;
-      }      
     }
   </script>
 </html>
