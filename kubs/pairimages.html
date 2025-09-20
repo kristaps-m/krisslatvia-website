@@ -52,6 +52,7 @@
     CANVAS.id = "myCanvas";
     CANVAS.style.border = "1px solid black";
     // const IMAGE_LETTERS = "abcde".toUpperCase(); // smaller string for testing
+    const thePairImages = "abcdefghijklmnoprstuvzāē".toUpperCase();
     let IMAGE_LETTERS = "abcdefghijklmnoprstuvzāē".toUpperCase();
     let IMAGE_LETTERS_vert = "abcdefghijklmnoprstuvzāē".toUpperCase();
     // const PAIR_LETTER_LEN = IMAGE_LETTERS.length;
@@ -134,7 +135,9 @@
       for (let i = 0; i < letterString.length; i++) {
         for (let j = 0; j < letterString_vert.length; j++) {
           if(letterString[i] != letterString_vert[j]){
-            result.push(`${letterString[i]}-${letterString_vert[j]}::${i}-${j}`);
+            const x = thePairImages.indexOf(letterString[i]);
+            const y = thePairImages.indexOf(letterString_vert[j]);
+            result.push(`${letterString[i]}-${letterString_vert[j]}::${x}-${y}`);
           }
         }
       }
@@ -154,7 +157,7 @@
   
         CTX.fillRect(pair_I*STEP,pair_J*STEP,STEP,STEP);
         displayPair.textContent = thePair.toUpperCase();
-        theRandomPairAnswer.textContent = `\n${pair_images_2d[pair_J][pair_I]}`;
+        theRandomPairAnswer.textContent = `${pair_images_2d[pair_J][pair_I]}`;
         // console.log(shuffledPairArray.length);
       }else{
         alert("DONE");
