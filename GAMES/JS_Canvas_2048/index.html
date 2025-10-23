@@ -1,45 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Connected Files</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/mobileScreen.css" />
+    <body>
+      <!-- <br><br><br><br> -->
+      <script id="replace_with_navbar" src="../../navbar/nav.js"></script>
+    </body>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Connected Files</title>
-  <link rel="stylesheet" href="../../css/style.css">
-  <link rel="stylesheet" href="../../css/mobileScreen.css">
   <body>
-    <!-- <br><br><br><br> -->
-    <script id="replace_with_navbar" src="../../navbar/nav.js"></script>
-  </body>
-</head>
-
-<body>
-  <div style="display: flex; justify-content: center; align-items: center;">
-    <h1 style="margin-right: 20px;">Hello, 2048!</h1> <h1 id="haveYouReached2048"></h1>
-  </div>
-  <div style="display: flex; justify-content: center; align-items: center;">
-    <div style="margin-right: 20px;">
-      <label for="fieldSize">Choose a size:</label>
-      <select name="fieldSize" id="fieldSize">
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4" selected>4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7 :O</option>
-      </select>
+    <div style="display: flex; justify-content: center; align-items: center">
+      <h1 style="margin-right: 20px">Hello, 2048!</h1>
+      <h1 id="haveYouReached2048"></h1>
     </div>
-    <button style="margin-right: 20px; background-color: green;" onclick="createNewGame()">New Game?</button>
-    <h3 style="padding-right: 10px;">Score:</h3>
-    <h3 id="scoreDisplay">0</h3>
-  </div>
-  <canvas id="mainStage"></canvas>
-  <p>Use KeyBoard to play (wasd or arrow keys)</p>
-  <p>Swipe in Mobile</p>
-  <script src="../Global Helper Classes/displayGrid.js"></script>
-  <script src="directionsHandler.js"></script>
-  <script src="script.js"></script>
-</body>
-
+    <div style="display: flex; justify-content: center; align-items: center">
+      <button
+        onclick="enableCheat()"
+        style="margin-right: 15px"
+        id="isCheatEnabled"
+      ></button>
+      <div style="margin-right: 20px">
+        <label for="fieldSize">Choose a size:</label>
+        <select name="fieldSize" id="fieldSize">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4" selected>4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7 :O</option>
+        </select>
+      </div>
+      <button
+        style="margin-right: 20px; background-color: green"
+        onclick="createNewGame()"
+      >
+        New Game?
+      </button>
+      <h3 style="padding-right: 10px">Score:</h3>
+      <h3 id="scoreDisplay">0</h3>
+    </div>
+    <canvas id="mainStage"></canvas>
+    <p>Use KeyBoard to play (wasd or arrow keys)</p>
+    <p>Swipe in Mobile</p>
+    <script src="../Global Helper Classes/displayGrid.js"></script>
+    <script src="directionsHandler.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>

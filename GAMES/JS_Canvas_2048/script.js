@@ -9,6 +9,10 @@ const cnvsSettings = {
 };
 const movementHandler = new Movement();
 let isGameOver = false;
+let isCheatEnabled = false;
+document.getElementById(
+  "isCheatEnabled"
+).textContent = `cheat 7 ${isCheatEnabled}`;
 let game2DArray;
 let storeDirectionPressedAndPointsForGameOverHandling = [];
 // Mobile version playabilty
@@ -17,6 +21,25 @@ let touchStartY = 0;
 let touchEndX = 0;
 let touchEndY = 0;
 let touchStartedInsideCanvas = false; // Flag to check where touch started
+
+function enableCheat() {
+  isCheatEnabled = !isCheatEnabled;
+  document.getElementById(
+    "isCheatEnabled"
+  ).textContent = `cheat 7 '${isCheatEnabled}'`;
+}
+
+setInterval(() => {
+  if (isCheatEnabled && cnvsSettings.gameSize == 7) {
+    doSomethingWhenKeyup("a");
+    doSomethingWhenKeyup("s");
+    doSomethingWhenKeyup("d");
+    doSomethingWhenKeyup("w");
+  }
+  if (isGameOver) {
+    displayGameOver();
+  }
+}, 5);
 
 function gameSizeHandler() {
   if (cnvsSettings.gameSize === 2) {
@@ -95,19 +118,23 @@ window.addEventListener("keyup", function (event) {
   if (!isGameOver) {
     doSomethingWhenKeyup(event.key);
   } else {
-    CTX.fillStyle = "white";
-    CTX.fillRect(
-      cnvsSettings.width / 2 - INTERVAL,
-      cnvsSettings.height / 2 - INTERVAL / 2,
-      INTERVAL * 2,
-      INTERVAL
-    );
-    var isWon = document.getElementById("haveYouReached2048");
-    isWon.style = "background-color: red;";
-    isWon.textContent = "GAME OVER!!!";
-    displayText("GAME OVER!!!!", cnvsSettings.width / 2, cnvsSettings.height / 2);
+    displayGameOver();
   }
 });
+
+function displayGameOver() {
+  CTX.fillStyle = "white";
+  CTX.fillRect(
+    cnvsSettings.width / 2 - INTERVAL,
+    cnvsSettings.height / 2 - INTERVAL / 2,
+    INTERVAL * 2,
+    INTERVAL
+  );
+  var isWon = document.getElementById("haveYouReached2048");
+  isWon.style = "background-color: red;";
+  isWon.textContent = "GAME OVER!!!";
+  displayText("GAME OVER!!!!", cnvsSettings.width / 2, cnvsSettings.height / 2);
+}
 
 function doSomethingWhenKeyup(keyUP) {
   switch (keyUP) {
@@ -143,9 +170,9 @@ function doSomethingWhenKeyup(keyUP) {
       drawGameFieldOnCanvas(generateNewNumberOrNot_d);
       gameOverHandlerWhenDirectionButtonPressed("right");
       break;
-    default:
-      console.log(`You Pressed ${keyUP}`);
-      break;
+    // default:
+    //   console.log(`You Pressed ${keyUP}`);
+    //   break;
   }
 }
 
@@ -211,7 +238,10 @@ class DirectionAndScore {
 
 function gameOverHandlerWhenDirectionButtonPressed(_buttonPressed) {
   var scoreToDisplay = document.getElementById("scoreDisplay");
-  let directionAndScore = new DirectionAndScore(_buttonPressed, scoreToDisplay.textContent);
+  let directionAndScore = new DirectionAndScore(
+    _buttonPressed,
+    scoreToDisplay.textContent
+  );
   if (countZerosInField() === 0) {
     storeDirectionPressedAndPointsForGameOverHandling.push(directionAndScore);
   } else {
