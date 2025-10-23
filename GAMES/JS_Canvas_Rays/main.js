@@ -2,55 +2,65 @@
 const CANVAS = document.getElementById("canvasStage");
 const CONTEXT = CANVAS.getContext("2d");
 // screen
-const WIDTH = 300, HALF_WIDTH = 150;
-const HEIGHT = 200; HALF_HEIGHT = 100;
+const WIDTH = 300,
+  HALF_WIDTH = 150;
+const HEIGHT = 200;
+HALF_HEIGHT = 100;
 // FPS
 const FPS = 60;
 const CYCLE_DELAY = Math.floor(1000 / FPS);
 let oldCycleTime = 0;
 let cycleCount = 0;
-let fpsRate = '...';
+let fpsRate = "...";
 // map
 const MAP_SIZE = 32;
 const MAP_SCALE = 10;
 const MAP_RANGE = MAP_SCALE * MAP_SIZE;
-const MAP_SPEED = (MAP_SCALE / 2) / 10;
+const MAP_SPEED = MAP_SCALE / 2 / 10;
 let createSmallerMap = 5;
 let rayLineLength = 40;
 let map = [
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-]
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1,
+  0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1,
+  0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0,
+  1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+  0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1,
+  0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0,
+  0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+  1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+];
 
 let showMap = false;
 
@@ -63,26 +73,54 @@ let playerMoveY = 0;
 let playerMoveAngle = 0;
 
 // handle user input
-document.onkeydown = function(event){
-    let keyCode = event.keyCode;
-    switch (keyCode) {
-        case 40: playerMoveX = -1; playerMoveY = -1; break;
-        case 38: playerMoveX = 1; playerMoveY = 1; break;
-        case 37: playerMoveAngle = 1; break;
-        case 39: playerMoveAngle = -1; break;
-        case 16: showMap = true; break;
-    }
-}
-document.onkeyup = function(event){
-    let keyCode = event.keyCode;
-    switch (keyCode) {
-        case 40:
-        case 38: playerMoveX = 0; playerMoveY = 0; break;
-        case 37:
-        case 39: playerMoveAngle = 0; break;
-        case 16: showMap = false; break;
-    }
-}
+document.onkeydown = function (event) {
+  let keyCode = event.keyCode;
+  // console.log(keyCode);
+  switch (keyCode) {
+    case 40:
+    case 83:
+      playerMoveX = -1;
+      playerMoveY = -1;
+      break;
+    case 38:
+    case 87:
+      playerMoveX = 1;
+      playerMoveY = 1;
+      break;
+    case 65:
+    case 37:
+      playerMoveAngle = 1;
+      break;
+    case 39:
+    case 68:
+      playerMoveAngle = -1;
+      break;
+    case 16:
+      showMap = true;
+      break;
+  }
+};
+document.onkeyup = function (event) {
+  let keyCode = event.keyCode;
+  switch (keyCode) {
+    case 40:
+    case 38:
+    case 83:
+    case 87:
+      playerMoveX = 0;
+      playerMoveY = 0;
+      break;
+    case 37:
+    case 37:
+    case 65:
+    case 68:
+      playerMoveAngle = 0;
+      break;
+    case 16:
+      showMap = false;
+      break;
+  }
+};
 // camera
 const DOUBLE_PI = Math.PI * 2;
 const FOV = Math.PI / 3; // field of view
@@ -90,141 +128,206 @@ const HALF_FOV = FOV / 2;
 const STEP_ANGLE = FOV / WIDTH;
 
 // game loop
-function gameLoop(){
-    // calculate fps
-    cycleCount++;
-    if(cycleCount >= 60) {cycleCount = 0}
-    let startTime = Date.now();
-    let cycleTime = startTime - oldCycleTime;
-    oldCycleTime = startTime;
-    if(cycleCount % 60 === 0) {fpsRate = Math.floor(1000 / cycleTime)}
+function gameLoop() {
+  // calculate fps
+  cycleCount++;
+  if (cycleCount >= 60) {
+    cycleCount = 0;
+  }
+  let startTime = Date.now();
+  let cycleTime = startTime - oldCycleTime;
+  oldCycleTime = startTime;
+  if (cycleCount % 60 === 0) {
+    fpsRate = Math.floor(1000 / cycleTime);
+  }
 
-    // resize canvas
-    CANVAS.width = window.innerWidth * 0.3;
-    CANVAS.height = window.innerHeight * 0.3;
+  // resize canvas
+  CANVAS.width = window.innerWidth * 0.3;
+  CANVAS.height = window.innerHeight * 0.3;
 
-    // update screen
-    CONTEXT.fillStyle = "black";
-    CONTEXT.fillRect(CANVAS.width / 2 - HALF_WIDTH, CANVAS.height / 2 - HALF_HEIGHT, WIDTH, HEIGHT);
+  // update screen
+  CONTEXT.fillStyle = "black";
+  CONTEXT.fillRect(
+    CANVAS.width / 2 - HALF_WIDTH,
+    CANVAS.height / 2 - HALF_HEIGHT,
+    WIDTH,
+    HEIGHT
+  );
 
-    // update player position
-    let playerOffSetX = Math.sin(playerAngle) * MAP_SPEED;
-    let playerOffSetY = Math.cos(playerAngle) * MAP_SPEED;
-    let mapTargetX = Math.floor(playerY / MAP_SCALE) * MAP_SIZE + Math.floor((playerX + playerOffSetX * playerMoveX) / MAP_SCALE);
-    let mapTargetY = Math.floor((playerY + playerOffSetY * playerMoveY) / MAP_SCALE) * MAP_SIZE + Math.floor(playerX  / MAP_SCALE);
+  // update player position
+  let playerOffSetX = Math.sin(playerAngle) * MAP_SPEED;
+  let playerOffSetY = Math.cos(playerAngle) * MAP_SPEED;
+  let mapTargetX =
+    Math.floor(playerY / MAP_SCALE) * MAP_SIZE +
+    Math.floor((playerX + playerOffSetX * playerMoveX) / MAP_SCALE);
+  let mapTargetY =
+    Math.floor((playerY + playerOffSetY * playerMoveY) / MAP_SCALE) * MAP_SIZE +
+    Math.floor(playerX / MAP_SCALE);
 
-    if(playerMoveX && map[mapTargetX] == 0){playerX += playerOffSetX * playerMoveX}
-    if(playerMoveY && map[mapTargetY] == 0){playerY += playerOffSetY * playerMoveY}
-    if (playerMoveAngle) {playerAngle += 0.05 * playerMoveAngle} // 0.05 was = to 0.3 it turns fast
+  if (playerMoveX && map[mapTargetX] == 0) {
+    playerX += playerOffSetX * playerMoveX;
+  }
+  if (playerMoveY && map[mapTargetY] == 0) {
+    playerY += playerOffSetY * playerMoveY;
+  }
+  if (playerMoveAngle) {
+    playerAngle += 0.05 * playerMoveAngle;
+  } // 0.05 was = to 0.3 it turns fast
 
-    // calculate map & player offsets
-    let mapOffSetX = Math.floor(CANVAS.width / 2) - 149;
-    let mapOffSetY = 4;
-    let playerMapX = (playerX / MAP_SCALE) * createSmallerMap + mapOffSetX;
-    let playerMapY = (playerY / MAP_SCALE) * createSmallerMap + mapOffSetY;
+  // calculate map & player offsets
+  let mapOffSetX = Math.floor(CANVAS.width / 2) - 149;
+  let mapOffSetY = 4;
+  let playerMapX = (playerX / MAP_SCALE) * createSmallerMap + mapOffSetX;
+  let playerMapY = (playerY / MAP_SCALE) * createSmallerMap + mapOffSetY;
 
-    // raycasting
-    let currentAngle = playerAngle + HALF_FOV;
-    let rayStartX = Math.floor(playerX / MAP_SCALE) * MAP_SCALE;
-    let rayStartY = Math.floor(playerY / MAP_SCALE) * MAP_SCALE;
+  // raycasting
+  let currentAngle = playerAngle + HALF_FOV;
+  let rayStartX = Math.floor(playerX / MAP_SCALE) * MAP_SCALE;
+  let rayStartY = Math.floor(playerY / MAP_SCALE) * MAP_SCALE;
 
-    // loop over caster rays
-    // ----------------------------------------------------------
-    for(var ray = 0; ray < WIDTH; ray++){
-        // get current angle sin * cos
-        let currentSin = Math.sin(currentAngle); currentSin = currentSin ? currentSin : 0.000001;
-        let currentCos = Math.cos(currentAngle); currentCos = currentCos ? currentCos : 0.000001;
+  // loop over caster rays
+  // ----------------------------------------------------------
+  for (var ray = 0; ray < WIDTH; ray++) {
+    // get current angle sin * cos
+    let currentSin = Math.sin(currentAngle);
+    currentSin = currentSin ? currentSin : 0.000001;
+    let currentCos = Math.cos(currentAngle);
+    currentCos = currentCos ? currentCos : 0.000001;
 
-        // vertical line intersection
-        var rayEndX, rayEndY, rayDirectionX, verticalDepth;
-        if (currentSin > 0) { rayEndX = rayStartX + MAP_SCALE; rayDirectionX = 1}
-        else {rayEndX = rayStartX; rayDirectionX = -1}
-        for (var offset = 0; offset < MAP_RANGE; offset += MAP_SCALE){
-            verticalDepth = (rayEndX - playerX) / currentSin;
-            rayEndY = playerY + verticalDepth * currentCos;
-            let mapTargetX = Math.floor(rayEndX / MAP_SCALE);
-            let mapTargetY = Math.floor(rayEndY / MAP_SCALE);
-            if (currentSin <= 0) {mapTargetX += rayDirectionX;}
-            let targetSquare = mapTargetY * MAP_SIZE + mapTargetX;
-            if(targetSquare < 0 || targetSquare > map.length - 1) {break;}
-            if(map[targetSquare] != 0) {break;}
-            rayEndX += rayDirectionX * MAP_SCALE;
-        }
-
-        // temp endX and endY targets
-        var tempX = rayEndX;
-        var tempY = rayEndY;
-
-        // horizontal line intersection
-        var rayEndY, rayEndX, rayDirectionY, horizontalDepth;
-        if (currentCos > 0) { rayEndY = rayStartY + MAP_SCALE; rayDirectionY = 1}
-        else {rayEndY = rayStartY; rayDirectionY = -1}
-        for (var offset = 0; offset < MAP_RANGE; offset += MAP_SCALE){
-            horizontalDepth = (rayEndY - playerY) / currentCos;
-            rayEndX = playerX + horizontalDepth * currentSin;
-            let mapTargetX = Math.floor(rayEndX / MAP_SCALE);
-            let mapTargetY = Math.floor(rayEndY / MAP_SCALE);
-            if (currentCos <= 0) {mapTargetY += rayDirectionY;}
-            let targetSquare = mapTargetY * MAP_SIZE + mapTargetX;
-            if(targetSquare < 0 || targetSquare > map.length - 1) {break;}
-            if(map[targetSquare] != 0) {break;}
-            rayEndY += rayDirectionY * MAP_SCALE;
-        }
-
-        let endX = verticalDepth < horizontalDepth ? tempX : rayEndX;
-        let endY = verticalDepth < horizontalDepth ? tempY : rayEndY;
-        //draw ray
-        // CONTEXT.strokeStyle = "yellow";
-        // CONTEXT.lineWidth = 1;
-        // CONTEXT.beginPath();
-        // CONTEXT.moveTo(playerMapX, playerMapY );
-        // CONTEXT.lineTo(endX + mapOffSetX, endY + mapOffSetY);
-        // CONTEXT.stroke();
-
-        // render 3D projection
-        let depth = verticalDepth < horizontalDepth ? verticalDepth : horizontalDepth;
-        depth *= Math.cos(playerAngle - currentAngle);
-        let wallHeight = Math.min(MAP_SCALE * WIDTH / (depth + 0.000001), HEIGHT);
-        CONTEXT.fillStyle = verticalDepth < horizontalDepth ? "#aaa" : "#555";
-        CONTEXT.fillRect(mapOffSetX + ray, mapOffSetY + (HEIGHT / 2 - wallHeight / 2), 1, wallHeight);
-        // update current angle
-        currentAngle -= STEP_ANGLE;
-    } // loop over caster rays (end of loop)
-    // ----------------------------------------------------------
-    // draw map on left shift press
-    if(showMap){
-        // draw 2D map
-        for (let row = 0; row < MAP_SIZE; row++) {
-            for (let col = 0; col < MAP_SIZE; col++) {
-                let square = row * MAP_SIZE + col;
-                if(map[square] != 0){
-                    CONTEXT.fillStyle = "#555";
-                    CONTEXT.fillRect(mapOffSetX + col * createSmallerMap, mapOffSetY + row * createSmallerMap, createSmallerMap, createSmallerMap);
-                } else {
-                    CONTEXT.fillStyle = "#aaa";
-                    CONTEXT.fillRect(mapOffSetX + col * createSmallerMap, mapOffSetY+ row * createSmallerMap, createSmallerMap, createSmallerMap);
-                }
-            }
-        }
-
-        // draw player on 2D map
-        CONTEXT.fillStyle = "red";
-        CONTEXT.beginPath();
-        CONTEXT.arc(playerMapX, playerMapY, 2, 0, DOUBLE_PI);
-        CONTEXT.fill();
-
-        CONTEXT.strokeStyle = "red"; // middle of rays line
-        CONTEXT.lineWidth = 1;
-        CONTEXT.beginPath();
-        CONTEXT.moveTo(playerMapX, playerMapY);
-        CONTEXT.lineTo(playerMapX + Math.sin(playerAngle) * rayLineLength, playerMapY + Math.cos(playerAngle) * rayLineLength);
-        CONTEXT.stroke();
+    // vertical line intersection
+    var rayEndX, rayEndY, rayDirectionX, verticalDepth;
+    if (currentSin > 0) {
+      rayEndX = rayStartX + MAP_SCALE;
+      rayDirectionX = 1;
+    } else {
+      rayEndX = rayStartX;
+      rayDirectionX = -1;
     }
-    // infinite loop
-    setTimeout(gameLoop, CYCLE_DELAY);
+    for (var offset = 0; offset < MAP_RANGE; offset += MAP_SCALE) {
+      verticalDepth = (rayEndX - playerX) / currentSin;
+      rayEndY = playerY + verticalDepth * currentCos;
+      let mapTargetX = Math.floor(rayEndX / MAP_SCALE);
+      let mapTargetY = Math.floor(rayEndY / MAP_SCALE);
+      if (currentSin <= 0) {
+        mapTargetX += rayDirectionX;
+      }
+      let targetSquare = mapTargetY * MAP_SIZE + mapTargetX;
+      if (targetSquare < 0 || targetSquare > map.length - 1) {
+        break;
+      }
+      if (map[targetSquare] != 0) {
+        break;
+      }
+      rayEndX += rayDirectionX * MAP_SCALE;
+    }
 
-    // render FPS to screen
-    CONTEXT.fillStyle = "white";
-    CONTEXT.font = "12px Monospace";
-    CONTEXT.fillText("FPS: " + fpsRate, 0, 20)
-} window.onload = function() {gameLoop();}
+    // temp endX and endY targets
+    var tempX = rayEndX;
+    var tempY = rayEndY;
+
+    // horizontal line intersection
+    var rayEndY, rayEndX, rayDirectionY, horizontalDepth;
+    if (currentCos > 0) {
+      rayEndY = rayStartY + MAP_SCALE;
+      rayDirectionY = 1;
+    } else {
+      rayEndY = rayStartY;
+      rayDirectionY = -1;
+    }
+    for (var offset = 0; offset < MAP_RANGE; offset += MAP_SCALE) {
+      horizontalDepth = (rayEndY - playerY) / currentCos;
+      rayEndX = playerX + horizontalDepth * currentSin;
+      let mapTargetX = Math.floor(rayEndX / MAP_SCALE);
+      let mapTargetY = Math.floor(rayEndY / MAP_SCALE);
+      if (currentCos <= 0) {
+        mapTargetY += rayDirectionY;
+      }
+      let targetSquare = mapTargetY * MAP_SIZE + mapTargetX;
+      if (targetSquare < 0 || targetSquare > map.length - 1) {
+        break;
+      }
+      if (map[targetSquare] != 0) {
+        break;
+      }
+      rayEndY += rayDirectionY * MAP_SCALE;
+    }
+
+    let endX = verticalDepth < horizontalDepth ? tempX : rayEndX;
+    let endY = verticalDepth < horizontalDepth ? tempY : rayEndY;
+    //draw ray
+    // CONTEXT.strokeStyle = "yellow";
+    // CONTEXT.lineWidth = 1;
+    // CONTEXT.beginPath();
+    // CONTEXT.moveTo(playerMapX, playerMapY );
+    // CONTEXT.lineTo(endX + mapOffSetX, endY + mapOffSetY);
+    // CONTEXT.stroke();
+
+    // render 3D projection
+    let depth =
+      verticalDepth < horizontalDepth ? verticalDepth : horizontalDepth;
+    depth *= Math.cos(playerAngle - currentAngle);
+    let wallHeight = Math.min((MAP_SCALE * WIDTH) / (depth + 0.000001), HEIGHT);
+    CONTEXT.fillStyle = verticalDepth < horizontalDepth ? "#aaa" : "#555";
+    CONTEXT.fillRect(
+      mapOffSetX + ray,
+      mapOffSetY + (HEIGHT / 2 - wallHeight / 2),
+      1,
+      wallHeight
+    );
+    // update current angle
+    currentAngle -= STEP_ANGLE;
+  } // loop over caster rays (end of loop)
+  // ----------------------------------------------------------
+  // draw map on left shift press
+  if (showMap) {
+    // draw 2D map
+    for (let row = 0; row < MAP_SIZE; row++) {
+      for (let col = 0; col < MAP_SIZE; col++) {
+        let square = row * MAP_SIZE + col;
+        if (map[square] != 0) {
+          CONTEXT.fillStyle = "#555";
+          CONTEXT.fillRect(
+            mapOffSetX + col * createSmallerMap,
+            mapOffSetY + row * createSmallerMap,
+            createSmallerMap,
+            createSmallerMap
+          );
+        } else {
+          CONTEXT.fillStyle = "#aaa";
+          CONTEXT.fillRect(
+            mapOffSetX + col * createSmallerMap,
+            mapOffSetY + row * createSmallerMap,
+            createSmallerMap,
+            createSmallerMap
+          );
+        }
+      }
+    }
+
+    // draw player on 2D map
+    CONTEXT.fillStyle = "red";
+    CONTEXT.beginPath();
+    CONTEXT.arc(playerMapX, playerMapY, 2, 0, DOUBLE_PI);
+    CONTEXT.fill();
+
+    CONTEXT.strokeStyle = "red"; // middle of rays line
+    CONTEXT.lineWidth = 1;
+    CONTEXT.beginPath();
+    CONTEXT.moveTo(playerMapX, playerMapY);
+    CONTEXT.lineTo(
+      playerMapX + Math.sin(playerAngle) * rayLineLength,
+      playerMapY + Math.cos(playerAngle) * rayLineLength
+    );
+    CONTEXT.stroke();
+  }
+  // infinite loop
+  setTimeout(gameLoop, CYCLE_DELAY);
+
+  // render FPS to screen
+  CONTEXT.fillStyle = "white";
+  CONTEXT.font = "12px Monospace";
+  CONTEXT.fillText("FPS: " + fpsRate, 0, 20);
+}
+window.onload = function () {
+  gameLoop();
+};
