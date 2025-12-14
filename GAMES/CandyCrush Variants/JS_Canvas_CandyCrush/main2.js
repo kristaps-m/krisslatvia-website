@@ -30,6 +30,47 @@ theGameField = candyCrush(theGameField);
 // console.log(theGameField);
 displayNumbersOnCanvas();
 
+function gameLoop() {
+  requestAnimationFrame(gameLoop);
+  // console.log(1);
+  for (let row = 0; row < CANDIES_IN_ROW; row++) {
+    for (let col = 0; col < CANDIES_IN_COL; col++) {
+      if (theGameField[row][col].randomInteger == 0) {
+        const dx = W / CANDIES_IN_ROW;
+        const dy = H / CANDIES_IN_COL;
+        const x = col * dy; // + dy / 4;
+        let y = row * dx; // + dx / 1.5;
+        theGameField[row][col].randomInteger = getRndInteger(
+          1,
+          NUMBER_OF_COLORS_USED
+        );
+        CTX.fillStyle = GAME_COLORS[theGameField[row][col].randomInteger];
+        CTX.fillRect(x, y, dx, dy);
+        theGameField[row][col].top += 0.5;
+        // console.log(y);
+        // // CTX.fillStyle = GAME_COLORS[theGameField[row][col].randomInteger - 1];
+        // CTX.fillStyle = "gray";
+        // CTX.fillRect(x, y, dx, dy);
+        displayText(
+          theGameField[row][col].randomInteger,
+          x + dy / 4,
+          theGameField[row][col].top
+        );
+      }
+    }
+  }
+  displayGrid({
+    ctx: CTX,
+    strokeStyle: "black",
+    girdLineWidth: (girdLineWidth = 3),
+    oneSquareSize: W / CANDIES_IN_ROW,
+    canvasHeight: H,
+    canvasWidth: W,
+  });
+}
+
+gameLoop();
+
 CANVAS.addEventListener(
   "click",
   function (e) {
@@ -66,9 +107,15 @@ CANVAS.addEventListener(
               const click1 = userClickedTwoNumbers[0];
               const click2 = userClickedTwoNumbers[1];
               theGameField = [
-                ...swapElements(theGameField, click1.row, click1.col, click2.row, click2.col),
+                ...swapElements(
+                  theGameField,
+                  click1.row,
+                  click1.col,
+                  click2.row,
+                  click2.col
+                ),
               ];
-              theGameField = [...candyCrush(theGameField)];
+              theGameField = [...candyCrush(theGameField, true)];
               // console.log(click1.row, click1.col, click2.row, click2.col);
               setTimeout(function () {
                 displayNumbersOnCanvas();
@@ -105,8 +152,12 @@ function displayNumbersOnCanvas() {
       //   theGameField[row][col].width,
       //   theGameField[row][col].height
       // );
-      CTX.fillRect(x, y, dx, dy);
-      displayText(theGameField[row][col].randomInteger, x + dy / 4, y + dx / 1.5);
+      CTX.fillRect(x, theGameField[row][col].top, dx, dy);
+      displayText(
+        theGameField[row][col].randomInteger,
+        x + dy / 4,
+        y + dx / 1.5
+      );
       // displayText(randomInteger, x, y);
     }
   }
@@ -144,7 +195,14 @@ function getNumbersForSpawing() {
 function swapButton(testMode = false) {
   const getN = getNumbersForSpawing();
 
-  theGameField = swapElements(theGameField, getN.n1r, getN.n1c, getN.n2r, getN.n2c, testMode);
+  theGameField = swapElements(
+    theGameField,
+    getN.n1r,
+    getN.n1c,
+    getN.n2r,
+    getN.n2c,
+    testMode
+  );
   theGameField = candyCrush(theGameField);
   displayNumbersOnCanvas();
   // console.log(theGameField);

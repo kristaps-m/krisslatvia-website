@@ -1,4 +1,4 @@
-function candyCrush(board) {
+function candyCrush(board, test = false) {
   let numRows = board.length;
   let numCols = board[0].length;
   let foundCrushableCandies = true;
@@ -59,10 +59,14 @@ function candyCrush(board) {
 
         // Fill the remaining spaces with 0s
         for (let fill = fillPosition; fill >= 0; fill--) {
-          board[fill][col].randomInteger = getRndInteger(
-            1,
-            NUMBER_OF_COLORS_USED
-          );
+          if (!test) {
+            board[fill][col].randomInteger = getRndInteger(
+              1,
+              NUMBER_OF_COLORS_USED
+            );
+          } else {
+            board[fill][col].randomInteger = 0;
+          }
         }
       }
     }
