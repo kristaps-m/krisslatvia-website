@@ -33,13 +33,43 @@ export class Food extends Position {
     return false;
   }
 
-  createNewFood(ctx, color, w, h, tail) {
+  createNewFood(ctx, color, w, h, tail, snakeData) {
     let isNewFoodInsideTail = true;
     let newX;
     let newY;
     while (isNewFoodInsideTail) {
-      newX = (Math.floor(Math.random() * (w / this.squareSize) - 1) + 1) * this.squareSize;
-      newY = (Math.floor(Math.random() * (h / this.squareSize) - 1) + 1) * this.squareSize;
+      // newX =
+      //   (Math.floor(Math.random() * (w / this.squareSize) - 1) + 1) *
+      //   this.squareSize;
+      // newY =
+      //   (Math.floor(Math.random() * (h / this.squareSize) - 1) + 1) *
+      //   this.squareSize;
+
+      const isSnakeFoodAhead = true;
+      if (isSnakeFoodAhead) {
+        if (
+          snakeData.sx + this.squareSize * 3 < w - this.squareSize * 2 &&
+          snakeData.sd == "right"
+        ) {
+          newX = snakeData.sx + this.squareSize * 2;
+          newY = snakeData.sy;
+        } else if (
+          snakeData.sx - this.squareSize * 3 > this.squareSize * 2 &&
+          snakeData.sd == "left"
+        ) {
+          newX = snakeData.sx - this.squareSize * 2;
+          newY = snakeData.sy;
+        } else {
+          newX =
+            (Math.floor(Math.random() * (w / this.squareSize) - 1) + 1) *
+            this.squareSize;
+          newY =
+            (Math.floor(Math.random() * (h / this.squareSize) - 1) + 1) *
+            this.squareSize;
+        }
+        // newY = snakeData.sy;
+      }
+
       if (!this.isInside(tail, newX, newY)) {
         isNewFoodInsideTail = false;
         this.x = newX;

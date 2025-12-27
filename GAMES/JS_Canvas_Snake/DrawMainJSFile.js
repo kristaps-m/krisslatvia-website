@@ -67,7 +67,7 @@ function theSnakeGameLoop() {
     if (isPaused) {
       displayText("    PAUSE    ");
     }
-    if (gameFieldFullNumber - 1 === snake.tail.length) {
+    if (gameFieldFullNumber - 2 === snake.tail.length) {
       var variableDisplay = document.getElementById("scoreDisplay").textContent;
       displayText("YOU WON!" + ` score: ${variableDisplay}`);
       isGameOver = true;
@@ -124,7 +124,11 @@ function the_draw() {
 
   if (food.isFoodEaten(snake.xLocation, snake.yLocation)) {
     snake.setTheFoodCellEaten(food.x, food.y);
-    food.createNewFood(ctx, "black", canvasWidth, canvasHeight, snake.tail);
+    food.createNewFood(ctx, "black", canvasWidth, canvasHeight, snake.tail, {
+      sx: snake.xLocation,
+      sy: snake.yLocation,
+      sd: snake.snakeMoveDir,
+    });
     snake.updateTail();
     let variableDisplay = document.getElementById("scoreDisplay");
     variableDisplay.textContent = parseInt(variableDisplay.textContent) + 1;
@@ -219,7 +223,7 @@ function displayText(theText) {
   // IF you want to display Rect under displayText you can do it :)
   // ctx.fillStyle = 'white';
   // ctx.fillRect(canvasWidth * 0.1, canvasHeight /2 - 50, canvasWidth * 0.9, 50);
-  ctx.fillStyle = "blue";
+  ctx.fillStyle = "red";
   ctx.fillText(theText, canvasWidth / 2, canvasHeight / 2);
 }
 
