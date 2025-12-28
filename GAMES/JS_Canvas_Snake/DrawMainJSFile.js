@@ -36,6 +36,7 @@ const girdLineWidth = 1;
 let isGodModeON = false;
 let isGameOver = false;
 let isPaused = false;
+let isSnakeFoodAhead = false;
 let gameIsStarted = isGodModeON ? true : false;
 let theGameFrameCount = 0;
 let gameFieldFullNumber =
@@ -89,7 +90,7 @@ function theSnakeGameLoop() {
       displayText("GAME OVER!" + ` score: ${variableDisplay}`);
       isGameOver = true;
     }
-    if (isAutoSnakePlayON && !isGameOver && !isPaused && isPasswordEntered()) {
+    if (isAutoSnakePlayON && !isGameOver && !isPaused) {
       snake.automaticalyMoveSnakeToCollectFood(food);
     }
     if (!isGameOver && !isPaused) {
@@ -137,12 +138,12 @@ function the_draw() {
 
   if (food.isFoodEaten(snake.xLocation, snake.yLocation)) {
     snake.setTheFoodCellEaten(food.x, food.y);
-    food.createNewFood(ctx, "black", canvasWidth, canvasHeight, snake.tail);
+    food.createNewFood(ctx, "black", canvasWidth, canvasHeight, snake.tail, isSnakeFoodAhead);
     snake.updateTail();
     let variableDisplay = document.getElementById("scoreDisplay");
     variableDisplay.textContent = parseInt(variableDisplay.textContent) + 1;
   }
-  if (isAutoSnakePlayON && isPasswordEntered()) {
+  if (isAutoSnakePlayON) {
     ctx.font = "italic bold 20px Comic Sans MS";
     ctx.textAlign = "center";
     ctx.fillStyle = "rgb(141, 231, 141)";

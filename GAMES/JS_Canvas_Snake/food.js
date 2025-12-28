@@ -71,12 +71,12 @@ export class Food extends Position {
     }
   }
 
-  createNewFood(ctx, color, w, h, tail) {
+  createNewFood(ctx, color, w, h, tail, isSnakeFoodAhead) {
     let isNewFoodInsideTail = true;
     let newX;
     let newY;
     while (isNewFoodInsideTail) {
-      const isSnakeFoodAhead = true;
+      // const isSnakeFoodAhead = true;
       // if snake tail lenght is longer that 70 % (for example)of total posible snake lenght turn of auto food in face mode
       // bigger gamefield and smaller oneSquareSize the bigger the ratio can be.
       if (isSnakeFoodAhead && tail.length / this.gameFieldFullNumber < this.getRatioDependingOnGameSize()) {
