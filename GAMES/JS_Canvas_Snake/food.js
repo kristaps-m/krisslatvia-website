@@ -86,42 +86,38 @@ export class Food extends Position {
         ) {
           newX = this.snakeData.sx + this.squareSize * getRndInteger(1, 2);
           newY = this.snakeData.sy;
+            if(this.isInside(tail, newX, newY)){
+              newX = getRndInteger(1, w / this.squareSize) * this.squareSize - this.squareSize;
+              newY = getRndInteger(1, h / this.squareSize) * this.squareSize - this.squareSize;
+            }
         } else if (
           this.snakeData.sx - this.squareSize * 3 > this.squareSize * 2 &&
           this.snakeData.sd == "left"
         ) {
           newX = this.snakeData.sx - this.squareSize * getRndInteger(1, 2);
           newY = this.snakeData.sy;
+            if(this.isInside(tail, newX, newY)){
+              newX = getRndInteger(1, w / this.squareSize) * this.squareSize - this.squareSize;
+              newY = getRndInteger(1, h / this.squareSize) * this.squareSize - this.squareSize;
+            }
         } else if (this.snakeData.sx > w / 1.9) {
             newX = w - this.squareSize * 2;
             newY = this.avoidCreatingFoodOutOfField(this.snakeData.sy, h, tail);
             if(this.isInside(tail, newX, newY)){
-              newX =
-                (Math.floor(Math.random() * (w / this.squareSize) - 1) + 1) *
-                this.squareSize;
-              newY =
-                (Math.floor(Math.random() * (h / this.squareSize) - 1) + 1) *
-                this.squareSize;
+              newX = getRndInteger(1, w / this.squareSize) * this.squareSize - this.squareSize;
+              newY = getRndInteger(1, h / this.squareSize) * this.squareSize - this.squareSize;
             }
         } else if (this.snakeData.sx < w / 2.1) {
             newX = this.squareSize * 2;
             newY = this.avoidCreatingFoodOutOfField(this.snakeData.sy, h, tail);
             if(this.isInside(tail, newX, newY)){
-              newX =
-                (Math.floor(Math.random() * (w / this.squareSize) - 1) + 1) *
-                this.squareSize;
-              newY =
-                (Math.floor(Math.random() * (h / this.squareSize) - 1) + 1) *
-                this.squareSize;
+              newX = getRndInteger(1, w / this.squareSize) * this.squareSize - this.squareSize;
+              newY = getRndInteger(1, h / this.squareSize) * this.squareSize - this.squareSize;
             }
         }
       } else {
-          newX =
-            (Math.floor(Math.random() * (w / this.squareSize) - 1) + 1) *
-            this.squareSize;
-          newY =
-            (Math.floor(Math.random() * (h / this.squareSize) - 1) + 1) *
-            this.squareSize;
+          newX = getRndInteger(1, w / this.squareSize) * this.squareSize - this.squareSize;
+          newY = getRndInteger(1, h / this.squareSize) * this.squareSize - this.squareSize;
       }
 
       if (!this.isInside(tail, newX, newY)) {

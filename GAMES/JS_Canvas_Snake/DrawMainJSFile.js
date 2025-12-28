@@ -306,6 +306,19 @@ document.getElementById("toggleAutoSnakePlayOnOff").onclick = function () {
   }
 };
 
+document.getElementById("isSnakeFoodAhead").onclick = function () {
+  if (isPasswordEntered('"God Mode!"')) {
+    isSnakeFoodAhead = !isSnakeFoodAhead;
+    const x = document.getElementById("helloSnakeh1");
+    if(isSnakeFoodAhead){
+      x.textContent = "--Hello, Snake!--";
+    } else {
+      x.textContent = "Hello, Snake!";
+    }
+  }
+};
+
+
 function setWidthToBeDivisibleBy100(n) {
   const reminder = n % 100;
   return n - reminder;
