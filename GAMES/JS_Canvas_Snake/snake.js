@@ -7,18 +7,21 @@ export class Snake {
     squareSize,
     canvasWidth,
     canvasHeight,
+    xLocation,
+    yLocation,
+    snakeMoveDir,
     isGodModeEnabled = false
   ) {
     this.ctx = ctx;
     this.squareSize = squareSize;
-    this.xLocation = this.squareSize * 3; // location of head - movement speed
-    this.yLocation = 0;
+    this.xLocation = xLocation; // location of head - movement speed
+    this.yLocation = yLocation;
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
     this.isGodModeEnabled = isGodModeEnabled;
     this.xSpeed = this.isGodModeEnabled ? this.squareSize : 0;
     this.ySpeed = 0;
-    this.snakeMoveDir = "right";
+    this.snakeMoveDir = snakeMoveDir;
     this.tail = !this.isGodModeEnabled
       ? [
           new Cell(0, 0, this.snakeMoveDir),

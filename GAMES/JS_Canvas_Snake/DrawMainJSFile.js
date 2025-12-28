@@ -45,6 +45,9 @@ let snake = new Snake(
   oneSquareSize,
   canvasWidth,
   canvasHeight,
+  oneSquareSize * 3,
+  0,
+  "right",
   isGodModeON
 );
 let food = new Food(
@@ -52,6 +55,11 @@ let food = new Food(
   gameFieldFullNumber,
   canvasWidth,
   canvasHeight,
+  {
+      sx: snake.xLocation,
+      sy: snake.yLocation,
+      sd: snake.snakeMoveDir,
+  },
   isGodModeON
 );
 let variableScoreDisplay = document.getElementById("scoreDisplay");
@@ -118,17 +126,18 @@ function the_draw() {
     });
   }
   snake.update();
+  food.snakeData = {
+      sx: snake.xLocation,
+      sy: snake.yLocation,
+      sd: snake.snakeMoveDir,
+  }
   food.draw(ctx, "black");
   snake.drawTail(ctx, "green");
   snake.drawSnakeHead(ctx, "red");
 
   if (food.isFoodEaten(snake.xLocation, snake.yLocation)) {
     snake.setTheFoodCellEaten(food.x, food.y);
-    food.createNewFood(ctx, "black", canvasWidth, canvasHeight, snake.tail, {
-      sx: snake.xLocation,
-      sy: snake.yLocation,
-      sd: snake.snakeMoveDir,
-    });
+    food.createNewFood(ctx, "black", canvasWidth, canvasHeight, snake.tail);
     snake.updateTail();
     let variableDisplay = document.getElementById("scoreDisplay");
     variableDisplay.textContent = parseInt(variableDisplay.textContent) + 1;
@@ -261,6 +270,9 @@ document.getElementById("newGame").onclick = function () {
       oneSquareSize,
       canvasWidth,
       canvasHeight,
+      oneSquareSize * 3,
+      0,
+      "right",
       isGodModeON
     );
     food = new Food(
@@ -268,6 +280,11 @@ document.getElementById("newGame").onclick = function () {
       gameFieldFullNumber,
       canvasWidth,
       canvasHeight,
+      {
+          sx: snake.xLocation,
+          sy: snake.yLocation,
+          sd: snake.snakeMoveDir,
+      },
       isGodModeON
     );
     let variableScoreDisplay = document.getElementById("scoreDisplay");
