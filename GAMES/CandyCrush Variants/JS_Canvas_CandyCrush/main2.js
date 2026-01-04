@@ -22,6 +22,8 @@ const GAME_COLORS = [
   "lightgreen",
 ];
 const FALL_SPEED = 10;
+let X = 0;
+let Y = 0;
 let NUMBER_OF_COLORS_USED = 5;
 // idle | resolving | falling
 let gameState = "idle";
@@ -45,8 +47,8 @@ CANVAS.addEventListener("click", function (e) {
   const rect = CANVAS.getBoundingClientRect();
   const size = W / CANDIES_IN_COL;
 
-  const X = (e.clientX - rect.left) * (CANVAS.width / rect.width);
-  const Y = (e.clientY - rect.top) * (CANVAS.height / rect.height);
+  X = (e.clientX - rect.left) * (CANVAS.width / rect.width);
+  Y = (e.clientY - rect.top) * (CANVAS.height / rect.height);
 
   const col = Math.floor(X / size);
   const row = Math.floor(Y / size);
@@ -65,28 +67,25 @@ CANVAS.addEventListener("click", function (e) {
 
   userClickedTwoNumbers.push(cell);
 
-  // visual feedback
-  CTX.fillStyle = "black";
-  const pad = 10;
-  CTX.fillRect(cell.x + pad, cell.y + pad, size - pad * 2, size - pad * 2);
-
   if (userClickedTwoNumbers.length === 2) {
     const [a, b] = userClickedTwoNumbers;
     swapElements(theGameField, a.row, a.col, b.row, b.col);
     const matches = findMatches(theGameField);
 
     if (matches.length === 0) {
-      // ❌ invalid move → swap back
+      // ❌ invalid move → swap back after delay
+      gameState = "invalid_move";
       setTimeout(() => {
         swapElements(theGameField, a.row, a.col, b.row, b.col);
-      }, 150);
+        userClickedTwoNumbers = [];
+        gameState = "idle";
+      }, 300);
     } else {
       // ✅ valid move
       gameState = "resolving";
       startResolve();
+      // Don't clear userClickedTwoNumbers yet - clear when returning to idle
     }
-
-    userClickedTwoNumbers = [];
   }
 });
 
@@ -120,6 +119,29 @@ function displayNumbersOnCanvas() {
     canvasHeight: H,
     canvasWidth: W,
   });
+
+  // Draw borders around clicked cells
+  if (userClickedTwoNumbers.length > 0) {
+    const borderWidth = 6;
+    const borderPadding = 1;
+    CTX.strokeStyle = "gold";
+    CTX.lineWidth = borderWidth;
+
+    userClickedTwoNumbers.forEach((cell) => {
+      CTX.strokeRect(
+        cell.x - borderPadding,
+        cell.y - borderPadding,
+        size + borderPadding * 2,
+        size + borderPadding * 2
+      );
+      // CTX.fillStyle = "gold";
+      // CTX.fillRect(X, Y, size/5, size/5);
+      CTX.beginPath();
+      CTX.arc(X, Y, size/8, 0, 2 * Math.PI);
+      CTX.fillStyle = "gold";
+      CTX.fill();
+    });
+  }
 }
 
 function displayText(theText, x, y) {
@@ -201,10 +223,8 @@ function generateDifferentCadiesForGame() {
     for (let col = 0; col < CANDIES_IN_COL; col++) {
       temp.push({
         randomInteger: getRndInteger(1, NUMBER_OF_COLORS_USED),
-
         row,
         col,
-
         x: col * size,
         y: row * size,
         targetY: row * size,
@@ -220,16 +240,11 @@ function generateDifferentCadiesForGame() {
   return result;
 }
 
-function userClickedNumberLog() {
-  console.log(userClickedTwoNumbers.length, "<----");
-}
-
 function changeNumberOfSides() {
   var n = parseInt(document.getElementById("myRange")?.value);
   NUMBER_OF_COLORS_USED = n;
   userClickedTwoNumbers = [];
   theGameField = generateDifferentCadiesForGame();
-  // theGameField = candyCrush(theGameField);
   gameState = "resolving";
   startResolve();
   displayNumbersOnCanvas();
@@ -240,6 +255,7 @@ function startResolve() {
   const matches = findMatches(theGameField);
   if (matches.length === 0) {
     gameState = "idle";
+    userClickedTwoNumbers = [];
     return;
   }
 
