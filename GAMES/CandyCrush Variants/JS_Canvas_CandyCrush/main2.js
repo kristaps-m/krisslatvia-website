@@ -41,7 +41,6 @@ function gameLoop() {
 }
 
 CANVAS.addEventListener("click", function (e) {
-  console.log(gameState);
   if (gameState !== "idle") return;
 
   const rect = CANVAS.getBoundingClientRect();
@@ -157,7 +156,7 @@ function getNumbersForSpawing() {
   const n2r = parseInt(document.getElementById("n2r").value);
   const n2c = parseInt(document.getElementById("n2c").value);
 
-  console.log(n1r, n1c, n2r, n2c);
+  // console.log(n1r, n1c, n2r, n2c);
 
   result = { n1r: n1r, n1c: n1c, n2r: n2r, n2c: n2c };
 
@@ -248,7 +247,6 @@ function changeNumberOfSides() {
   gameState = "resolving";
   startResolve();
   displayNumbersOnCanvas();
-  console.log(n);
 }
 
 function startResolve() {
