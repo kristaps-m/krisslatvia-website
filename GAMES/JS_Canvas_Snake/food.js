@@ -100,14 +100,14 @@ export class Food extends Position {
               newX = getRndInteger(1, w / this.squareSize) * this.squareSize - this.squareSize;
               newY = getRndInteger(1, h / this.squareSize) * this.squareSize - this.squareSize;
             }
-        } else if (this.snakeData.sx > w / 1.9) {
+        } else if (this.snakeData.sx > w / 2.1) {
             newX = w - this.squareSize * 2;
             newY = this.avoidCreatingFoodOutOfField(this.snakeData.sy, h, tail);
             if(this.isInside(tail, newX, newY)){
               newX = getRndInteger(1, w / this.squareSize) * this.squareSize - this.squareSize;
               newY = getRndInteger(1, h / this.squareSize) * this.squareSize - this.squareSize;
             }
-        } else if (this.snakeData.sx < w / 2.1) {
+        } else if (this.snakeData.sx < w / 1.9) {
             newX = this.squareSize * 2;
             newY = this.avoidCreatingFoodOutOfField(this.snakeData.sy, h, tail);
             if(this.isInside(tail, newX, newY)){
@@ -119,7 +119,6 @@ export class Food extends Position {
           newX = getRndInteger(1, w / this.squareSize) * this.squareSize - this.squareSize;
           newY = getRndInteger(1, h / this.squareSize) * this.squareSize - this.squareSize;
       }
-
       if (!this.isInside(tail, newX, newY)) {
         isNewFoodInsideTail = false;
         this.x = newX;
@@ -131,7 +130,6 @@ export class Food extends Position {
       }
     }
   }
-
   isInside(theTail, x, y) {
     let count = 0;
     theTail.forEach((element) => {
