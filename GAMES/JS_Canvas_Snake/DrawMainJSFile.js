@@ -36,6 +36,7 @@ const girdLineWidth = 1;
 let isGodModeON = false;
 let isGameOver = false;
 let isPaused = false;
+let isSnakeFoodAhead = false;
 let gameIsStarted = isGodModeON ? true : false;
 let theGameFrameCount = 0;
 let gameFieldFullNumber =
@@ -45,6 +46,9 @@ let snake = new Snake(
   oneSquareSize,
   canvasWidth,
   canvasHeight,
+  oneSquareSize * 3,
+  0,
+  "right",
   isGodModeON
 );
 let food = new Food(
@@ -52,6 +56,11 @@ let food = new Food(
   gameFieldFullNumber,
   canvasWidth,
   canvasHeight,
+  {
+      sx: snake.xLocation,
+      sy: snake.yLocation,
+      sd: snake.snakeMoveDir,
+  },
   isGodModeON
 );
 let variableScoreDisplay = document.getElementById("scoreDisplay");
@@ -67,7 +76,7 @@ function theSnakeGameLoop() {
     if (isPaused) {
       displayText("    PAUSE    ");
     }
-    if (gameFieldFullNumber - 1 === snake.tail.length) {
+    if (gameFieldFullNumber - 2 === snake.tail.length) {
       var variableDisplay = document.getElementById("scoreDisplay").textContent;
       displayText("YOU WON!" + ` score: ${variableDisplay}`);
       isGameOver = true;
@@ -81,7 +90,7 @@ function theSnakeGameLoop() {
       displayText("GAME OVER!" + ` score: ${variableDisplay}`);
       isGameOver = true;
     }
-    if (isAutoSnakePlayON && !isGameOver && !isPaused && isPasswordEntered()) {
+    if (isAutoSnakePlayON && !isGameOver && !isPaused) {
       snake.automaticalyMoveSnakeToCollectFood(food);
     }
     if (!isGameOver && !isPaused) {
@@ -118,18 +127,23 @@ function the_draw() {
     });
   }
   snake.update();
+  food.snakeData = {
+      sx: snake.xLocation,
+      sy: snake.yLocation,
+      sd: snake.snakeMoveDir,
+  }
   food.draw(ctx, "black");
   snake.drawTail(ctx, "green");
   snake.drawSnakeHead(ctx, "red");
 
   if (food.isFoodEaten(snake.xLocation, snake.yLocation)) {
     snake.setTheFoodCellEaten(food.x, food.y);
-    food.createNewFood(ctx, "black", canvasWidth, canvasHeight, snake.tail);
+    food.createNewFood(ctx, "black", canvasWidth, canvasHeight, snake.tail, isSnakeFoodAhead);
     snake.updateTail();
     let variableDisplay = document.getElementById("scoreDisplay");
     variableDisplay.textContent = parseInt(variableDisplay.textContent) + 1;
   }
-  if (isAutoSnakePlayON && isPasswordEntered()) {
+  if (isAutoSnakePlayON) {
     ctx.font = "italic bold 20px Comic Sans MS";
     ctx.textAlign = "center";
     ctx.fillStyle = "rgb(141, 231, 141)";
@@ -219,7 +233,7 @@ function displayText(theText) {
   // IF you want to display Rect under displayText you can do it :)
   // ctx.fillStyle = 'white';
   // ctx.fillRect(canvasWidth * 0.1, canvasHeight /2 - 50, canvasWidth * 0.9, 50);
-  ctx.fillStyle = "blue";
+  ctx.fillStyle = "red";
   ctx.fillText(theText, canvasWidth / 2, canvasHeight / 2);
 }
 
@@ -257,6 +271,9 @@ document.getElementById("newGame").onclick = function () {
       oneSquareSize,
       canvasWidth,
       canvasHeight,
+      oneSquareSize * 3,
+      0,
+      "right",
       isGodModeON
     );
     food = new Food(
@@ -264,6 +281,11 @@ document.getElementById("newGame").onclick = function () {
       gameFieldFullNumber,
       canvasWidth,
       canvasHeight,
+      {
+          sx: snake.xLocation,
+          sy: snake.yLocation,
+          sd: snake.snakeMoveDir,
+      },
       isGodModeON
     );
     let variableScoreDisplay = document.getElementById("scoreDisplay");
@@ -283,6 +305,19 @@ document.getElementById("toggleAutoSnakePlayOnOff").onclick = function () {
     isAutoSnakePlayON = !isAutoSnakePlayON;
   }
 };
+
+document.getElementById("isSnakeFoodAhead").onclick = function () {
+  if (isPasswordEntered('"God Mode!"')) {
+    isSnakeFoodAhead = !isSnakeFoodAhead;
+    const x = document.getElementById("helloSnakeh1");
+    if(isSnakeFoodAhead){
+      x.textContent = "--Hello, Snake!--";
+    } else {
+      x.textContent = "Hello, Snake!";
+    }
+  }
+};
+
 
 function setWidthToBeDivisibleBy100(n) {
   const reminder = n % 100;

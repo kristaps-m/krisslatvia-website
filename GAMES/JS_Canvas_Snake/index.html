@@ -14,10 +14,11 @@
 </head>
 
 <body>
-  <h1>Hello, Snake!</h1>
+  <h1 id="helloSnakeh1">Hello, Snake!</h1>
   <!-- Start score is equal to snake and its head lenght -->
   <h2 id="scoreDisplay">4</h2>
   <div class="button-row">
+    <button id="isSnakeFoodAhead">__?__ __?__</button>
     <button id="toggleGirdOnOff">Enable Grid?</button>
     <button id="toggleAutoSnakePlayOnOff" class="autoPlayOFF">Enable AutoPlay?</button>
     <button id="newGame" style="background-color: greenyellow;">New Game!</button>
@@ -41,6 +42,7 @@
     <input type="text" style="width: 5.5rem;" id="enteredCheat">
   </div>
   <canvas id="snake_canvas"></canvas>
+  <script src="../Global Helper Classes/getRndInteger.js"></script>
   <script src="../Global Helper Classes/displayGrid.js"></script>
   <script src="../Global Helper Classes/Position.js"></script>
   <script type="module" src="DrawMainJSFile.js"></script>
