@@ -43,8 +43,6 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-
-
 // CANVAS.addEventListener(
 //   "click",
 //   function (e) {
@@ -135,8 +133,7 @@ CANVAS.addEventListener("click", function (e) {
 
   const cell = theGameField[row][col];
 
-  if (userClickedTwoNumbers.length === 1 &&
-      userClickedTwoNumbers[0] === cell) {
+  if (userClickedTwoNumbers.length === 1 && userClickedTwoNumbers[0] === cell) {
     return;
   }
 
@@ -171,7 +168,6 @@ CANVAS.addEventListener("click", function (e) {
     }
 
     userClickedTwoNumbers = [];
-
   }
 });
 
@@ -202,7 +198,7 @@ CANVAS.addEventListener("click", function (e) {
 
 function displayNumbersOnCanvas() {
   CTX.clearRect(0, 0, W, H);
-  const size = H / CANDIES_IN_ROW
+  const size = H / CANDIES_IN_ROW;
 
   for (let row = 0; row < CANDIES_IN_ROW; row++) {
     for (let col = 0; col < CANDIES_IN_COL; col++) {
@@ -267,7 +263,14 @@ function getNumbersForSpawing() {
 function swapButton(testMode = false) {
   const getN = getNumbersForSpawing();
 
-  theGameField = swapElements(theGameField, getN.n1r, getN.n1c, getN.n2r, getN.n2c, testMode);
+  theGameField = swapElements(
+    theGameField,
+    getN.n1r,
+    getN.n1c,
+    getN.n2r,
+    getN.n2c,
+    testMode
+  );
   // theGameField = candyCrush(theGameField);
   gameState = "resolving";
   startResolve();
@@ -338,7 +341,6 @@ function swapElements(board, r1, c1, r2, c2) {
   return board;
 }
 
-
 // function generateDifferentCadiesForGame() {
 //   console.log("I AM TRIGERED!", NUMBER_OF_COLORS_USED);
 //   let result = [];
@@ -397,7 +399,7 @@ function generateDifferentCadiesForGame() {
 
         isFalling: false,
         scale: 1,
-        isCrushing: false
+        isCrushing: false,
       });
     }
     result.push(temp);
@@ -405,7 +407,6 @@ function generateDifferentCadiesForGame() {
 
   return result;
 }
-
 
 function userClickedNumberLog() {
   console.log(userClickedTwoNumbers.length, "<----");
@@ -431,8 +432,7 @@ function startResolve() {
   }
 
   removeMatches(theGameField, matches);
-  // setupFallingAnimation();
-  gameState = "falling";
+  // gameState stays "resolving" to animate crushing first
 }
 
 // function setupFallingAnimation() {
@@ -468,15 +468,15 @@ function setupFallingAnimation() {
 
         // theGameField[targetRow][col].randomInteger = cell.randomInteger;
         // cell.randomInteger = 0;
-          const targetRow = row + emptyCount;
-          const targetCell = theGameField[targetRow][col];
+        const targetRow = row + emptyCount;
+        const targetCell = theGameField[targetRow][col];
 
-          targetCell.randomInteger = cell.randomInteger;
-          targetCell.y = row * cellSize; // 👈 CRITICAL
-          targetCell.targetY = targetRow * cellSize;
-          targetCell.isFalling = true;
+        targetCell.randomInteger = cell.randomInteger;
+        targetCell.y = row * cellSize; // 👈 CRITICAL
+        targetCell.targetY = targetRow * cellSize;
+        targetCell.isFalling = true;
 
-          cell.randomInteger = 0;
+        cell.randomInteger = 0;
       }
     }
 
@@ -490,7 +490,6 @@ function setupFallingAnimation() {
     }
   }
 }
-
 
 // function update() {
 //   if (gameState === "falling") {
@@ -517,7 +516,32 @@ function setupFallingAnimation() {
 //   }
 // }
 function update() {
-  if (gameState === "falling") {
+  if (gameState === "resolving") {
+    // Animate crushing
+    let allCrushed = true;
+
+    for (let row of theGameField) {
+      for (let cell of row) {
+        if (cell.isCrushing) {
+          cell.scale -= 0.05;
+          if (cell.scale <= 0) {
+            cell.scale = 1;
+            cell.isCrushing = false;
+            cell.randomInteger = 0;
+          } else {
+            allCrushed = false;
+          }
+        }
+      }
+    }
+
+    if (allCrushed) {
+      // All candies crushed → prepare falling
+      setupFallingAnimation();
+      gameState = "falling";
+    }
+  } else if (gameState === "falling") {
+    // Animate falling
     let stillFalling = false;
 
     for (let row of theGameField) {
@@ -536,35 +560,9 @@ function update() {
     }
 
     if (!stillFalling) {
+      // All candies landed → check for new matches
       gameState = "resolving";
       startResolve();
     }
   }
-
-  if (gameState === "resolving") {
-  let done = true;
-
-  for (let row of theGameField) {
-    for (let cell of row) {
-      if (cell.isCrushing) {
-        cell.scale -= 0.05;
-        if (cell.scale <= 0) {
-          cell.scale = 1;
-          cell.isCrushing = false;
-          cell.randomInteger = 0;
-        } else {
-          done = false;
-        }
-      }
-    }
-  }
-
-  if (done) {
-    setupFallingAnimation();
-    gameState = "falling";
-  }
-  }
-
 }
-
-
