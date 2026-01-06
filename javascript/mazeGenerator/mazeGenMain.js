@@ -50,14 +50,18 @@ Last Updated: 10/07/2017
 const canvas = document.getElementById("mazeGenCanvas");
 const ctx = canvas.getContext("2d");
 
-// const COLS = 40;
-// const ROWS = 25;
-const COLS = 10;
-const ROWS = 10;
+const COLS = 40;
+const ROWS = 25;
+// const COLS = 10;
+// const ROWS = 10;
 const CELL_SIZE = 20;
 
 canvas.width = COLS * CELL_SIZE;
 canvas.height = ROWS * CELL_SIZE;
+// ------ Maze generator draw speed control ------
+let lastTime = 0;
+let delay = 1; // ms between steps (increase = slower)
+let stepsPerFrame = 10; // increase to speed up generation
 
 // ---------- Cell ----------
 class Cell {
@@ -125,42 +129,45 @@ for (let y = 0; y < ROWS; y++) {
 }
 
 let current = grid[0];
-// let current = grid[Math.floor(Math.random() * grid.length)];
 current.visited = true;
 const stack = [];
 
 // ---------- Maze Step ----------
-function step() {
+function step(time) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   // Draw grid
   for (const cell of grid) {
     cell.draw();
   }
-
   current.highlight();
 
-  // Get unvisited neighbors
-  const neighbors = [];
-  const top = grid[index(current.x, current.y - 1)];
-  const right = grid[index(current.x + 1, current.y)];
-  const bottom = grid[index(current.x, current.y + 1)];
-  const left = grid[index(current.x - 1, current.y)];
-
-  if (top && !top.visited) neighbors.push(top);
-  if (right && !right.visited) neighbors.push(right);
-  if (bottom && !bottom.visited) neighbors.push(bottom);
-  if (left && !left.visited) neighbors.push(left);
-
-  if (neighbors.length > 0) {
-    const next = neighbors[Math.floor(Math.random() * neighbors.length)];
-    next.visited = true;
-
-    stack.push(current);
-    removeWalls(current, next);
-    current = next;
-  } else if (stack.length > 0) {
-    current = stack.pop();
+  if (time - lastTime > delay) {
+    for (let i = 0; i < stepsPerFrame; i++) {
+      // generateMazeStep();
+      // Get unvisited neighbors
+      const neighbors = [];
+      const top = grid[index(current.x, current.y - 1)];
+      const right = grid[index(current.x + 1, current.y)];
+      const bottom = grid[index(current.x, current.y + 1)];
+      const left = grid[index(current.x - 1, current.y)];
+    
+      if (top && !top.visited) neighbors.push(top);
+      if (right && !right.visited) neighbors.push(right);
+      if (bottom && !bottom.visited) neighbors.push(bottom);
+      if (left && !left.visited) neighbors.push(left);
+    
+      if (neighbors.length > 0) {
+        const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+        next.visited = true;
+    
+        stack.push(current);
+        removeWalls(current, next);
+        current = next;
+      } else if (stack.length > 0) {
+        current = stack.pop();
+      }
+      lastTime = time;
+    }
   }
 
   requestAnimationFrame(step);
