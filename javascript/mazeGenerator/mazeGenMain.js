@@ -62,6 +62,9 @@ canvas.height = ROWS * CELL_SIZE;
 let lastTime = 0;
 let delay = 1; // ms between steps (increase = slower)
 let stepsPerFrame = 10; // increase to speed up generation
+// ------ Solution path drawing ------
+let solutionPath = null;
+let mazeFinished = false;
 
 // ---------- Cell ----------
 class Cell {
@@ -70,6 +73,9 @@ class Cell {
     this.y = y;
     this.walls = [true, true, true, true]; // top, right, bottom, left
     this.visited = false;
+    // Solver-related
+    this.parent = null;
+    this.solved = false;
   }
 
   draw() {
@@ -77,7 +83,7 @@ class Cell {
     const y = this.y * CELL_SIZE;
 
     ctx.strokeStyle = "black";
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
 
     if (this.walls[0]) line(x, y, x + CELL_SIZE, y);
     if (this.walls[1]) line(x + CELL_SIZE, y, x + CELL_SIZE, y + CELL_SIZE);
@@ -120,6 +126,63 @@ function removeWalls(a, b) {
   if (dy === -1) { a.walls[2] = false; b.walls[0] = false; }
 }
 
+function getReachableNeighbors(cell) {
+  const neighbors = [];
+  const { x, y } = cell;
+
+  // top
+  if (!cell.walls[0]) neighbors.push(grid[index(x, y - 1)]);
+  // right
+  if (!cell.walls[1]) neighbors.push(grid[index(x + 1, y)]);
+  // bottom
+  if (!cell.walls[2]) neighbors.push(grid[index(x, y + 1)]);
+  // left
+  if (!cell.walls[3]) neighbors.push(grid[index(x - 1, y)]);
+
+  return neighbors.filter(Boolean);
+}
+
+// ---------- Maze Solver (BFS) ----------
+function solveMaze() {
+  const start = grid[0];
+  const end = grid[index(COLS - 1, ROWS - 1)];
+
+  // Reset solver state
+  for (const cell of grid) {
+    cell.solved = false;
+    cell.parent = null;
+  }
+
+  const queue = [];
+  start.solved = true;
+  queue.push(start);
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+
+    if (current === end) break;
+
+    for (const neighbor of getReachableNeighbors(current)) {
+      if (!neighbor.solved) {
+        neighbor.solved = true;
+        neighbor.parent = current;
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  // Reconstruct path
+  const path = [];
+  let cur = end;
+  while (cur) {
+    path.push(cur);
+    cur = cur.parent;
+  }
+
+  return path.reverse();
+}
+
+
 // ---------- Maze Setup ----------
 const grid = [];
 for (let y = 0; y < ROWS; y++) {
@@ -131,6 +194,24 @@ for (let y = 0; y < ROWS; y++) {
 let current = grid[0];
 current.visited = true;
 const stack = [];
+
+// ---------- Draw Path ----------
+function drawPath(path) {
+  ctx.strokeStyle = "lime";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+
+  for (let i = 0; i < path.length; i++) {
+    const c = path[i];
+    const cx = c.x * CELL_SIZE + CELL_SIZE / 2;
+    const cy = c.y * CELL_SIZE + CELL_SIZE / 2;
+
+    if (i === 0) ctx.moveTo(cx, cy);
+    else ctx.lineTo(cx, cy);
+  }
+
+  ctx.stroke();
+}
 
 // ---------- Maze Step ----------
 function step(time) {
@@ -169,7 +250,17 @@ function step(time) {
       lastTime = time;
     }
   }
+  // if(stack.length === 0){
+  //   const path = solveMaze();
+  //   drawPath(path);
+  // }
 
+  if (!mazeFinished && stack.length === 0) {
+    mazeFinished = true;
+  }
+  if (solutionPath) {
+    drawPath(solutionPath);
+  }
   requestAnimationFrame(step);
 }
 
@@ -181,3 +272,11 @@ entranceCell.walls[3] = false; // open entrence wall
 
 const exitCell = grid[index(COLS - 1, ROWS - 1)];
 exitCell.walls[1] = false; // open bottom wall
+document.getElementById("solveBtn").addEventListener("click", () => {
+  if (!mazeFinished) return;
+
+  solutionPath = solveMaze();
+
+  const path = solveMaze();
+  drawPath(path);
+});
