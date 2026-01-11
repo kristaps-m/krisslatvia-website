@@ -50,14 +50,15 @@ Last Updated: 10/07/2017
 const canvas = document.getElementById("mazeGenCanvas");
 const ctx = canvas.getContext("2d");
 
-const COLS = 40;
-const ROWS = 25;
+const COLS = 10;
+const ROWS = 10;
 // const COLS = 10;
 // const ROWS = 10;
 const CELL_SIZE = 20;
 
 canvas.width = COLS * CELL_SIZE;
 canvas.height = ROWS * CELL_SIZE;
+let isRecursiveBacktrackerSelected = false;
 // ------ Maze generator draw speed control ------
 let lastTime = 0;
 let delay = 1; // ms between steps (increase = slower)
@@ -73,6 +74,8 @@ class Cell {
     this.y = y;
     this.walls = [true, true, true, true]; // top, right, bottom, left
     this.visited = false;
+    // Wilson's algorithm
+    this.inMaze = false;
     // Solver-related
     this.parent = null;
     this.solved = false;
@@ -89,6 +92,11 @@ class Cell {
     if (this.walls[1]) line(x + CELL_SIZE, y, x + CELL_SIZE, y + CELL_SIZE);
     if (this.walls[2]) line(x + CELL_SIZE, y + CELL_SIZE, x, y + CELL_SIZE);
     if (this.walls[3]) line(x, y + CELL_SIZE, x, y);
+
+    if (!this.visited) {
+      ctx.fillStyle = "lightgray";
+      ctx.fillRect(x + 4, y + 4, CELL_SIZE - 8, CELL_SIZE - 8);
+    }
   }
 
   highlight() {
@@ -114,6 +122,11 @@ function line(x1, y1, x2, y2) {
 function index(x, y) {
   if (x < 0 || y < 0 || x >= COLS || y >= ROWS) return -1;
   return x + y * COLS;
+}
+
+function index2dimensions(x, y) {
+  if (x < 0 || y < 0 || x >= COLS || y >= ROWS) return -1;
+  return {x: x, y: y};
 }
 
 function removeWalls(a, b) {
@@ -215,51 +228,49 @@ function drawPath(path) {
 
 // ---------- Maze Step ----------
 function step(time) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // Draw grid
-  for (const cell of grid) {
-    cell.draw();
-  }
-  current.highlight();
-
-  if (time - lastTime > delay) {
-    for (let i = 0; i < stepsPerFrame; i++) {
-      // generateMazeStep();
-      // Get unvisited neighbors
-      const neighbors = [];
-      const top = grid[index(current.x, current.y - 1)];
-      const right = grid[index(current.x + 1, current.y)];
-      const bottom = grid[index(current.x, current.y + 1)];
-      const left = grid[index(current.x - 1, current.y)];
-    
-      if (top && !top.visited) neighbors.push(top);
-      if (right && !right.visited) neighbors.push(right);
-      if (bottom && !bottom.visited) neighbors.push(bottom);
-      if (left && !left.visited) neighbors.push(left);
-    
-      if (neighbors.length > 0) {
-        const next = neighbors[Math.floor(Math.random() * neighbors.length)];
-        next.visited = true;
-    
-        stack.push(current);
-        removeWalls(current, next);
-        current = next;
-      } else if (stack.length > 0) {
-        current = stack.pop();
-      }
-      lastTime = time;
+  if(isRecursiveBacktrackerSelected){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Draw grid
+    for (const cell of grid) {
+      cell.draw();
     }
-  }
-  // if(stack.length === 0){
-  //   const path = solveMaze();
-  //   drawPath(path);
-  // }
-
-  if (!mazeFinished && stack.length === 0) {
-    mazeFinished = true;
-  }
-  if (solutionPath) {
-    drawPath(solutionPath);
+    current.highlight();
+  
+    if (time - lastTime > delay) {
+      for (let i = 0; i < stepsPerFrame; i++) {
+        // generateMazeStep();
+        // Get unvisited neighbors
+        const neighbors = [];
+        const top = grid[index(current.x, current.y - 1)];
+        const right = grid[index(current.x + 1, current.y)];
+        const bottom = grid[index(current.x, current.y + 1)];
+        const left = grid[index(current.x - 1, current.y)];
+      
+        if (top && !top.visited) neighbors.push(top);
+        if (right && !right.visited) neighbors.push(right);
+        if (bottom && !bottom.visited) neighbors.push(bottom);
+        if (left && !left.visited) neighbors.push(left);
+      
+        if (neighbors.length > 0) {
+          const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+          next.visited = true;
+      
+          stack.push(current);
+          removeWalls(current, next);
+          current = next;
+        } else if (stack.length > 0) {
+          current = stack.pop();
+        }
+        lastTime = time;
+      }
+    }
+  
+    if (!mazeFinished && stack.length === 0) {
+      mazeFinished = true;
+    }
+    if (solutionPath) {
+      drawPath(solutionPath);
+    }
   }
   requestAnimationFrame(step);
 }
@@ -272,7 +283,7 @@ entranceCell.walls[3] = false; // open entrence wall
 
 const exitCell = grid[index(COLS - 1, ROWS - 1)];
 exitCell.walls[1] = false; // open bottom wall
-document.getElementById("solveBtn").addEventListener("click", () => {
+document.getElementById("solveBtnRecursive_1").addEventListener("click", () => {
   if (!mazeFinished) return;
 
   solutionPath = solveMaze();

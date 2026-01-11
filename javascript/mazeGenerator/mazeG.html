@@ -18,8 +18,25 @@
 </style>
   </head>
   <body>
-    <h1 style="margin-bottom: .1rem;">Maze Generator</h1>
-    <button id="solveBtn">Show shortest path</button>
+    <div style="align-content: center;">
+        <h1 style="margin-bottom: .1rem;">Maze Generator</h1>
+            <div style="margin-right: 20px; white-space: nowrap">
+              <label for="selectMaze">Select Maze:</label>
+              <select
+                name="selectMaze"
+                id="selectMaze"
+                onchange="selectMazeAlgorithm()"
+              >
+                <option value="recursive_1" >Recursive Backtracker Maze Algorithm</option>
+                <option value="otherAlg" selected>Other alg</option>
+                <option value="16 16 40">Intermediate</option>
+                <!-- <option value="16 30 99" class="doNotShowInMobile">Expert</option>
+                <option value="20 20 50" class="doNotShowInMobile">Challenging</option>
+                <option value="30 30 150" class="doNotShowInMobile">Insane</option> -->
+              </select>
+            </div>
+        <button id="solveBtnRecursive_1" style="display: none; margin-top: 0.5rem;">Show shortest path</button>
+    </div>
     <br>
     <canvas
       id="mazeGenCanvas"
@@ -28,6 +45,8 @@
 
     <script src="../../GAMES/Global Helper Classes/Position.js"></script>
     <script src="mazeGenMain.js"></script>
+    <script src="otherMaze.js"></script>
+    <script src="main.js"></script>
     <div class="footer">
       <footer>
         <p style="color: black; font-weight: bold;">Original code by Javidx9 using C++ ⇧: </p>
