@@ -17,6 +17,7 @@ const startCell = unvisitedCells[0][0];
 startCell.inMaze = true;
 visited.push(startCell);
 unvisitedCells[0].splice(0, 1);
+// console.log(unvisitedCells);
 // const startCell = unvisitedCells[ROWS-1][COLS-1];
 // startCell.inMaze = true;
 // visited.push(startCell);
@@ -27,9 +28,9 @@ function mazeLoop(){
   if( otherMazeAlg ){
     while (unvisitedCells.length > 0) {
       let path = [];
-      let currentCell = getRandomNeighbor(currentCell);
+      // let currentCell = getRandomNeighbor(unvisitedCells);
       // let currentCell = unvisitedCells[ROWS-1][COLS-1];
-      // let currentCell = getRandomUnvisitedCell();
+      let currentCell = getRandomUnvisitedCell();
 
       // Perform a random walk until we reach a cell that is already in the maze
       while (visited.indexOf(currentCell) === -1) {
