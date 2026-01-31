@@ -197,16 +197,20 @@ function solveMaze() {
 
 
 // ---------- Maze Setup ----------
-const grid = [];
-for (let y = 0; y < ROWS; y++) {
-  for (let x = 0; x < COLS; x++) {
-    grid.push(new Cell(x, y));
-  }
+let grid = [];
+function setUpMaze() {
+  for (let y = 0; y < ROWS; y++) {
+    for (let x = 0; x < COLS; x++) {
+      grid.push(new Cell(x, y));
+    }
+  }  
 }
+
+setUpMaze();
 
 let current = grid[0];
 current.visited = true;
-const stack = [];
+let stack = [];
 
 // ---------- Draw Path ----------
 function drawPath(path) {
@@ -276,6 +280,17 @@ function step(time) {
 }
 
 step();
+
+function xDang() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  solutionPath = null;
+  grid = [];
+  stack = [];
+  setUpMaze();
+  current = grid[0];
+  current.visited = true;
+  step();
+}
 
 // ---------- Open Entrance and Exit ----------
 const entranceCell = grid[0];
