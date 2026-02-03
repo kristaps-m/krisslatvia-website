@@ -1,7 +1,7 @@
 // https://healeycodes.com/generating-mazes
 // https://weblog.jamisbuck.org/2011/1/20/maze-generation-wilson-s-algorithm
 
-let otherMazeAlg = true;
+let otherMazeAlg = false;
 let unvisitedCells = [];
 let visited = [];
 
@@ -23,9 +23,9 @@ unvisitedCells[0].splice(0, 1);
 // visited.push(startCell);
 // unvisitedCells[ROWS-1].splice(COLS-1, 1);
 
-function mazeLoop(){
+function mazeLoop() {
   // ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if( otherMazeAlg ){
+  if (otherMazeAlg) {
     while (unvisitedCells.length > 0) {
       let path = [];
       // let currentCell = getRandomNeighbor(unvisitedCells);
@@ -69,10 +69,22 @@ function removeWalls2(a, b) {
   const dx = a.x - b.x;
   const dy = a.y - b.y;
 
-  if (dx === 1) { a.walls[3] = false; b.walls[1] = false; }
-  if (dx === -1) { a.walls[1] = false; b.walls[3] = false; }
-  if (dy === 1) { a.walls[0] = false; b.walls[2] = false; }
-  if (dy === -1) { a.walls[2] = false; b.walls[0] = false; }
+  if (dx === 1) {
+    a.walls[3] = false;
+    b.walls[1] = false;
+  }
+  if (dx === -1) {
+    a.walls[1] = false;
+    b.walls[3] = false;
+  }
+  if (dy === 1) {
+    a.walls[0] = false;
+    b.walls[2] = false;
+  }
+  if (dy === -1) {
+    a.walls[2] = false;
+    b.walls[0] = false;
+  }
 }
 
 function getRandomUnvisitedCell() {
@@ -81,13 +93,25 @@ function getRandomUnvisitedCell() {
   return flatUnvisited[randomIndex];
 }
 
-function getRandomNeighbor(current){
+function getRandomNeighbor(current) {
   console.log(current);
   const neighbors = [];
-  const top = unvisitedCells[index2dimensions(current.x, current.y - 1).y][index2dimensions(current.x, current.y - 1).x];
-  const right = unvisitedCells[index2dimensions(current.x + 1, current.y).y][index2dimensions(current.x + 1, current.y).x];
-  const bottom = unvisitedCells[index2dimensions(current.x, current.y + 1).y][index2dimensions(current.x, current.y + 1).x];
-  const left = unvisitedCells[index2dimensions(current.x - 1, current.y).y][index2dimensions(current.x - 1, current.y).x];
+  const top =
+    unvisitedCells[index2dimensions(current.x, current.y - 1).y][
+      index2dimensions(current.x, current.y - 1).x
+    ];
+  const right =
+    unvisitedCells[index2dimensions(current.x + 1, current.y).y][
+      index2dimensions(current.x + 1, current.y).x
+    ];
+  const bottom =
+    unvisitedCells[index2dimensions(current.x, current.y + 1).y][
+      index2dimensions(current.x, current.y + 1).x
+    ];
+  const left =
+    unvisitedCells[index2dimensions(current.x - 1, current.y).y][
+      index2dimensions(current.x - 1, current.y).x
+    ];
 
   if (top && !top.visited) neighbors.push(top);
   if (right && !right.visited) neighbors.push(right);
@@ -161,7 +185,7 @@ function getRandomNeighbor(current){
 //           const right = grid2[index(current2.x + 1, current2.y)];
 //           const bottom = grid2[index(current2.x, current2.y + 1)];
 //           const left = grid2[index(current2.x - 1, current2.y)];
-  
+
 //           if (top && !top.visited) neighbors.push(top);
 //           if (right && !right.visited) neighbors.push(right);
 //           if (bottom && !bottom.visited) neighbors.push(bottom);
@@ -170,7 +194,7 @@ function getRandomNeighbor(current){
 //           if (neighbors.length > 0) {
 //             const next = neighbors[Math.floor(Math.random() * neighbors.length)];
 //             next.visited = true;
-  
+
 //             stack2.push(current2);
 //             // removeWalls(current2, next);
 //             current2 = next;
@@ -187,7 +211,7 @@ function getRandomNeighbor(current){
 //           // const next = neighbors[Math.floor(Math.random() * neighbors.length)];
 //           // next.visited = true;
 //           // ctx.fillStyle = "red";
-//           // ctx.fillRect(50, 50, 100, 100);            
+//           // ctx.fillRect(50, 50, 100, 100);
 //         }
 //     }
 //     requestAnimationFrame(mazeLoop);
