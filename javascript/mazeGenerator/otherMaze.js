@@ -1,6 +1,8 @@
 // https://healeycodes.com/generating-mazes
 // https://weblog.jamisbuck.org/2011/1/20/maze-generation-wilson-s-algorithm
 
+// TODO - Create Wilsons maze alg
+
 let otherMazeAlg = false;
 let unvisitedCells = [];
 let visited = [];
@@ -26,38 +28,40 @@ unvisitedCells[0].splice(0, 1);
 function mazeLoop() {
   // ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (otherMazeAlg) {
-    while (unvisitedCells.length > 0) {
-      let path = [];
-      // let currentCell = getRandomNeighbor(unvisitedCells);
-      // let currentCell = unvisitedCells[ROWS-1][COLS-1];
-      let currentCell = getRandomUnvisitedCell();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(40, 40, 10, 10);
+    // while (unvisitedCells.length > 0) {
+    //   let path = [];
+    //   // let currentCell = getRandomNeighbor(unvisitedCells);
+    //   // let currentCell = unvisitedCells[ROWS-1][COLS-1];
+    //   let currentCell = getRandomUnvisitedCell();
 
-      // Perform a random walk until we reach a cell that is already in the maze
-      while (visited.indexOf(currentCell) === -1) {
-        path.push(currentCell);
-        let next = getRandomNeighbor(currentCell);
+    //   // Perform a random walk until we reach a cell that is already in the maze
+    //   while (visited.indexOf(currentCell) === -1) {
+    //     path.push(currentCell);
+    //     let next = getRandomNeighbor(currentCell);
 
-        // If a loop is formed, erase that section of the path
-        const loopIndex = path.indexOf(next);
-        if (loopIndex !== -1) {
-          path = path.slice(0, loopIndex + 1);
-        } else {
-          path.push(next);
-        }
-        currentCell.draw();
-        currentCell = next;
-      }
+    //     // If a loop is formed, erase that section of the path
+    //     const loopIndex = path.indexOf(next);
+    //     if (loopIndex !== -1) {
+    //       path = path.slice(0, loopIndex + 1);
+    //     } else {
+    //       path.push(next);
+    //     }
+    //     currentCell.draw();
+    //     currentCell = next;
+    //   }
 
-      // Add the path to the maze by carving walls and marking cells as visited
-      for (let i = 0; i < path.length - 1; i++) {
-        console.log("Here");
-        removeWalls2(path[i], path[i + 1]);
-        visited.push(path[i]);
-        const indexX = path[i].x;
-        const indexY = path[i].y;
-        unvisitedCells[indexY].splice(indexX, 1);
-      }
-    }
+    //   // Add the path to the maze by carving walls and marking cells as visited
+    //   for (let i = 0; i < path.length - 1; i++) {
+    //     console.log("Here");
+    //     removeWalls2(path[i], path[i + 1]);
+    //     visited.push(path[i]);
+    //     const indexX = path[i].x;
+    //     const indexY = path[i].y;
+    //     unvisitedCells[indexY].splice(indexX, 1);
+    //   }
+    // }
   }
   requestAnimationFrame(mazeLoop);
 }

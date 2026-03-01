@@ -5,6 +5,7 @@ function selectMazeAlgorithm() {
     "newMazeBtnRecursive_1",
   );
   console.log(selectMaze.value);
+  // ctx.clearRect(0, 0, canvas.width, canvas.height);
   switch (selectMaze.value) {
     case "recursive_1":
       // Recursive Backtracker Maze Algorithm
