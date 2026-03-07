@@ -3,9 +3,15 @@ body {
   margin: 0;
   padding: 0;
   background-color: black;
+  align-items: center;
+  align-content: center;
+  text-align: center;
 }
 canvas {
   border: solid rgb(207, 157, 157) 2px;
-  display: block;
+  display: flex;
   background-color: white;
+  align-items: center;
+  align-content: center;
+  text-align: center;
 }
