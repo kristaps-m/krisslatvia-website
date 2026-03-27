@@ -6,19 +6,35 @@ const size = 20;
 const gw = canvas.width / size;
 const gh = canvas.height / size;
 
-const gameField = []; // [][]
+const gameField = [
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+]; // [][]
 
-for (let row = 0; row < gw; row++) {
-  const temp = [];
-  for (let col = 0; col < gh; col++) {
-    temp.push(0);
-  }
-  gameField.push(temp);
-}
+// for (let row = 0; row < gw; row++) {
+//   const temp = [];
+//   for (let col = 0; col < gh; col++) {
+//     temp.push(0);
+//   }
+//   gameField.push(temp);
+// }
 
 // gameField.map((x, i) => ([]));
-gameField[gameField.length - 1] = [1, 1, 1, 1, 1, 1, 1, 1];
-
+// gameField[gameField.length - 1] = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0];
+console.log(gameField);
 const square = [
   [0, 0, 0, 0],
   [0, 1, 1, 0],
@@ -61,23 +77,31 @@ const house = [
 ];
 
 class PuzzlePiece {
-  constructor(sp, pieceArr) {
+  constructor(sp, pieceArr, gameField) {
     this.sp = sp; // {x,y}
     this.arr = pieceArr; // int[][][];
     this.activeArrIndex = 0;
     this.activeArr = this.arr[this.activeArrIndex];
+    this.gameField = gameField;
+    this.canBeRotated = true;
   }
 
   draw() {
-    ctx.fillStyle = "black";
     this.activeArr.forEach((row, ri) => {
       row.forEach((elem, ci) => {
         if (elem == 1) {
+          ctx.fillStyle = "black";
           ctx.fillRect(
             ci * size + 1 + this.sp.x,
             ri * size + 1 + this.sp.y,
             size - 2,
             size - 2,
+          );
+          ctx.fillStyle = "red";
+          ctx.fillText(
+            `${Math.floor(this.sp.x / size)}, ${Math.floor(this.sp.y / size)}`,
+            ci * size + 1 + this.sp.x,
+            ri * size + 1 + this.sp.y,
           );
         }
       });
@@ -85,10 +109,31 @@ class PuzzlePiece {
   }
 
   updateDown() {
-    this.sp.y += 1;
+    // const y = Math.floor(this.sp.y / size);
+    // console.log(y);
+    this.sp.y += 0.4;
+    this.didItTouch();
     if (this.sp.y > 260 - size) {
       this.sp.y = 260 - size;
     }
+  }
+
+  didItTouch() {
+    const x = Math.floor(this.sp.x / size); // gw //ci * size + 1 + this.sp.x;
+    const y = Math.floor((this.sp.y + 40) / size); //ri * size + 1 + this.sp.y;
+    console.log(x, y);
+    const square = this.gameField[x][y];
+    if (square === 1) {
+      console.log("WE HAVE A HIT");
+    }
+    // this.activeArr.forEach((row, ri) => {
+    //   row.forEach((elem, ci) => {
+    //     // 400 , 20, y = 156
+    //     if (elem == 1) {
+    //       //
+    //     }
+    //   });
+    // });
   }
 
   rotateClockwise() {
@@ -112,7 +157,7 @@ class PuzzlePiece {
 
 const pps = new PuzzlePiece({ x: 10, y: 10 }, square);
 const ppl = new PuzzlePiece({ x: 80, y: 80 }, long);
-const pph = new PuzzlePiece({ x: 120, y: 10 }, house);
+const pph = new PuzzlePiece({ x: 120, y: 10 }, house, gameField);
 
 window.addEventListener("keypress", (e) => {
   //   pph.activeArrIndex++;
@@ -122,16 +167,18 @@ window.addEventListener("keypress", (e) => {
     pph.rotateCounterClockwise();
   }
   pph.activeArr = pph.arr[pph.activeArrIndex];
-  console.log(e.key);
+  // console.log(e.key);
 });
 
 function drawField() {
-  ctx.fillStyle = "lightgray";
   for (let row = 0; row < gw; row++) {
     for (let col = 0; col < gh; col++) {
       if (gameField[col][row] == 1) {
+        ctx.fillStyle = "lightgray";
         ctx.fillRect(row * size + 1, col * size + 1, size - 2, size - 2);
       }
+      ctx.fillStyle = "blue";
+      ctx.fillText(`.-${col}`, row * size + 1, col * size + 1);
     }
   }
 }
