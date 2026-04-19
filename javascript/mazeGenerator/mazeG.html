@@ -20,7 +20,7 @@
   <body>
     <div style="align-content: center">
       <h1 style="margin-bottom: 0.1rem">Maze Generator</h1>
-      <label for="cellSize">c.s.</label>
+      <label for="cellSize">cell size</label>
       <input
         type="number"
         name="cellSize"
@@ -45,20 +45,16 @@
         style="width: 3rem"
       />
       <div style="margin-right: 20px; white-space: nowrap">
-        <label for="selectMaze">Select Maze:</label>
+        <label for="selectMaze">Select Maze Algorithm:</label>
         <select
           name="selectMaze"
           id="selectMaze"
           onchange="selectMazeAlgorithm()"
         >
           <option value="recursive_1" selected>
-            Recursive Backtracker Maze Algorithm
+            Recursive Backtracker
           </option>
-          <option value="otherAlg">Other alg</option>
-          <option value="16 16 40">Intermediate</option>
-          <!-- <option value="16 30 99" class="doNotShowInMobile">Expert</option>
-                <option value="20 20 50" class="doNotShowInMobile">Challenging</option>
-                <option value="30 30 150" class="doNotShowInMobile">Insane</option> -->
+          <option value="wilsons">Wilson's Algorithm</option>
         </select>
       </div>
       <button
@@ -71,6 +67,21 @@
       <button
         id="solveBtnRecursive_1"
         style="display: inline-block; margin-top: 0.5rem"
+      >
+        Show shortest path
+      </button>
+      <!-- Wilson's Algorithm Controls -->
+      <button
+        id="newMazeBtnWilsons"
+        style="display: none; margin-top: 0.5rem"
+        onclick="newWilsonsMaze()"
+      >
+        New Maze
+      </button>
+      <button
+        id="solveWilsonsMazeBtn"
+        style="display: none; margin-top: 0.5rem"
+        onclick="solveWilsonsMazeHandler()"
       >
         Show shortest path
       </button>
@@ -106,9 +117,6 @@
     <script src="main.js"></script>
     <div class="footer">
       <footer>
-        <p style="color: black; font-weight: bold">
-          Original code by Javidx9 using C++ ⇧:
-        </p>
         <a
           href="https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/SmallerProjects/OneLoneCoder_Mazes.cpp"
           class="g_it"
@@ -116,6 +124,9 @@
           style="font-weight: bold"
           >github.com/OneLoneCoder/Javidx9</a
         >
+        <p style="color: black; font-weight: bold">
+          Original code by Javidx9 using C++ ⇧:
+        </p>
       </footer>
     </div>
   </body>
