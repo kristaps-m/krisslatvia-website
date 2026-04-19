@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -9,29 +9,126 @@
     <body>
       <script id="replace_with_navbar" src="../../navbar/nav.js"></script>
     </body>
-<style>
-  body{
-    align-items: center;
-    text-align: center;
-    align-content: center;
-  }
-</style>
+    <style>
+      body {
+        align-items: center;
+        text-align: center;
+        align-content: center;
+      }
+    </style>
   </head>
   <body>
-    <h1 style="margin-bottom: .1rem;">Maze Generator</h1>
-    <button id="solveBtn">Show shortest path</button>
-    <br>
+    <div style="align-content: center">
+      <h1 style="margin-bottom: 0.1rem">Maze Generator</h1>
+      <label for="cellSize">cell size</label>
+      <input
+        type="number"
+        name="cellSize"
+        id="cellSize"
+        style="width: 2.5rem"
+        value="20"
+      />
+      <label for="width">w</label>
+      <input
+        type="number"
+        name="width"
+        id="mazeWidth"
+        value="10"
+        style="width: 3rem"
+      />
+      <label for="height">h</label>
+      <input
+        type="number"
+        name="height"
+        id="mazeHeight"
+        value="10"
+        style="width: 3rem"
+      />
+      <div style="margin-right: 20px; white-space: nowrap">
+        <label for="selectMaze">Select Maze Algorithm:</label>
+        <select
+          name="selectMaze"
+          id="selectMaze"
+          onchange="selectMazeAlgorithm()"
+        >
+          <option value="recursive_1" selected>
+            Recursive Backtracker
+          </option>
+          <option value="wilsons">Wilson's Algorithm</option>
+        </select>
+      </div>
+      <button
+        id="newMazeBtnRecursive_1"
+        style="display: inline-block; margin-top: 0.5rem"
+        onclick="newRecursiveMaze()"
+      >
+        New Maze
+      </button>
+      <button
+        id="solveBtnRecursive_1"
+        style="display: inline-block; margin-top: 0.5rem"
+      >
+        Show shortest path
+      </button>
+      <!-- Wilson's Algorithm Controls -->
+      <button
+        id="newMazeBtnWilsons"
+        style="display: none; margin-top: 0.5rem"
+        onclick="newWilsonsMaze()"
+      >
+        New Maze
+      </button>
+      <button
+        id="solveWilsonsMazeBtn"
+        style="display: none; margin-top: 0.5rem"
+        onclick="solveWilsonsMazeHandler()"
+      >
+        Show shortest path
+      </button>
+    </div>
+    <p style="color: red; padding: 0; margin: 0">Huge maze = Lag, Crash, ..?</p>
+    <label for="mazeDrawSpeed" id="mazeDrawSpeedLabel"
+      >Maze draw speed: 10</label
+    >
+    <input
+      type="range"
+      name="mazeDrawSpeed"
+      id="mazeDrawSpeed"
+      min="10"
+      max="10000"
+      value="10"
+      step="100"
+      onchange="mazeDrawSpeed()"
+    />
+    <br />
     <canvas
       id="mazeGenCanvas"
-      style="padding: 0.45rem; border: 2px solid #747373; background-color: white"
+      style="
+        padding: 0.45rem;
+        border: 2px solid #747373;
+        background-color: white;
+        margin-bottom: 3rem;
+      "
     ></canvas>
 
     <script src="../../GAMES/Global Helper Classes/Position.js"></script>
     <script src="mazeGenMain.js"></script>
+    <script src="otherMaze.js"></script>
+    <script src="main.js"></script>
     <div class="footer">
       <footer>
-        <p style="color: black; font-weight: bold;">Original code by Javidx9 using C++ ⇧: </p>
-        <a href="https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/SmallerProjects/OneLoneCoder_Mazes.cpp" class="g_it" target="_blank" style="font-weight: bold;">github.com/OneLoneCoder/Javidx9</a>
+        <div id="referenceToOLC" style="display: inline-block">
+          <a
+            href="https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/SmallerProjects/OneLoneCoder_Mazes.cpp"
+            class="g_it"
+            target="_blank"
+            style="font-weight: bold"
+            >github.com/OneLoneCoder/Javidx9</a
+          >
+          <p style="color: black; font-weight: bold">
+            Original code by Javidx9 using C++ ⇧:
+          </p>
+        </div>
       </footer>
     </div>
   </body>

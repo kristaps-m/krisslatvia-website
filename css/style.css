@@ -2,163 +2,163 @@
 
 /* For desktop computers */
 /* @media screen and (min-width: 900px) { */
-  .doNotShowInDesktop {
-    display: none !important;
-  }
+.doNotShowInDesktop {
+  display: none !important;
+}
 /* } */
-  .menu-toggle {
-    display: none;
-  }
+.menu-toggle {
+  display: none;
+}
 
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    background-color: rgb(189, 182, 182);
-  }
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background-color: rgb(189, 182, 182);
+}
 
-  /*li {
+/*li {
   display: inline;
   font-size: larger;
   }*/
 
-  /* DROP DOWN BUTTON*/
+/* DROP DOWN BUTTON*/
 
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0px;
-    padding: 0px;
-  }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0px;
+  padding: 0px;
+}
 
-  .navbar {
-    display: flex;
-    overflow: hidden;
-    background-color: #333;
-    /*ceter?
+.navbar {
+  display: flex;
+  overflow: hidden;
+  background-color: #333;
+  /*ceter?
   float: none;
   position: absolute;
   left: 10%;
   right: 10%;*/
-  }
+}
 
-  .navbar a {
-    float: left;
-    font-size: 16px;
-    /*16px*/
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-  }
+.navbar a {
+  float: left;
+  font-size: 16px;
+  /*16px*/
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
 
-  .dropdown {
-    float: left;
-    overflow: hidden;
-    background: none;
-    border: none;
-    color: white;
-    padding: 10px;
-    font-size: 6px;
-    cursor: pointer;
-  }
+.dropdown {
+  float: left;
+  overflow: hidden;
+  background: none;
+  border: none;
+  color: white;
+  padding: 10px;
+  font-size: 6px;
+  cursor: pointer;
+}
 
-  .dropdown .dropbtn {
-    font-size: 16px;
-    /*16*/
-    border: none;
-    outline: none;
-    color: white;
-    padding: 14px 16px;
-    /*14px 16px*/
-    background-color: inherit;
-    font-family: inherit;
-    margin: 0;
-  }
+.dropdown .dropbtn {
+  font-size: 16px;
+  /*16*/
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  /*14px 16px*/
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
 
-  .navbar a:hover,
-  .dropdown:hover .dropbtn {
-    background-color: red;
-  }
+.navbar a:hover,
+.dropdown:hover .dropbtn {
+  background-color: red;
+}
 
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-  }
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
 
-  .dropdown-content a {
-    float: none;
-    color: black;
-    padding: 12px 16px;
-    /* 12px 16px */
-    text-decoration: none;
-    display: block;
-    text-align: left;
-  }
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  /* 12px 16px */
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
 
-  .dropdown-content a:hover {
-    background-color: #ddd;
-  }
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
 
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 
-  .footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: rgb(242, 242, 242);
-    color: white;
-    text-align: center;
-  }
+.footer {
+  /* position: fixed; */
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: rgb(242, 242, 242);
+  color: white;
+  text-align: center;
+}
 
-  /*COLUMS AND ROWS*/
-  /* Set additional styling options for the columns */
-  .column {
-    float: left;
-    width: 33%;
-  }
+/*COLUMS AND ROWS*/
+/* Set additional styling options for the columns */
+.column {
+  float: left;
+  width: 33%;
+}
 
-  /* Set width length for the left, right and middle columns */
-  .left {
-    width: 20%;
-  }
+/* Set width length for the left, right and middle columns */
+.left {
+  width: 20%;
+}
 
-  .middle {
-    width: 60%;
-  }
+.middle {
+  width: 60%;
+}
 
-  .right {
-    width: 20%;
-  }
+.right {
+  width: 20%;
+}
 
-  .row:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
 
-  /* MineSweeper */
-  #digOrFlag {
-    display: none;
-  }
+/* MineSweeper */
+#digOrFlag {
+  display: none;
+}
 
-#homepage_canvas{
+#homepage_canvas {
   border: 3px solid gray;
   background-color: black;
 }
 
-  /* google it*/
-  .g_it:hover {
-    color: red;
-    text-decoration: none;
-    font-weight: bolder;
-  }
+/* google it*/
+.g_it:hover {
+  color: red;
+  text-decoration: none;
+  font-weight: bolder;
+}
 /* } */
 
 /* For tablets */
