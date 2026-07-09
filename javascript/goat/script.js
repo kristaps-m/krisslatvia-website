@@ -6,9 +6,6 @@ const circleR = 100;
 c.width = W;
 c.height = H;
 
-ctx.fillStyle = "red";
-ctx.fillRect(10, 10, 10, 10);
-
 function circle(ctx, w, h) {
   ctx.beginPath();
   ctx.arc(w / 2, h / 2, circleR, 0, 2 * Math.PI);
