@@ -24,12 +24,12 @@ function circle(ctx, w, h, xCenter = 0, yCenter = 0, r = 3) {
   ctx.stroke();
 }
 
-function drawLine(ctx, w, h, mouseX, mouseY, startX = 150, startY = h / 2, lineWidth = 3) {
+function drawLine(ctx, w, h, mouseX, mouseY, startX = 150, startY = h / 2, lineWidth = 3, color = "brown") {
     ctx.beginPath();
     ctx.moveTo(startX, startY); // x1; y1
     ctx.lineTo(mouseX, mouseY); // x2; y2
     ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = "brown";
+    ctx.strokeStyle = color;
     ctx.stroke();
 }
 
@@ -106,6 +106,13 @@ window.addEventListener("mousemove", (event) => {
         ctx.fillText(`d: ${Math.round(fromF1toEllipseD)}`,30, 30);
         ctx.fillText(`d: ${Math.round(fromEllipseToF2)}`,W-100, 30);
         ctx.fillText(`total D: ${Math.round(fromF1toEllipseD+fromEllipseToF2)}`,W-222, H - 30);
+
+        // Draw tangent line (blue) and perpendicular to tangent (gray)
+        const tangent = getTangentDirection(p.x, p.y, W / 2, H / 2, 50 * R_MULTIPLIER, 75 * R_MULTIPLIER, Math.PI / 2);
+        drawLine(ctx, W, H, p.x + tangent.dx * 40, p.y + tangent.dy * 40, p.x - tangent.dx * 40, p.y - tangent.dy * 40, 2, "blue");
+        // Perpendicular to tangent (gray)
+        const perp = { dx: -tangent.dy, dy: tangent.dx };
+        drawLine(ctx, W, H, p.x + perp.dx * 30, p.y + perp.dy * 30, p.x - perp.dx * 30, p.y - perp.dy * 30, 2, "gray");
 
         // ctx.fillText(`d: ${Math.round(d)}`,30, 30);
     })
@@ -250,4 +257,38 @@ function getRotatedEllipseIntersectionIfLineStartsInCenter(
 
 function getDist(x1, x2, y1, y2) {
     return Math.hypot(x2 - x1, y2 - y1);
+}
+
+// Get tangent direction vector at a point on the rotated ellipse
+function getTangentDirection(px, py, cx, cy, rx, ry, rotation) {
+    // Translate point to ellipse center
+    let dx = px - cx;
+    let dy = py - cy;
+
+    // Rotate into ellipse's local (unrotated) coordinate system
+    const cos = Math.cos(-rotation);
+    const sin = Math.sin(-rotation);
+    const localX = dx * cos - dy * sin;
+    const localY = dx * sin + dy * cos;
+
+    // Normal vector in local space: gradient of (x²/rx² + y²/ry²)
+    let nx = (2 * localX) / (rx * rx);
+    let ny = (2 * localY) / (ry * ry);
+
+    // Normalize normal
+    const nLen = Math.hypot(nx, ny);
+    nx /= nLen;
+    ny /= nLen;
+
+    // Tangent is perpendicular to normal in local space
+    let tx = -ny;
+    let ty = nx;
+
+    // Rotate tangent back to world coordinates
+    const cos2 = Math.cos(rotation);
+    const sin2 = Math.sin(rotation);
+    const worldTx = tx * cos2 - ty * sin2;
+    const worldTy = tx * sin2 + ty * cos2;
+
+    return { dx: worldTx, dy: worldTy };
 }
