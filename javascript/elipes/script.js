@@ -2,7 +2,11 @@ const c = document.getElementById("myCanvas5");
 const ctx = c.getContext("2d");
 const W = 500;
 const H = 500;
-const R_MULTIPLIER = 2;
+
+// ─── Ellipse dimensions (in pixels) ──────────────────────────────
+let ellipseWidth = 100; // Half-width (rx), range: 30–200
+let ellipseHeight = 150; // Half-height (ry), range: 30–240
+
 c.width = W;
 c.height = H;
 
@@ -170,19 +174,15 @@ function getEllipseIntersectionFromCenter({ ellipseCenter, ellipseRadii, rotatio
     return { x: cx + ix * cos2 - iy * sin2, y: cy + ix * sin2 + iy * cos2 };
 }
 
-// ─── Main draw loop ──────────────────────────────────────────────────────────
+// ─── Scene drawing function (called on load and mousemove) ──────
 
-window.addEventListener("mousemove", (event) => {
-    const rect = c.getBoundingClientRect();
-    let mouseX = (event.clientX - rect.left) * (W / rect.width);  // Normalize x
-    let mouseY = (event.clientY - rect.top) * (H / rect.height);  // Normalize y
+function drawScene({ mouseX = 0, mouseY = 0 }) {
+    const ellipseCenter = { x: W / 2, y: H / 2 };
+    const ellipseRadii = { rx: ellipseWidth, ry: ellipseHeight };
 
     ctx.clearRect(0, 0, W, H);
 
     // ── Draw ellipse ────────────────────────────────────────────────
-    const ellipseCenter = { x: W / 2, y: H / 2 };
-    const ellipseRadii = { rx: 50 * R_MULTIPLIER, ry: 75 * R_MULTIPLIER };
-
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -255,10 +255,36 @@ window.addEventListener("mousemove", (event) => {
             rotation: Math.PI / 2
         });
 
-        drawLine({ ctx, fromX: p.x + tangent.dx * 40, fromY: p.y + tangent.dy * 40, toX: p.x - tangent.dx * 40, toY: p.y - tangent.dy * 40, lineWidth: 2, color: "blue" });
+        drawLine({ ctx, fromX: p.x + tangent.dx * 60, fromY: p.y + tangent.dy * 60, toX: p.x - tangent.dx * 60, toY: p.y - tangent.dy * 60, lineWidth: 2, color: "blue" });
 
         // Perpendicular to tangent (gray)
         const perp = { dx: -tangent.dy, dy: tangent.dx };
         drawLine({ ctx, fromX: p.x + perp.dx * 30, fromY: p.y + perp.dy * 30, toX: p.x - perp.dx * 30, toY: p.y - perp.dy * 30, lineWidth: 2, color: "gray" });
     });
+}
+
+// ─── Event listeners ──────────────────────────────────────────────
+
+window.addEventListener("mousemove", (event) => {
+    const rect = c.getBoundingClientRect();
+    let mouseX = (event.clientX - rect.left) * (W / rect.width);  // Normalize x
+    let mouseY = (event.clientY - rect.top) * (H / rect.height);  // Normalize y
+
+    drawScene({ mouseX, mouseY });
 });
+
+window.addEventListener("load", () => {
+    drawScene(); // Draw initial scene on page load
+});
+
+// ─── Slider event listeners for ellipse dimensions ────────────────
+
+function updateEllipseWidth(value) {
+    ellipseWidth = parseInt(value);
+    drawScene({ mouseX: 0, mouseY: 0 });
+}
+
+function updateEllipseHeight(value) {
+    ellipseHeight = parseInt(value);
+    drawScene({ mouseX: 0, mouseY: 0 });
+}
