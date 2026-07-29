@@ -7,18 +7,16 @@ c.width = W;
 c.height = H;
 let mouseX = 10;
 let mouseY = 10;
+// console.log(getDist(0,3,0,4));
 
-// Draw the ellipse
-ctx.beginPath();
-ctx.ellipse(W / 2, H / 2, 50 * R_MULTIPLIER, 75 * R_MULTIPLIER, Math.PI / 2, 0, 2 * Math.PI);
-ctx.stroke();
+// // Draw the ellipse
+// ctx.beginPath();
+// ctx.ellipse(W / 2, H / 2, 50 * R_MULTIPLIER, 75 * R_MULTIPLIER, Math.PI / 2, 0, 2 * Math.PI);
+// ctx.stroke();
 
-circle(ctx, W, H);
-// drawLine(ctx,W, H, 111, mouseX, mouseY);
-
-function circle(ctx, w, h, xCenter = 0, yCenter = 0) {
+function circle(ctx, w, h, xCenter = 0, yCenter = 0, r = 3) {
   ctx.beginPath();
-  ctx.arc(xCenter, yCenter, 4, 0, 2 * Math.PI);
+  ctx.arc(xCenter, yCenter, r, 0, 2 * Math.PI);
   ctx.strokeStyle = "#663300";
   ctx.fillStyle = "red";
   ctx.lineWidth = 3;
@@ -26,11 +24,11 @@ function circle(ctx, w, h, xCenter = 0, yCenter = 0) {
   ctx.stroke();
 }
 
-function drawLine(ctx, w, h, mouseX, mouseY) {
+function drawLine(ctx, w, h, mouseX, mouseY, startX = 150, startY = h / 2, lineWidth = 3) {
     ctx.beginPath();
-    ctx.moveTo(150, h / 2); // x1; y1
+    ctx.moveTo(startX, startY); // x1; y1
     ctx.lineTo(mouseX, mouseY); // x2; y2
-    ctx.lineWidth = 3;
+    ctx.lineWidth = lineWidth;
     ctx.strokeStyle = "brown";
     ctx.stroke();
 }
@@ -48,19 +46,32 @@ window.addEventListener("mousemove", (event) => {
     ctx.strokeStyle = "black";
     ctx.beginPath();
     ctx.lineWidth = 1;
+    // So distance from center to right or left side of ellipse is 75 * R_MULTIPLIER (150)
     ctx.ellipse(W / 2, H / 2, 50 * R_MULTIPLIER, 75 * R_MULTIPLIER, Math.PI / 2, 0, 2 * Math.PI);
     ctx.stroke();
-    drawLine(ctx,W, H, mouseX, mouseY);
-    circle(ctx, W, H, 150, H / 2);
+    // draw x and y axis
+    drawLine(ctx, W, H, 0, H/2, W, H/2, 1);
+    drawLine(ctx, W, H, W/2, 0, W/2, H, 1);
+    // cirle on top side of ellipse 
+    ctx.beginPath();
+    ctx.arc(W/2, H/2 - 50*R_MULTIPLIER, 75*R_MULTIPLIER, 0, Math.PI);
+    ctx.strokeStyle = "#663300";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // draw focal points
+    const lenFromCenterToFocalP = Math.sqrt((75*R_MULTIPLIER)**2 - (50*R_MULTIPLIER)**2);
+    const twoFP = {x1: W / 2 - lenFromCenterToFocalP, y1: H / 2, x2: W / 2 + lenFromCenterToFocalP, y2: H / 2};
+    circle(ctx, W, H,  twoFP.x1, twoFP.y1);
+    circle(ctx, W, H, twoFP.x2, twoFP.y2);
+    // circle(ctx, W, H, 150, H / 2);
 
-/*
-
+    /*
         startX,
         startY,
         endX,
         endY,
-*/
-
+    */
     const points = getLineEllipseIntersections(
         150,
         H / 2,
@@ -75,25 +86,45 @@ window.addEventListener("mousemove", (event) => {
 
     points.forEach(p => {
         // console.log(p.x, p.y);
+        // Draw line from Focal point 1 to elipse according to mouseX and mouseY
+        drawLine(ctx,W, H, p.x, p.y, twoFP.x1, twoFP.y1);
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
         ctx.fillStyle = "red";
         ctx.fill();
     });
 
+    // draw reflection?
+    points.forEach(p => {
+        drawLine(ctx, W, H, twoFP.x2, twoFP.y2, p.x, p.y);
+
+        // const d = getDist(W/2, p.x, H/2, p.y);
+        const fromF1toEllipseD = getDist(twoFP.x1, p.x, twoFP.y1, p.y);
+        const fromEllipseToF2 = getDist(p.x, twoFP.x2, p.y, twoFP.y2);
+        ctx.font = `italic bold 25px Comic Sans MS`;
+        ctx.fillText(`d: ${Math.round(fromF1toEllipseD)}`,30, 30);
+        ctx.fillText(`d: ${Math.round(fromEllipseToF2)}`,W-100, 30);
+        ctx.fillText(`total D: ${Math.round(fromF1toEllipseD+fromEllipseToF2)}`,W-222, H - 30);
+
+        // ctx.fillText(`d: ${Math.round(d)}`,30, 30);
+    })
 
     // const point = getRotatedEllipseIntersectionIfLineStartsInCenter(
     //     W / 2,
-    //     H / 2,
-    //     50 * R_MULTIPLIER,
+    //     H / 2 - 50 * R_MULTIPLIER,
+    //     75 * R_MULTIPLIER,
     //     75 * R_MULTIPLIER,
     //     Math.PI / 2,
     //     mouseX,
-    //     mouseY
+    //     H / 2
     // );
+    // console.log(lenFromCenterToFocalP);
+
+    // circle(ctx, W, H, 150, H / 2);
 
     // console.log(point.x, point.y);
+
     // circle(ctx, W, H, Math.round(point.x), Math.round(point.y));
 })
 
@@ -180,34 +211,6 @@ function getLineEllipseIntersections(
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function getRotatedEllipseIntersectionIfLineStartsInCenter(
     cx,
     cy,
@@ -243,4 +246,8 @@ function getRotatedEllipseIntersectionIfLineStartsInCenter(
         x: cx + ix * cos2 - iy * sin2,
         y: cy + ix * sin2 + iy * cos2
     };
+}
+
+function getDist(x1, x2, y1, y2) {
+    return Math.hypot(x2 - x1, y2 - y1);
 }
