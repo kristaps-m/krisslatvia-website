@@ -71,6 +71,7 @@ let snakeIsMoved = false;
 let userTypingInPause = [];
 
 function theSnakeGameLoop() {
+  // Snake moves in discrete steps (one square per update), so no delta-time needed
   if (theGameFrameCount % gameSpeedDivider === 0) {
     // if (gameIsStarted) {
     if (isPaused) {

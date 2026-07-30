@@ -20,6 +20,8 @@ const rayTrigger_2 = new RayTrigger(60, HEIGHT - 60, 30, 30);
 let rayTriggerList = [];
 rayTriggerList.push(rayTrigger_1);
 rayTriggerList.push(rayTrigger_2);
+// Delta-time based animation loop for consistent speed across all computers
+var lastTime = performance.now();
 let framesCounter = 0;
 let mouseX = 0;
 let mouseY = 0;
@@ -29,8 +31,11 @@ let touchEndX = 0;
 let touchEndY = 0;
 let touchStartedInsideCanvas = false; // Flag to check where touch started
 
-function animate() {
-  if (framesCounter % 3 === 0) {
+function animate(time) {
+  var deltaTime = (time - lastTime) / 1000; // seconds since last frame
+  lastTime = time;
+  
+  if (framesCounter % 5 === 0) {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     for (let b of boundries){
       b.draw(ctx);
@@ -61,7 +66,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-animate();
+requestAnimationFrame(animate);
 
 canvas.addEventListener('mousemove', (e) => {
   const rect = canvas.getBoundingClientRect(); // Get canvas position

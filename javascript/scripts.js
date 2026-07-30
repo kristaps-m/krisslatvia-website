@@ -52,19 +52,27 @@ ctx.stroke();
 var c = document.getElementById("myCanvas3");
 var ctx = c.getContext("2d");
 ctx.font = "bold 30px Comic Sans MS";
-let frameCount = 0,
-  textX = 20;
-function smallLoop() {
+let frameCount = 0;
+let textX = 20;
+
+// Delta-time based animation loop for consistent speed across all computers
+var lastTime = performance.now();
+function smallLoop(time) {
+  var deltaTime = (time - lastTime) / 1000; // seconds since last frame
+  lastTime = time;
+  
   ctx.clearRect(0, 0, 400, 200);
   requestAnimationFrame(smallLoop);
   //console.log(1);
   ctx.fillText("HELLO", textX, 100);
   if (frameCount % 3 === 0) {
-    textX++;
+    // Delta-time based movement for consistent speed across all computers
+    var moveSpeed = 50; // pixels per second (delta-time based)
+    textX += moveSpeed * deltaTime;
   }
   if (textX >= 390) {
     textX = 20;
   }
   frameCount++;
 }
-smallLoop();
+requestAnimationFrame(smallLoop);

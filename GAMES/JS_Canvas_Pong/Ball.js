@@ -22,10 +22,12 @@ export class Ball extends Position{
     this.ctx.fill();
   }
 
-  update(){
+  update(deltaTime){
+    // Delta-time based movement for consistent speed across all computers
+    var moveSpeed = 300; // pixels per second (delta-time based)
     // Update ball position
-    this.x += this.speed * this.xDir;
-    this.y += this.speed * this.yDir;
+    this.x += moveSpeed * this.xDir * deltaTime;
+    this.y += moveSpeed * this.yDir * deltaTime;
     this.isPointAdded();
     // Left wall ball bounce from PAD
     if(this.x < this.playerOne.x+this.playerOne.padWidth+this.radius && this.y < this.playerOne.y+this.playerOne.padHeight && this.y > this.playerOne.y){

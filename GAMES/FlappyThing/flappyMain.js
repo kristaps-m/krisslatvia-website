@@ -7,6 +7,8 @@ const PIPE_GAP = 160;
 CANVAS.width = W;
 CANVAS.height = H;
 
+// Delta-time based animation loop for consistent speed across all computers
+var lastTime = performance.now();
 const newFlappy = new Flappy(10, 10, 20, 20);
 let h1 = getRndInteger(0, H - PIPE_GAP);
 let h2 = getRndInteger(0, H - PIPE_GAP);
@@ -18,14 +20,17 @@ const arrayOfPipes = [
   new Pipe(W - 20, 0, 15, h2),
 ];
 
-function gameLoop() {
+function gameLoop(time) {
+  var deltaTime = (time - lastTime) / 1000; // seconds since last frame
+  lastTime = time;
+  
   if (!isGameOver) {
     CTX.clearRect(0, 0, W, H);
 
-    newFlappy.update();
+    newFlappy.update(deltaTime);
     newFlappy.draw();
     arrayOfPipes.forEach((p) => {
-      p.update();
+      p.update(deltaTime);
     });
 
     if (newFlappy.detectIfHitPipe(arrayOfPipes)) {
@@ -45,7 +50,7 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-gameLoop();
+requestAnimationFrame(gameLoop);
 
 window.addEventListener("keyup", (e) => {
   const k = e.key;

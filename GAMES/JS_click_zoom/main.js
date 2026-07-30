@@ -1,3 +1,5 @@
+// Delta-time based animation loop for consistent speed across all computers
+var lastTime = performance.now();
 const CANVAS = document.getElementById('mainStage');
 const CTX = CANVAS.getContext('2d');
 const W = 500, H = 500;
@@ -10,13 +12,16 @@ let elemTop = CANVAS.offsetTop;
 CTX.font = "bold 15px Comic Sans MS";
 CTX.textAlign = "center"; CTX.fillStyle = "green";
 
-function animate() {
+function animate(time) {
+    var deltaTime = (time - lastTime) / 1000; // seconds since last frame
+    lastTime = time;
+    
     requestAnimationFrame(animate);
-    draw();
+    draw(deltaTime);
 }
-animate();
+requestAnimationFrame(animate);
 
-function draw() {
+function draw(deltaTime) {
     // Clear the canvas
     CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
 
@@ -30,8 +35,9 @@ function draw() {
     CTX.fillStyle = 'red';
     CTX.fillRect(x, 50, 50, 50);
 
-    // Update the rectangle's position
-    x += 5;
+    // Delta-time based movement for consistent speed across all computers (100 pixels per second)
+    var moveSpeed = 100; // pixels per second
+    x += moveSpeed * deltaTime;
     if(x >= H - 10){
         x = 0;
     }

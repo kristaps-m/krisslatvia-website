@@ -12,11 +12,13 @@ class Flappy extends Position {
     CTX.fillRect(this.x, this.y, 20, 20);
   }
 
-  update() {
+  update(deltaTime) {
+    // Delta-time based movement for consistent speed across all computers
+    var fallSpeed = 100; // pixels per second (delta-time based)
     if (this.y + this.h + 8 <= H) {
-      this.y += this.start;
+      this.y += fallSpeed * deltaTime;
     }
-    this.start += this.gravity;
+    this.start += this.gravity * deltaTime;
   }
 
   jumpUp() {

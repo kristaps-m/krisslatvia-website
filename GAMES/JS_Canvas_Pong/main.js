@@ -1,6 +1,9 @@
 import {Ball} from "./Ball.js";
 import {PlayersBouncePad} from "./PlayersBouncePad.js";
 
+// Delta-time based animation loop for consistent speed across all computers
+var lastTime = performance.now();
+
 const CANVAS = document.getElementById("pongCanvas");
 const CTX = CANVAS.getContext("2d");
 const W = 800; const H = 500;
@@ -22,13 +25,16 @@ document.addEventListener("keydown", (e)=>{
     playerTwo.move(e.key);
 })
 
-function gameLoop() {
+function gameLoop(time) {
+    var deltaTime = (time - lastTime) / 1000; // seconds since last frame
+    lastTime = time;
+    
     CTX.clearRect(0, 0, W, H);
     theBall.draw();
-    theBall.update();
+    theBall.update(deltaTime);
     playerOne.draw();
     playerTwo.draw();
     requestAnimationFrame(gameLoop);
 }
 
-gameLoop();
+requestAnimationFrame(gameLoop);

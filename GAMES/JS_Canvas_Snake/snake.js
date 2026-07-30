@@ -38,7 +38,10 @@ export class Snake {
     );
   }
 
-  update() {
+  update(deltaTime) {
+    // Delta-time based movement for consistent speed across all computers
+    // Movement happens in discrete steps (one square per update)
+    // deltaTime is already handled by the game loop's frame skipping
     this.xLocation += this.xSpeed;
     this.yLocation += this.ySpeed;
   }

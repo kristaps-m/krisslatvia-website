@@ -12,8 +12,10 @@ class Pipe extends Position {
     CTX.fillRect(this.x, this.y2, this.w, this.h2);
   }
 
-  update() {
-    this.x -= 2;
+  update(deltaTime) {
+    // Delta-time based movement for consistent speed across all computers
+    var pipeSpeed = 100; // pixels per second (delta-time based)
+    this.x -= pipeSpeed * deltaTime;
     if (this.x < 0) {
       this.x = W - 20;
       this.h = getRndInteger(0, H - PIPE_GAP);
