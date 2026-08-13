@@ -8,26 +8,27 @@ class Enemy extends Position{
     this.vertDir = this.speed;
     this.start = start;
     this.end = end;
+    this.speedTest = 10;
   }
   draw() {
     CTX.fillStyle = "red";
     CTX.fillRect(this.x, this.y, this.size, this.size);
   }
 
-  update(){
+  update(deltaTime){
     if(this.enemyMovement === "h"){
       if(this.x + this.size > this.end){
-        this.horDir = -this.speed;
+        this.horDir = -this.speed * deltaTime;
       }else if(this.x < this.start){
-        this.horDir = this.speed;
+        this.horDir = this.speed * deltaTime;
       }
-      this.x += this.horDir;
+      this.x += this.horDir ;
 
     }else if(this.enemyMovement ===  "v"){
       if(this.y + this.size > this.end){
-        this.vertDir = -3;
+        this.vertDir = -3 * deltaTime;
       }else if(this.y < this.start){
-        this.vertDir = 3;
+        this.vertDir = 3 * deltaTime;
       }
 
       this.y += this.vertDir;

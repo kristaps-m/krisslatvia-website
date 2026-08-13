@@ -5,6 +5,8 @@ class Flappy extends Position {
     this.h = h;
     this.gravity = 0.08;
     this.start = 2;
+    // Delta-time based movement for consistent speed across all computers
+    this.fallSpeed = 100; // pixels per second (delta-time based)
   }
 
   draw() {
@@ -13,10 +15,8 @@ class Flappy extends Position {
   }
 
   update(deltaTime) {
-    // Delta-time based movement for consistent speed across all computers
-    var fallSpeed = 100; // pixels per second (delta-time based)
     if (this.y + this.h + 8 <= H) {
-      this.y += fallSpeed * deltaTime;
+      this.y += this.fallSpeed * deltaTime;
     }
     this.start += this.gravity * deltaTime;
   }

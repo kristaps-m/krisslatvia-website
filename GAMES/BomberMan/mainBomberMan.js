@@ -26,7 +26,7 @@ let listOfEnemies = [
   new Enemy({x:bManRadius * 22 + 2, y:bManRadius * 5 + 2, size:bManRadius - 5, enemyMovement:"v", start:bManRadius * 5, end:bManRadius * 17}),
   new Enemy({x: bManRadius * 22 + 2, y: bManRadius * 22 + 2, size: bManRadius - 5}),
   // SUPER ENEMY ?! :)
-  new Enemy({x:bManRadius * 6 + 2, y:bManRadius * 8 + 2, size:bManRadius - 5, enemyMovement:"h", speed:10}),
+  new Enemy({x:bManRadius * 6 + 2, y:bManRadius * 8 + 2, size:bManRadius - 5, enemyMovement:"h", speed:15}),
 ];
 
 // firstTestGameField add random walls :)
@@ -46,14 +46,20 @@ let theGameField = new GameField(firstTestGameField);
 // console.log(firstTestGameField.length, firstTestGameField[0].length, "len' s");
 let theGameFrame = 0;
 let isBombPlaced = false;
-function BMgameLoop() {
+
+// Delta-time based animation loop for consistent speed across all computers
+var lastTime = performance.now();
+
+function BMgameLoop(time) {
+  var deltaTime = (time - lastTime) / 20; // seconds since last frame
+  lastTime = time;
   CTX.clearRect(0, 0, W, H);
   levelExit.draw();
   theGameField.draw();
-  bomberMan.update();
+  bomberMan.update(deltaTime);
   bomberMan.draw();
   listOfEnemies.forEach((badMan) => {
-    badMan.update();
+    badMan.update(deltaTime);
     badMan.draw();
     if (
       bomberMan.x + bomberMan.size > badMan.x &&
@@ -86,7 +92,7 @@ function BMgameLoop() {
     CTX.fillText("GAME OVER", W / 4, H / 2);
   }
   // console.log(theGameFrame);
-  theGameFrame++;
+  // theGameFrame++;
 }
 
 BMgameLoop();
