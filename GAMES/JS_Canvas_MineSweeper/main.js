@@ -103,6 +103,9 @@ document.addEventListener("keyup", (e) => {
 CANVAS.addEventListener(
   "click",
   function (event) {
+    if (isGameOver) { 
+      return;
+    }
     if (!isGameOver) {
       isPaused = false;
     }
