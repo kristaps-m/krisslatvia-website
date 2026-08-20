@@ -1,411 +1,427 @@
+// ==================== CONFIGURATION ====================
 const canvas = document.getElementById("hexMinesCanvas");
 const ctx = canvas.getContext("2d");
 const W = 600;
 const H = 600;
-const FIELD_W_AND_H = 10;
+const FIELD_SIZE = 10; // rows x cols
 const NUM_OF_MINES = 14;
 canvas.width = W;
 canvas.height = H;
 
-const game2Dfield = [];
+// ==================== GAME STATE ====================
+let gameField = []; // 2D array of HexP objects
 let isGameOver = false;
+let isGameWon = false;
+let minesPlaced = false;
 
+// ==================== HEXAGON CONSTANTS ====================
+const HEX_SIZE = 32;
+const HEX_SPACING_X = 53; // row spacing
+const HEX_SPACING_Y = 53; // col spacing (odd rows offset by ~25)
 
+// Hexagon neighbor offsets based on even/odd row parity
+const HEX_NEIGHBORS_EVEN_ROW = [
+    [0, -1],   // top-left
+    [1, -1],   // top-right  
+    [1, 0],    // right
+    [0, 1],    // bottom-right
+    [-1, 0],   // bottom-left
+    [-1, -1],  // left
+];
+
+const HEX_NEIGHBORS_ODD_ROW = [
+    [0, -1],   // top-left
+    [1, 0],    // top-right
+    [1, 1],    // right
+    [0, 1],    // bottom-right
+    [-1, 1],   // bottom-left
+    [-1, 0],   // left
+];
+
+// ==================== CELL CLASS ====================
 class HexP {
-    constructor(x,y, isMine = false, minesAround = 0){
-        this.x = x;
-        this.y = y;
-        this.isMine = isMine;
-        this.minesAround = minesAround;
+    constructor(row, col) {
+        this.row = row;
+        this.col = col;
+        this.isMine = false;
+        this.minesAround = 0;
         this.isOpen = false;
-        this.isFlaged = false;
-        this.text = `${this.x}-${this.y}`;
+        this.isFlagged = false;
     }
 }
 
-const cordinatesAroundEachHexPointEvenRow = [
-    // col, row
-    [0,-1], // x - y
-    [1,-1],
-    [1,0],
-    [0,1],
-    [-1,0],
-    [-1,-1],
-];
-
-const cordinatesAroundEachHexPointOddRow = [
-    // col, row
-    [0,-1], // x - y
-    [1,0],
-    [1,1],
-    [0,1],
-    [-1,1],
-    [-1,0],
-];
-
-function leftClickCell(row, col) {
-    // Implement logic for left click on a cell
-    if (row < 0 || row >= FIELD_W_AND_H || col < 0 || col >= FIELD_W_AND_H) {
-        return; // Out of bounds
-    }
-    const hex = game2Dfield[row][col];
-    const position = getHexagonPosition(row, col);
-    if (hex.isOpen) {
-        return; // Already revealed
-    }
-    if (hex.isFlaged){
-        return 
-    }
-    if (hex.isMine) {
-        // drawSquare(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, 'red');
-        drawHegagon(position.x, position.y, true, "red");
-        alert("Game Over! You clicked on a mine.");
-        // Optionally, reveal all mines or reset the game
-        isGameOver = true;
-        return;
-    } else {
-        hex.isOpen = true;
-        // drawSquare(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, 'lightgray');
-        drawHegagon(position.x, position.y, true, "lightgray");
-        if (hex.minesAround > 0) {
-            // text(hex.minesAround, col * SQUARE_SIZE + SQUARE_SIZE / 2 - 5, row * SQUARE_SIZE + SQUARE_SIZE / 2 + 5, 20);
-            ctx.fillText(
-                hex.minesAround,
-                position.x - 6,
-                position.y + 20
-            );
-        } else {
-            // If no adjacent mines, reveal neighboring cells
-            // for (let i = -1; i <= 1; i++) {
-            //     for (let j = -1; j <= 1; j++) {
-            //         if (i === 0 && j === 0) continue; // Skip the current cell
-            //         leftClickCell(row + i, col + j);
-            //     }
-            // }
-            for (let index = 0; index < 6; index++) {
-                if (row % 2 === 0) {
-                    const v = cordinatesAroundEachHexPointEvenRow[index];
-                    const realX = row + v[0];
-                    const realY = col + v[1];
-                    leftClickCell(realX, realY);
-                } else {
-                    const v2 = cordinatesAroundEachHexPointOddRow[index];
-                    const realX2 = row + v2[0];
-                    const realY2 = col + v2[1];                    
-                    leftClickCell(realX2, realY2);
-                }
-            }
-        }
-    }
-    drawHexagonGrid();
+// ==================== HELPER FUNCTIONS ====================
+function isInBounds(row, col) {
+    return row >= 0 && row < FIELD_SIZE && col >= 0 && col < FIELD_SIZE;
 }
 
-window.addEventListener("click", (e) => {
-  const rect = canvas.getBoundingClientRect();
-
-  // let xHor = event.pageX - elemLeft; // Horizontal Canvas Axis
-  // let yVert = event.pageY - elemTop  - 74; // Vertical Canvas Axis
-  // Calculate the click position relative to the canvas
-  let xHor = (event.clientX - 0 - rect.left) * (W / rect.width); // Normalize x // Add 20 cuz hexagon does not start right from top
-  let yVert = (event.clientY - 0 - rect.top) * (H / rect.height); // Normalize y
-  let rowIndxClick = Math.floor(xHor / (W / FIELD_W_AND_H));
-  let colIndxClick = Math.floor(yVert / (H / FIELD_W_AND_H));
-  if (isGameOver) {
-    return;
-  }
-  leftClickCell(rowIndxClick, colIndxClick);
-//   console.log(xHor, yVert, rowIndxClick, colIndxClick);
-
-    // for (let row = 0; row < game2Dfield.length; row++) {
-
-    //     for (let col = 0; col < game2Dfield[row].length; col++) {
-
-    //         const hex = game2Dfield[row][col];
-    //         // console.log(hex);
-
-    //         let hexX = hex.x * 53 + 50;
-    //         let hexY = hex.y * 53 + 50;
-
-    //         if (hex.x % 2 === 1) {
-    //             hexY += 25;
-    //         }
-
-    //         const vertices = getHexagonVertices(
-    //             hexX,
-    //             hexY
-    //         );
-
-    //         if (isPointInHexagon(xHor, yVert, vertices)) {
-
-    //             hex.isOpen = true;
-
-    //             console.log(
-    //                 `Clicked hexagon: ${hex.x}-${hex.y}`
-    //             );
-    //             if (hex.isMine) {
-    //                 window.alert("Game Over");
-    //                 isGameOver = true;
-    //             }
-
-    //             // console.log(game2Dfield);
-    //             drawHexagonGrid();
-    //             return;
-    //         }
-    //     }
-    // }
-})
-
-/**
- * Generate 2D grid with 2D array and HexP as each point.
- */
-for (let row = 0; row < FIELD_W_AND_H; row++) {
-    const t = [];
-    for (let col = 0; col < FIELD_W_AND_H; col++) {
-        t.push(new HexP(row, col, false));
-        // t.push(`${col}-${row}`);
-    }
-    game2Dfield.push(t);
-}
-
-function generateRandomMineCordinates() {
-    let randomCorinates = [];
-
-    for (let row = 0; row < FIELD_W_AND_H; row++) {
-        for (let col = 0; col < FIELD_W_AND_H; col++) {
-            randomCorinates.push({'row': row, 'col': col});
-        }
-    }
-
-    randomCorinates = shuffle(randomCorinates);
-    randomCorinates = randomCorinates.slice(0, NUM_OF_MINES);
-
-    return randomCorinates;
-}
-
-function addMinesInRandomPlaces() {
-    const arr = generateRandomMineCordinates();
-
-    arr.forEach((v) => {
-        game2Dfield[v.row][v.col].isMine = true;
-    })
-}
-
-function isInBoundriesOfOuterWalls(x,y) {
-    return x >= 0 && x < FIELD_W_AND_H && y >= 0 && y < FIELD_W_AND_H;
-}
-
-function countMines(x,y) {
-    let n = 0;
-
-    for (let index = 0; index < 6; index++) {
-        if (x % 2 === 0) {
-            const v = cordinatesAroundEachHexPointEvenRow[index];
-            const realX = x + v[0];
-            const realY = y + v[1];
-            if (isInBoundriesOfOuterWalls(realX, realY)){
-                if (game2Dfield[realX][realY].isMine){
-                    n++;
-                }
-            }
-        } else {
-            const v = cordinatesAroundEachHexPointOddRow[index];
-            const realX = x + v[0];
-            const realY = y + v[1];
-            if (isInBoundriesOfOuterWalls(realX, realY)){
-                if (game2Dfield[realX][realY].isMine){
-                    n++;
-                }
-            }
-        }
-    }
-
-    return n;
-}
-
-function addNumberToEachHex() {
-    for (let row = 0; row < FIELD_W_AND_H; row++) {
-        for (let col = 0; col < FIELD_W_AND_H; col++) {
-            if (!game2Dfield[row][col].isMine) {
-                // if (row > 1 && col > 1 && row < 9 && col < 9) {
-                    // console.log(col, row);
-                    game2Dfield[row][col].minesAround = countMines(row,col);
-                // }
-            }
-        }
-    }
-}
-
-addMinesInRandomPlaces();
-addNumberToEachHex();
-
-/**
- * DRAW Hexagon grid
- */
-function drawHexagonGrid() {
-    for (let row = 0; row < 10; row++) {
-        for (let col = 0; col < 10; col++) {
-            // COL acts as row
-            // ROW acts as col 
-            // do not ask why
-            // or not this time some times I need to switch them.
-            const hex = game2Dfield[row][col];
-            const position = getHexagonPosition(row, col);
-            ctx.font = "bold 12px Comic Sans MS";
-            // drawHegagon(position.x, position.y);
-            if (hex.isOpen && !hex.isMine) {
-                drawHegagon(position.x, position.y, true, "lightgray");    
-                if (hex.minesAround > 0) {
-                    ctx.font = "bold 18px Comic Sans MS";
-                    ctx.fillStyle = "red";
-        
-                    ctx.fillText(
-                        hex.minesAround,
-                        position.x - 6,
-                        position.y + 20
-                    );
-                }
-            } 
-            if (hex.isOpen && hex.isMine) {
-                console.log("adsadadsads");
-                drawHegagon(position.x, position.y, true, "red");
-            } else if (!hex.isOpen) {
-                drawHegagon(position.x, position.y, true, "gray");
-            }
+function getHexNeighbors(row, col) {
+    const neighbors = [];
+    const offsets = (row % 2 === 0) ? HEX_NEIGHBORS_EVEN_ROW : HEX_NEIGHBORS_ODD_ROW;
     
-            // if (hex.isMine) {
-            //     ctx.fillStyle = "blue"
-            //     ctx.fillRect(
-            //         position.x - 5,
-            //         position.y + 10,
-            //         10,
-            //         10
-            //     );
-            // }
-            // ctx.fillStyle = "white";
-            // ctx.fillText(
-            //     hex.text,
-            //     position.x - 12,
-            //     position.y
-            // );
-        }
-    }    
-}
-drawHexagonGrid();
-
-function drawHegagon(x,y, isFill = false, fillColor = "red"){
-  // Hexagon
-  var numberOfSides = 6,
-    size = 32,
-    Xcenter = x,
-    Ycenter = y,
-    step = (2 * Math.PI) / numberOfSides, //Precalculate step value
-    shift = 0; //Quick fix ;)
-    // shift = (Math.PI / 180.0); //Quick fix ;)
-  ctx.beginPath();
-  // ctx.moveTo (Xcenter +  size * Math.cos(0), Ycenter +  size *  Math.sin(0));
-  for (var i = 0; i <= numberOfSides; i++) {
-    var curStep = i * step + shift;
-    ctx.lineTo(
-      Xcenter + size * Math.cos(curStep),
-      Ycenter + size * Math.sin(curStep)
-    );
-  }
-  ctx.strokeStyle = "black";//"#00cc00";
-  ctx.lineWidth = 3;
-  if (fillColor !== "red") {
-      ctx.fillStyle = fillColor;
-  }
-  if (isFill) {
-      ctx.fill();
-  }
-  ctx.stroke();
-};
-
-// Source - https://stackoverflow.com/a/2450976
-// Posted by ChristopheD, modified by community. See post 'Timeline' for change history
-// Retrieved 2026-08-16, License - CC BY-SA 4.0
-
-function shuffle(array) {
-  let currentIndex = array.length;
-
-  // While there remain elements to shuffle...
-  while (currentIndex != 0) {
-
-    // Pick a remaining element...
-    let randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
-  }
-
-  return array;
-}
-
-// https://chatgpt.com/c/6a81dd10-751c-83ed-97a1-abfd11551d87
-function getHexagonVertices(centerX, centerY) {
-
-    const numberOfSides = 6;
-    const size = 32;
-    const step = (2 * Math.PI) / numberOfSides;
-    const shift = Math.PI / 180.0;
-
-    const vertices = [];
-
-    for (let i = 0; i < numberOfSides; i++) {
-
-        const curStep = i * step + shift;
-
-        vertices.push({
-            x: centerX + size * Math.cos(curStep),
-            y: centerY + size * Math.sin(curStep)
-        });
-    }
-
-    return vertices;
-}
-
-// https://chatgpt.com/c/6a81dd10-751c-83ed-97a1-abfd11551d87
-function isPointInHexagon(pointX, pointY, vertices) {
-
-    let inside = false;
-
-    for (let i = 0, j = vertices.length - 1;
-         i < vertices.length;
-         j = i++) {
-
-        const xi = vertices[i].x;
-        const yi = vertices[i].y;
-
-        const xj = vertices[j].x;
-        const yj = vertices[j].y;
-
-        const intersects =
-            ((yi > pointY) !== (yj > pointY)) &&
-            (pointX < (xj - xi) * (pointY - yi) / (yj - yi) + xi);
-
-        if (intersects) {
-            inside = !inside;
+    for (const [dr, dc] of offsets) {
+        const newRow = row + dr;
+        const newCol = col + dc;
+        if (isInBounds(newRow, newCol)) {
+            neighbors.push({ row: newRow, col: newCol });
         }
     }
-
-    return inside;
+    return neighbors;
 }
 
-// https://chatgpt.com/c/6a81dd10-751c-83ed-97a1-abfd11551d87
 function getHexagonPosition(row, col) {
-
-    const x = row * 53 + 50;
-
-    let y = col * 53 + 50;
-
+    const x = row * HEX_SPACING_X + 50;
+    let y = col * HEX_SPACING_Y + 50;
     if (row % 2 === 1) {
         y += 25;
     }
-
-    return {
-        x: x,
-        y: y
-    };
+    return { x, y };
 }
+
+function shuffle(array) {
+    let currentIndex = array.length;
+    while (currentIndex !== 0) {
+        const randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex],
+            array[currentIndex]
+        ];
+    }
+    return array;
+}
+
+// ==================== LAYER 1: CLICK DETECTION ====================
+function getCellFromClick(event) {
+    const rect = canvas.getBoundingClientRect();
+    
+    // Normalize click coordinates to canvas space
+    let xHor = (event.clientX - event.offsetX);
+    let yVert = (event.clientY - event.offsetY);
+    
+    // Calculate which cell was clicked
+    let rowClicked = Math.floor(xHor / HEX_SPACING_X);
+    let colClicked = Math.floor(yVert / HEX_SPACING_Y);
+    
+    return { row: rowClicked, col: colClicked };
+}
+
+// ==================== LAYER 2: GAME LOGIC ====================
+
+/**
+ * Initialize the game field with empty cells
+ */
+function initGameField() {
+    gameField = [];
+    for (let row = 0; row < FIELD_SIZE; row++) {
+        const rowArr = [];
+        for (let col = 0; col < FIELD_SIZE; col++) {
+            rowArr.push(new HexP(row, col));
+        }
+        gameField.push(rowArr);
+    }
+}
+
+/**
+ * Place mines randomly on the field
+ */
+function placeMines() {
+    let positions = [];
+    for (let row = 0; row < FIELD_SIZE; row++) {
+        for (let col = 0; col < FIELD_SIZE; col++) {
+            positions.push({ row, col });
+        }
+    }
+    
+    shuffle(positions);
+    const minesToPlace = Math.min(NUM_OF_MINES, positions.length);
+    
+    for (let i = 0; i < minesToPlace; i++) {
+        gameField[positions[i].row][positions[i].col].isMine = true;
+    }
+}
+
+/**
+ * Count adjacent mines for each cell
+ */
+function countAdjacentMines() {
+    for (let row = 0; row < FIELD_SIZE; row++) {
+        for (let col = 0; col < FIELD_SIZE; col++) {
+            if (!gameField[row][col].isMine) {
+                const neighbors = getHexNeighbors(row, col);
+                let count = 0;
+                
+                for (const { row: nr, col: nc } of neighbors) {
+                    if (gameField[nr][nc].isMine) {
+                        count++;
+                    }
+                }
+                
+                gameField[row][col].minesAround = count;
+            }
+        }
+    }
+}
+
+/**
+ * Open a cell and all connected empty cells using BFS (non-recursive!)
+ * This is the key algorithm - uses a queue instead of recursion to avoid stack overflow
+ */
+function openCell(row, col) {
+    // Bounds check
+    if (!isInBounds(row, col)) return;
+    
+    const cell = gameField[row][col];
+    
+    // Don't open already opened or flagged cells
+    if (cell.isOpen || cell.isFlagged) return;
+    
+    // BFS queue for opening connected empty cells
+    const queue = [{ row, col }];
+    const visited = new Set();
+    visited.add(`${row},${col}`);
+    
+    while (queue.length > 0) {
+        const current = queue.shift();
+        const cellToOpen = gameField[current.row][current.col];
+        
+        // Mark as open
+        cellToOpen.isOpen = true;
+        
+        // If this cell has 0 adjacent mines, add all neighbors to the queue
+        if (cellToOpen.minesAround === 0) {
+            const neighbors = getHexNeighbors(current.row, current.col);
+            
+            for (const neighbor of neighbors) {
+                const key = `${neighbor.row},${neighbor.col}`;
+                if (!visited.has(key)) {
+                    visited.add(key);
+                    queue.push(neighbor);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Handle left click on a cell
+ */
+function handleLeftClick(row, col) {
+    // Bounds check
+    if (!isInBounds(row, col)) return;
+    
+    const cell = gameField[row][col];
+    
+    // Ignore already opened or flagged cells
+    if (cell.isOpen || cell.isFlagged) return;
+    
+    // Game over check
+    if (isGameOver || isGameWon) return;
+    
+    // First click - place mines ensuring clicked cell is safe
+    if (!minesPlaced) {
+        // Temporarily mark the clicked cell and its neighbors as non-mines
+        const safeCells = new Set();
+        safeCells.add(`${row},${col}`);
+        
+        // Also protect neighbors from being mines (for better gameplay)
+        const neighbors = getHexNeighbors(row, col);
+        for (const { row: nr, col: nc } of neighbors) {
+            safeCells.add(`${nr},${nc}`);
+        }
+        
+        placeMines();
+        
+        // Ensure clicked cell and neighbors are not mines
+        gameField[row][col].isMine = false;
+        for (const { row: nr, col: nc } of neighbors) {
+            gameField[nr][nc].isMine = false;
+        }
+        
+        countAdjacentMines();
+        minesPlaced = true;
+    }
+    
+    // Check if clicked cell is a mine
+    if (cell.isMine) {
+        cell.isOpen = true;
+        isGameOver = true;
+        revealAllMines();
+        alert("Game Over! You hit a mine!");
+        drawGrid();
+        return;
+    }
+    
+    // Open the clicked cell and connected empty cells
+    openCell(row, col);
+    
+    // Draw updated grid
+    drawGrid();
+    
+    // Check win condition
+    checkWinCondition();
+}
+
+/**
+ * Handle right click to place/remove flags
+ */
+function handleRightClick(event, row, col) {
+    event.preventDefault();
+    
+    if (!isInBounds(row, col)) return;
+    if (isGameOver || isGameWon) return;
+    
+    const cell = gameField[row][col];
+    
+    // Only toggle flag on unopened cells
+    if (!cell.isOpen) {
+        cell.isFlagged = !cell.isFlagged;
+        drawGrid();
+    }
+}
+
+/**
+ * Reveal all mines when game is over
+ */
+function revealAllMines() {
+    for (let row = 0; row < FIELD_SIZE; row++) {
+        for (let col = 0; col < FIELD_SIZE; col++) {
+            if (gameField[row][col].isMine) {
+                gameField[row][col].isOpen = true;
+            }
+        }
+    }
+}
+
+/**
+ * Check if all non-mine cells are opened
+ */
+function checkWinCondition() {
+    let totalCells = FIELD_SIZE * FIELD_SIZE;
+    let mineCount = 0;
+    
+    for (let row = 0; row < FIELD_SIZE; row++) {
+        for (let col = 0; col < FIELD_SIZE; col++) {
+            if (gameField[row][col].isMine) {
+                mineCount++;
+            } else if (!gameField[row][col].isOpen) {
+                return; // Not all safe cells are opened yet
+            }
+        }
+    }
+    
+    // All non-mine cells are open - WIN!
+    isGameWon = true;
+    alert("You won! Congratulations!");
+}
+
+// ==================== LAYER 3: RENDERING ====================
+
+/**
+ * Draw a single hexagon cell
+ */
+function drawHexagon(x, y, fillColor, strokeColor = "black") {
+    ctx.beginPath();
+    
+    for (let i = 0; i <= 6; i++) {
+        const angle = (Math.PI / 180) * (i * 60); // Rotated hexagon
+        const px = x + HEX_SIZE * Math.cos(angle);
+        const py = y + HEX_SIZE * Math.sin(angle);
+        
+        if (i === 0) {
+            ctx.moveTo(px, py);
+        } else {
+            ctx.lineTo(px, py);
+        }
+    }
+    
+    ctx.closePath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = strokeColor;
+    
+    if (fillColor) {
+        ctx.fillStyle = fillColor;
+        ctx.fill();
+    }
+    ctx.stroke();
+}
+
+/**
+ * Draw the entire game grid - only redraws what's needed
+ */
+function drawGrid() {
+    // Clear canvas once at start of drawing
+    ctx.clearRect(0, 0, W, H);
+    
+    for (let row = 0; row < FIELD_SIZE; row++) {
+        for (let col = 0; col < FIELD_SIZE; col++) {
+            const cell = gameField[row][col];
+            const pos = getHexagonPosition(row, col);
+            
+            let fillColor = "gray"; // Default closed state
+            
+            if (cell.isOpen && !cell.isMine) {
+                fillColor = "lightgray";
+            } else if (cell.isOpen && cell.isMine) {
+                fillColor = "red";
+            } else if (cell.isFlagged) {
+                fillColor = "yellow";
+            }
+            
+            // 1. Draw hexagon fill FIRST
+            drawHexagon(pos.x, pos.y, fillColor);
+            
+            // 2. Draw numbers/text ON TOP of the filled hexagon
+            if (cell.isOpen && !cell.isMine && cell.minesAround > 0) {
+                ctx.font = "bold 18px Comic Sans MS";
+                ctx.fillStyle = "red";
+                ctx.textAlign = "center";
+                ctx.fillText(
+                    cell.minesAround,
+                    pos.x - 6,
+                    pos.y + 20
+                );
+            } else if (cell.isOpen && cell.isMine) {
+                // Show bomb emoji on revealed mines
+                ctx.font = "bold 18px Comic Sans MS";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText("💣", pos.x, pos.y + 6);
+            } else if (cell.isFlagged) {
+                // Show flag emoji on flagged cells
+                ctx.font = "bold 18px Comic Sans MS";
+                ctx.fillStyle = "red";
+                ctx.textAlign = "center";
+                ctx.fillText("🚩", pos.x, pos.y + 6);
+            }
+        }
+    }
+}
+
+// ==================== EVENT LISTENERS ====================
+
+canvas.addEventListener("click", (event) => {
+    if (isGameOver || isGameWon) return;
+    
+    const { row, col } = getCellFromClick(event);
+    handleLeftClick(row, col);
+});
+
+canvas.addEventListener("contextmenu", (event) => {
+    event.preventDefault(); // Prevent default context menu
+    
+    if (isGameOver || isGameWon) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    let xHor = (event.clientX - event.offsetX);
+    let yVert = (event.clientY - event.offsetY);
+    
+    let rowClicked = Math.floor(xHor / HEX_SPACING_X);
+    let colClicked = Math.floor(yVert / HEX_SPACING_Y);
+    
+    handleRightClick(event, rowClicked, colClicked);
+});
+
+// ==================== INITIALIZATION ====================
+initGameField();
+drawGrid();
