@@ -91,19 +91,73 @@ function shuffle(array) {
     return array;
 }
 
+/**
+ * Get hexagon vertices for point-in-polygon hit detection
+ */
+function getHexagonVertices(centerX, centerY) {
+    const numberOfSides = 6;
+    const size = HEX_SIZE;
+    const step = (2 * Math.PI) / numberOfSides;
+    const shift = Math.PI / 180.0; // Small rotation to align hexagon
+    
+    const vertices = [];
+    for (let i = 0; i < numberOfSides; i++) {
+        const curStep = i * step + shift;
+        vertices.push({
+            x: centerX + size * Math.cos(curStep),
+            y: centerY + size * Math.sin(curStep)
+        });
+    }
+    return vertices;
+}
+
+/**
+ * Check if a point is inside a hexagon using ray casting algorithm
+ */
+function isPointInHexagon(pointX, pointY, vertices) {
+    let inside = false;
+    
+    for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+        const xi = vertices[i].x;
+        const yi = vertices[i].y;
+        const xj = vertices[j].x;
+        const yj = vertices[j].y;
+        
+        const intersects = ((yi > pointY) !== (yj > pointY)) &&
+            (pointX < (xj - xi) * (pointY - yi) / (yj - yi) + xi);
+        
+        if (intersects) {
+            inside = !inside;
+        }
+    }
+    return inside;
+}
+
 // ==================== LAYER 1: CLICK DETECTION ====================
 function getCellFromClick(event) {
     const rect = canvas.getBoundingClientRect();
     
-    // Normalize click coordinates to actual canvas space (accounting for display size vs actual size)
+    // Normalize click coordinates to actual canvas space
     let xHor = (event.clientX - rect.left) * (W / rect.width);
     let yVert = (event.clientY - rect.top) * (H / rect.height);
     
-    // Calculate which cell was clicked based on grid spacing
-    let rowClicked = Math.floor(xHor / HEX_SPACING_X);
-    let colClicked = Math.floor(yVert / HEX_SPACING_Y);
+    // Find which hexagon was clicked using vertex-based hit detection
+    for (let row = 0; row < FIELD_SIZE; row++) {
+        for (let col = 0; col < FIELD_SIZE; col++) {
+            const cell = gameField[row][col];
+            const pos = getHexagonPosition(row, col);
+            
+            // Get hexagon vertices
+            const vertices = getHexagonVertices(pos.x, pos.y);
+            
+            // Check if click point is inside this hexagon
+            if (isPointInHexagon(xHor, yVert, vertices)) {
+                return { row: row, col: col };
+            }
+        }
+    }
     
-    return { row: rowClicked, col: colClicked };
+    return null; // No cell clicked
 }
 
 // ==================== LAYER 2: GAME LOGIC ====================
@@ -416,7 +470,12 @@ function drawGrid() {
 canvas.addEventListener("click", (event) => {
     if (isGameOver || isGameWon) return;
     
-    const { row, col } = getCellFromClick(event);
+    const result = getCellFromClick(event);
+    
+    // If clicked outside any hexagon, do nothing
+    if (!result) return;
+    
+    const { row, col } = result;
     
     // DEBUG: Log which cell was clicked
     console.log(`Clicked hexagon: ${row}-${col}`);
@@ -433,13 +492,23 @@ canvas.addEventListener("contextmenu", (event) => {
     let xHor = (event.clientX - rect.left) * (W / rect.width);
     let yVert = (event.clientY - rect.top) * (H / rect.height);
     
-    let rowClicked = Math.floor(xHor / HEX_SPACING_X);
-    let colClicked = Math.floor(yVert / HEX_SPACING_Y);
-    
-    // DEBUG: Log which cell was right-clicked
-    console.log(`Right-clicked hexagon: ${rowClicked}-${colClicked}`);
-    
-    handleRightClick(event, rowClicked, colClicked);
+    // Find which hexagon was clicked using vertex-based hit detection
+    for (let row = 0; row < FIELD_SIZE; row++) {
+        for (let col = 0; col < FIELD_SIZE; col++) {
+            const cell = gameField[row][col];
+            const pos = getHexagonPosition(row, col);
+            
+            // Get hexagon vertices
+            const vertices = getHexagonVertices(pos.x, pos.y);
+            
+            // Check if click point is inside this hexagon
+            if (isPointInHexagon(xHor, yVert, vertices)) {
+                console.log(`Right-clicked hexagon: ${row}-${col}`);
+                handleRightClick(event, row, col);
+                return;
+            }
+        }
+    }
 });
 
 // ==================== INITIALIZATION ====================
