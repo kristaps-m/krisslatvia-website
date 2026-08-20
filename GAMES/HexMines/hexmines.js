@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d");
 const W = 600;
 const H = 600;
 const FIELD_SIZE = 10; // rows x cols
-const NUM_OF_MINES = 14;
+const NUM_OF_MINES = 9;
 canvas.width = W;
 canvas.height = H;
 
@@ -95,11 +95,11 @@ function shuffle(array) {
 function getCellFromClick(event) {
     const rect = canvas.getBoundingClientRect();
     
-    // Normalize click coordinates to canvas space
-    let xHor = (event.clientX - event.offsetX);
-    let yVert = (event.clientY - event.offsetY);
+    // Normalize click coordinates to actual canvas space (accounting for display size vs actual size)
+    let xHor = (event.clientX - rect.left) * (W / rect.width);
+    let yVert = (event.clientY - rect.top) * (H / rect.height);
     
-    // Calculate which cell was clicked
+    // Calculate which cell was clicked based on grid spacing
     let rowClicked = Math.floor(xHor / HEX_SPACING_X);
     let colClicked = Math.floor(yVert / HEX_SPACING_Y);
     
@@ -430,8 +430,8 @@ canvas.addEventListener("contextmenu", (event) => {
     if (isGameOver || isGameWon) return;
     
     const rect = canvas.getBoundingClientRect();
-    let xHor = (event.clientX - event.offsetX);
-    let yVert = (event.clientY - event.offsetY);
+    let xHor = (event.clientX - rect.left) * (W / rect.width);
+    let yVert = (event.clientY - rect.top) * (H / rect.height);
     
     let rowClicked = Math.floor(xHor / HEX_SPACING_X);
     let colClicked = Math.floor(yVert / HEX_SPACING_Y);
