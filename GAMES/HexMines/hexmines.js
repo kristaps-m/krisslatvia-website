@@ -8,6 +8,8 @@ canvas.width = W;
 canvas.height = H;
 
 const game2Dfield = [];
+let isGameOver = false;
+
 
 class HexP {
     constructor(x,y, isMine = false, minesAround = 0){
@@ -21,6 +23,83 @@ class HexP {
     }
 }
 
+const cordinatesAroundEachHexPointEvenRow = [
+    // col, row
+    [0,-1], // x - y
+    [1,-1],
+    [1,0],
+    [0,1],
+    [-1,0],
+    [-1,-1],
+];
+
+const cordinatesAroundEachHexPointOddRow = [
+    // col, row
+    [0,-1], // x - y
+    [1,0],
+    [1,1],
+    [0,1],
+    [-1,1],
+    [-1,0],
+];
+
+function leftClickCell(row, col) {
+    // Implement logic for left click on a cell
+    if (row < 0 || row >= FIELD_W_AND_H || col < 0 || col >= FIELD_W_AND_H) {
+        return; // Out of bounds
+    }
+    const hex = game2Dfield[row][col];
+    const position = getHexagonPosition(row, col);
+    if (hex.isOpen) {
+        return; // Already revealed
+    }
+    if (hex.isFlaged){
+        return 
+    }
+    if (hex.isMine) {
+        // drawSquare(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, 'red');
+        drawHegagon(position.x, position.y, true, "red");
+        alert("Game Over! You clicked on a mine.");
+        // Optionally, reveal all mines or reset the game
+        isGameOver = true;
+        return;
+    } else {
+        hex.isOpen = true;
+        // drawSquare(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, 'lightgray');
+        drawHegagon(position.x, position.y, true, "lightgray");
+        if (hex.minesAround > 0) {
+            // text(hex.minesAround, col * SQUARE_SIZE + SQUARE_SIZE / 2 - 5, row * SQUARE_SIZE + SQUARE_SIZE / 2 + 5, 20);
+            ctx.fillText(
+                hex.minesAround,
+                position.x - 6,
+                position.y + 20
+            );
+        } else {
+            // If no adjacent mines, reveal neighboring cells
+            // for (let i = -1; i <= 1; i++) {
+            //     for (let j = -1; j <= 1; j++) {
+            //         if (i === 0 && j === 0) continue; // Skip the current cell
+            //         leftClickCell(row + i, col + j);
+            //     }
+            // }
+            for (let index = 0; index < 6; index++) {
+                if (row % 2 === 0) {
+                    const v = cordinatesAroundEachHexPointEvenRow[index];
+                    const realX = row + v[0];
+                    const realY = col + v[1];
+                    leftClickCell(realX, realY);
+                } else {
+                    const v2 = cordinatesAroundEachHexPointOddRow[index];
+                    const realX2 = row + v2[0];
+                    const realY2 = col + v2[1];                    
+                    leftClickCell(realX2, realY2);
+                }
+            }
+        }
+    }
+    drawHexagonGrid();
+}
+
 window.addEventListener("click", (e) => {
   const rect = canvas.getBoundingClientRect();
 
@@ -31,41 +110,49 @@ window.addEventListener("click", (e) => {
   let yVert = (event.clientY - 0 - rect.top) * (H / rect.height); // Normalize y
   let rowIndxClick = Math.floor(xHor / (W / FIELD_W_AND_H));
   let colIndxClick = Math.floor(yVert / (H / FIELD_W_AND_H));
-
+  if (isGameOver) {
+    return;
+  }
+  leftClickCell(rowIndxClick, colIndxClick);
 //   console.log(xHor, yVert, rowIndxClick, colIndxClick);
 
-    for (let row = 0; row < game2Dfield.length; row++) {
+    // for (let row = 0; row < game2Dfield.length; row++) {
 
-        for (let col = 0; col < game2Dfield[row].length; col++) {
+    //     for (let col = 0; col < game2Dfield[row].length; col++) {
 
-            const hex = game2Dfield[row][col];
-            // console.log(hex);
+    //         const hex = game2Dfield[row][col];
+    //         // console.log(hex);
 
-            let hexX = hex.x * 53 + 50;
-            let hexY = hex.y * 53 + 50;
+    //         let hexX = hex.x * 53 + 50;
+    //         let hexY = hex.y * 53 + 50;
 
-            if (hex.x % 2 === 1) {
-                hexY += 25;
-            }
+    //         if (hex.x % 2 === 1) {
+    //             hexY += 25;
+    //         }
 
-            const vertices = getHexagonVertices(
-                hexX,
-                hexY
-            );
+    //         const vertices = getHexagonVertices(
+    //             hexX,
+    //             hexY
+    //         );
 
-            if (isPointInHexagon(xHor, yVert, vertices)) {
+    //         if (isPointInHexagon(xHor, yVert, vertices)) {
 
-                hex.isOpen = true;
+    //             hex.isOpen = true;
 
-                console.log(
-                    `Clicked hexagon: ${hex.x}-${hex.y}`
-                );
+    //             console.log(
+    //                 `Clicked hexagon: ${hex.x}-${hex.y}`
+    //             );
+    //             if (hex.isMine) {
+    //                 window.alert("Game Over");
+    //                 isGameOver = true;
+    //             }
 
-                // console.log(game2Dfield);
-                return;
-            }
-        }
-    }
+    //             // console.log(game2Dfield);
+    //             drawHexagonGrid();
+    //             return;
+    //         }
+    //     }
+    // }
 })
 
 /**
@@ -103,27 +190,6 @@ function addMinesInRandomPlaces() {
     })
 }
 
-
-const cordinatesAroundEachHexPointEvenRow = [
-    // col, row
-    [0,-1], // x - y
-    [1,-1],
-    [1,0],
-    [0,1],
-    [-1,0],
-    [-1,-1],
-];
-
-const cordinatesAroundEachHexPointOddRow = [
-    // col, row
-    [0,-1], // x - y
-    [1,0],
-    [1,1],
-    [0,1],
-    [-1,1],
-    [-1,0],
-];
-
 function isInBoundriesOfOuterWalls(x,y) {
     return x >= 0 && x < FIELD_W_AND_H && y >= 0 && y < FIELD_W_AND_H;
 }
@@ -157,8 +223,8 @@ function countMines(x,y) {
 }
 
 function addNumberToEachHex() {
-    for (let row = 0; row < 10; row++) {
-        for (let col = 0; col < 10; col++) {
+    for (let row = 0; row < FIELD_W_AND_H; row++) {
+        for (let col = 0; col < FIELD_W_AND_H; col++) {
             if (!game2Dfield[row][col].isMine) {
                 // if (row > 1 && col > 1 && row < 9 && col < 9) {
                     // console.log(col, row);
@@ -175,74 +241,56 @@ addNumberToEachHex();
 /**
  * DRAW Hexagon grid
  */
-for (let row = 0; row < 10; row++) {
-    for (let col = 0; col < 10; col++) {
-        // COL acts as row
-        // ROW acts as col 
-        // do not ask why
-        // or not this time some times I need to switch them.
-        const hex = game2Dfield[row][col];
-        const position = getHexagonPosition(row, col);
-        ctx.font = "bold 12px Comic Sans MS";
-        drawHegagon(position.x, position.y);
-
-        if (hex.isMine) {
-            ctx.fillRect(
-                position.x - 5,
-                position.y + 10,
-                10,
-                10
-            );
+function drawHexagonGrid() {
+    for (let row = 0; row < 10; row++) {
+        for (let col = 0; col < 10; col++) {
+            // COL acts as row
+            // ROW acts as col 
+            // do not ask why
+            // or not this time some times I need to switch them.
+            const hex = game2Dfield[row][col];
+            const position = getHexagonPosition(row, col);
+            ctx.font = "bold 12px Comic Sans MS";
+            // drawHegagon(position.x, position.y);
+            if (hex.isOpen && !hex.isMine) {
+                drawHegagon(position.x, position.y, true, "lightgray");    
+                if (hex.minesAround > 0) {
+                    ctx.font = "bold 18px Comic Sans MS";
+                    ctx.fillStyle = "red";
+        
+                    ctx.fillText(
+                        hex.minesAround,
+                        position.x - 6,
+                        position.y + 20
+                    );
+                }
+            } 
+            if (hex.isOpen && hex.isMine) {
+                console.log("adsadadsads");
+                drawHegagon(position.x, position.y, true, "red");
+            } else if (!hex.isOpen) {
+                drawHegagon(position.x, position.y, true, "gray");
+            }
+    
+            // if (hex.isMine) {
+            //     ctx.fillStyle = "blue"
+            //     ctx.fillRect(
+            //         position.x - 5,
+            //         position.y + 10,
+            //         10,
+            //         10
+            //     );
+            // }
+            // ctx.fillStyle = "white";
+            // ctx.fillText(
+            //     hex.text,
+            //     position.x - 12,
+            //     position.y
+            // );
         }
-        // ctx.fillStyle = "white";
-        // ctx.fillText(
-        //     hex.text,
-        //     position.x - 12,
-        //     position.y
-        // );
-
-        if (hex.minesAround > 0) {
-            ctx.font = "bold 18px Comic Sans MS";
-            ctx.fillStyle = "red";
-
-            ctx.fillText(
-                hex.minesAround,
-                position.x - 6,
-                position.y + 20
-            );
-        }
-        // if (row % 2 === 0) {
-        //     ctx.fillStyle = "white";
-        //     drawHegagon(row * 53 + 50, col * 53 + 50);
-        //     // ctx.beginPath();
-        //     // ctx.rect(row  * 53 + 25, col * 53 + 25, 40, 40);
-        //     // ctx.stroke();
-        //     if (game2Dfield[row][col].isMine) {
-        //         ctx.fillRect(row * 53 + 45, col * 53 + 60, 10, 10);
-        //     }
-        //     ctx.fillText(game2Dfield[row][col].text, row * 53 + 38, col * 53 + 50);
-        //     if (game2Dfield[row][col].minesAround > 0) {
-        //         ctx.font = "bold 18px Comic Sans MS";
-        //         ctx.fillStyle = "red";
-        //         ctx.fillText(game2Dfield[row][col].minesAround, row * 53 + 44, col * 53 + 70);
-        //     }
-        // }
-        // if (row % 2 === 1) {
-        //     ctx.fillStyle = "white";
-        //     drawHegagon(row * 53 + 50, col * 53 + 75);
-        //     // DRAW MINE AS SQUARE
-        //     if (game2Dfield[row][col].isMine) {
-        //         ctx.fillRect(row * 53 + 45, col * 53 + 85, 10, 10);
-        //     }
-        //     ctx.fillText(game2Dfield[row][col].text, row * 53 + 39, col * 53 + 75);
-        //     if (game2Dfield[row][col].minesAround > 0) {
-        //         ctx.font = "bold 18px Comic Sans MS";
-        //         ctx.fillStyle = "red";
-        //         ctx.fillText(game2Dfield[row][col].minesAround, row * 53 + 44, col * 53 + 95);
-        //     }
-        // }
-    }
+    }    
 }
+drawHexagonGrid();
 
 function drawHegagon(x,y, isFill = false, fillColor = "red"){
   // Hexagon
@@ -262,7 +310,7 @@ function drawHegagon(x,y, isFill = false, fillColor = "red"){
       Ycenter + size * Math.sin(curStep)
     );
   }
-  ctx.strokeStyle = "#00cc00";
+  ctx.strokeStyle = "black";//"#00cc00";
   ctx.lineWidth = 3;
   if (fillColor !== "red") {
       ctx.fillStyle = fillColor;
