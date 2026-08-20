@@ -372,6 +372,19 @@ function drawGrid() {
             drawHexagon(pos.x, pos.y, fillColor);
             
             // 2. Draw numbers/text ON TOP of the filled hexagon
+            
+            // DEBUG: Show coordinate labels (row-col) on ALL cells for debugging
+            if (!cell.isOpen && !cell.isFlagged) {
+                ctx.font = "bold 10px Comic Sans MS";
+                ctx.fillStyle = "rgba(255, 255, 255, 0.6)"; // Semi-transparent white
+                ctx.textAlign = "center";
+                ctx.fillText(
+                    `${cell.row}-${cell.col}`,
+                    pos.x,
+                    pos.y - 10
+                );
+            }
+            
             if (cell.isOpen && !cell.isMine && cell.minesAround > 0) {
                 ctx.font = "bold 18px Comic Sans MS";
                 ctx.fillStyle = "red";
@@ -404,6 +417,10 @@ canvas.addEventListener("click", (event) => {
     if (isGameOver || isGameWon) return;
     
     const { row, col } = getCellFromClick(event);
+    
+    // DEBUG: Log which cell was clicked
+    console.log(`Clicked hexagon: ${row}-${col}`);
+    
     handleLeftClick(row, col);
 });
 
@@ -418,6 +435,9 @@ canvas.addEventListener("contextmenu", (event) => {
     
     let rowClicked = Math.floor(xHor / HEX_SPACING_X);
     let colClicked = Math.floor(yVert / HEX_SPACING_Y);
+    
+    // DEBUG: Log which cell was right-clicked
+    console.log(`Right-clicked hexagon: ${rowClicked}-${colClicked}`);
     
     handleRightClick(event, rowClicked, colClicked);
 });
