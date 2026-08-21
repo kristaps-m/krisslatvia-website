@@ -12,11 +12,15 @@
   </head>
 
   <body style="background-color: gray;">
-    <h1>Hex Mines</h1>
+    <h1 style="margin-top: 2px; margin-bottom: 0;">Hex Mines</h1>
+    <p>This game is just a fraction what could it be. Feel free to edit source code and exapand the game.</p>
+     <p>Regular Amazing MineSweeper 
+       <a href="../JS_Canvas_MineSweeper/index.html"> - here -</a>
+     </p>
     <style>
       * {
-        margin: "0px";
-        padding: "0px";
+        margin: 0;
+        padding: 0;
       }
 
       body {
@@ -30,10 +34,30 @@
       }
     </style>
     <br />
+      <div style="white-space: nowrap" class="doNotShowInMobile">
+        <div style="display: inline-block">
+          <h3>H</h3>
+          <input type="number" id="theHeight" value="10" style="width: 2rem" min="5" max="10" onchange="toggleWidthAndHeightChange(this)"/>
+        </div>
+        <div style="display: inline-block">
+          <h3>W</h3>
+          <input type="number" id="theWidth" value="10" style="width: 2rem" min="5" max="10" onchange="toggleWidthAndHeightChange(this)"/>
+        </div>
+        <div style="display: inline-block">
+          <h3>M</h3>
+          <input type="number" id="minesCount" value="14" style="width: 2.5rem"/>
+        </div>
+        <button onclick="startNewGame();">New Game!</button>
+      </div>
+    <button onclick="toggleShowDebugInfo();">Debug Info?</button>
+    <br>
     <canvas id="hexMinesCanvas" style="background-color: black;"></canvas>
     <script src="../Global Helper Classes/Position.js"></script>
     <script src="../Global Helper Classes/getRndInteger.js"></script>
     <script src="../Global Helper Classes/displayGrid.js"></script>
+    <script src="HexCell.js"></script>
+    <script src="handleClickFunctions.js"></script>
+    <script src="helperFunctions.js"></script>
     <script src="hexmines.js"></script>
   </body>
 </html>

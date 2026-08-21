@@ -30,7 +30,7 @@
       '<div class="dropdown">' +
         '<button class="dropbtn">Games <i class="fa fa-caret-down"></i></button>' +
         '<div class="dropdown-content">' +
-          '<a href="/GAMES/HexMines/index.html">HexMines</a>' +
+          '<a href="/GAMES/HexMines/index.html">Canvas HexMines</a>' +
           '<a href="/GAMES/ConnectFour/conn4.html">Connect Four (p5.js)</a>' +
           '<a href="/GAMES/FlappyThing/flappy.html" class="doNotShowInMobile">Canvas Flappy Thing</a>' +
           '<a href="/GAMES/BomberMan/index.html" class="doNotShowInMobile">Canvas BomberMan</a>' +
