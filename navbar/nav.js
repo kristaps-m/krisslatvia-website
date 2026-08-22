@@ -25,6 +25,7 @@
           '<a href="/javascript/mazeGenerator/mazeG.html">Maze Generator</a>' +
           '<a href="/javascript/goat/goat.html">Goat Problem</a>' +
           '<a href="/javascript/elipes/index.html">Elipse</a>' +
+          '<a href="/javascript/isometric3d/index.html">isometric 3d</a>' +
         '</div>' +
       '</div>' +
       '<div class="dropdown">' +
