@@ -154,51 +154,21 @@ window.addEventListener("click", (e) => {
     let theX = (event.clientX - rect.left) * (c.width / rect.width); // Normalize x
     let theY = (event.clientY - rect.top) * (c.height / rect.height); // Normalize y
     let rowIndxClick = Math.floor((theY - GRID_OFF_SET_TO_CENTRE) / RECT_EDGE_SIZE);
-    let colIndxClick = Math.floor((theX - GRID_OFF_SET_TO_CENTRE)/ RECT_EDGE_SIZE); 
+    let colIndxClick = Math.floor((theX - GRID_OFF_SET_TO_CENTRE)/ RECT_EDGE_SIZE);
 
-    // if (theX > rowIndxClick * RECT_EDGE_SIZE - GRID_OFF_SET_TO_CENTRE &&
-    //     theX < rowIndxClick * RECT_EDGE_SIZE - GRID_OFF_SET_TO_CENTRE &&
-    //     theY > colIndxClick * RECT_EDGE_SIZE - GRID_OFF_SET_TO_CENTRE &&
-    //     theY < colIndxClick * RECT_EDGE_SIZE - GRID_OFF_SET_TO_CENTRE 
-    // ) {
     if (rowIndxClick >= 0 && colIndxClick >= 0 && rowIndxClick < ARRAY_H && colIndxClick < ARRAY_W) {
         theGrid[rowIndxClick][colIndxClick].isAcive = true;
     }
-
-    // get indexes for isemetric projection
-    // let pRowInx = Math.floor((theY - GRID_OFF_SET_TO_CENTRE  - GRID_OFF_SET_TO_CENTRE * ISOMETRIC_ARRAY_OF_SET.x) / RECT_EDGE_SIZE);
-    // let pColInx = Math.floor((theX - GRID_OFF_SET_TO_CENTRE * ISOMETRIC_ARRAY_OF_SET.y + GRID_OFF_SET_TO_CENTRE) / HALF_E_SIZE); 
-
-    // if (pRowInx >= 0 && pColInx >= 0 && pRowInx < ARRAY_H && pColInx < ARRAY_W) {
-    //     theGrid[pRowInx][pColInx].isAcive = true;
-    // }
-    // console.log(theX, theY, rowIndxClick, colIndxClick,"----", pRowInx, pColInx);
-    //     ctx.fillStyle = "blue";
-    //     ctx.fillRect(
-    //         colIndxClick * RECT_EDGE_SIZE + GRID_OFF_SET_TO_CENTRE,
-    //         rowIndxClick * RECT_EDGE_SIZE + GRID_OFF_SET_TO_CENTRE,
-    //         RECT_EDGE_SIZE,
-    //         RECT_EDGE_SIZE
-    //     );
-    // }
-   for (let col = 0; col < ARRAY_H; col++) {
+   
+   // Find the clicked isometric cell
+    for (let col = 0; col < ARRAY_H; col++) {
         for (let row = 0; row < ARRAY_W; row++) {
             const cell = theGrid[col][row];
-            // TODO - add code here
-            if (isPointInIsometric(pointX, pointY, vertices)) {
-                console.log(cell);
+            const vertices = getIsometricCellVertices(cell);
+            
+            if (isPointInIsometric(theX, theY, vertices)) {
+                console.log("Clicked isometric cell:", cell);
                 cell.isAcive = true;
-                drawRect(cell.canvasX, cell.canvasY, RECT_EDGE_SIZE * 2, RECT_EDGE_SIZE);
-                break;
-            }
-            if (theX > cell.canvasX &&
-                theY > cell.canvasY &&
-                theX < cell.canvasX + RECT_EDGE_SIZE * 2 &&
-                theY < cell.canvasY + RECT_EDGE_SIZE
-            ) {
-                console.log(cell);
-                cell.isAcive = true;
-                drawRect(cell.canvasX, cell.canvasY, RECT_EDGE_SIZE * 2, RECT_EDGE_SIZE);
                 break;
             }
         }
@@ -213,44 +183,25 @@ window.addEventListener("click", (e) => {
 })
 
 /**
- * Get hexagon vertices for point-in-polygon hit detection
+ * Get isometric cell (rhombus/diamond) vertices for point-in-polygon hit detection
+ * Matches the shape drawn by drawTheThing()
  */
-function getIsometricCellVertices(centerX, centerY) {
-    const numberOfSides = 4;
-    const size = RECT_EDGE_SIZE;
-    const step = (2 * Math.PI) / numberOfSides;
-    const shift = Math.PI / 180.0; // Small rotation to align hexagon
+function getIsometricCellVertices(cell) {
+    // The rhombus has 4 points relative to the center:
+    // Top:    (RECT_EDGE_SIZE, 0)
+    // Right:  (RECT_EDGE_SIZE*2, HALF_E_SIZE)
+    // Bottom: (RECT_EDGE_SIZE, RECT_EDGE_SIZE)
+    // Left:   (0, HALF_E_SIZE)
     
-    const vertices = [];
-    let curStep = 0 * step + shift;
-    vertices.push({
-        x: centerX + size * Math.cos(curStep),
-        y: centerY + size * Math.sin(curStep)
-    });
-    curStep = 1 * step + shift;
-    vertices.push({
-        x: centerX + size * Math.cos(curStep),
-        y: centerY + size * Math.sin(curStep)
-    });
-    curStep = 2 * step + shift;
-    vertices.push({
-        x: centerX + size * Math.cos(curStep),
-        y: centerY + size * Math.sin(curStep)
-    });
-    curStep = 3 * step + shift;
-    vertices.push({
-        x: centerX + size * Math.cos(curStep),
-        y: centerY + size * Math.sin(curStep)
-    });
-
-    for (let i = 0; i < numberOfSides; i++) {
-        const curStep = i * step + shift;
-        vertices.push({
-            x: centerX + size * Math.cos(curStep),
-            y: centerY + size * Math.sin(curStep)
-        });
-    }
-    return vertices;
+    const cx = cell.canvasX + RECT_EDGE_SIZE; // center X
+    const cy = cell.canvasY + HALF_E_SIZE;     // center Y
+    
+    return [
+        { x: cx, y: cy - HALF_E_SIZE },           // Top point
+        { x: cx + HALF_E_SIZE, y: cy },            // Right point
+        { x: cx, y: cy + HALF_E_SIZE },            // Bottom point
+        { x: cx - HALF_E_SIZE, y: cy }             // Left point
+    ];
 }
 
 function isPointInIsometric(pointX, pointY, vertices) {
