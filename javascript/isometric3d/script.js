@@ -19,7 +19,7 @@ class Cell {
     constructor(row,col){
         this.row = row;
         this.col = col;
-        this.isAcive = false;
+        this.isActive = false;
         this.canvasX = 0;
         this.canvasY = 0;
     }
@@ -57,7 +57,7 @@ function drawGrid() {
                 cell.col * RECT_EDGE_SIZE + GRID_OFF_SET_TO_CENTRE,
                 RECT_EDGE_SIZE,
                 RECT_EDGE_SIZE,
-                cell.isAcive
+                cell.isActive
             );
         }
     } 
@@ -80,10 +80,10 @@ function drawIsometricProjection() {
             // );
             const projX = cell.row * RECT_EDGE_SIZE * 2 + GRID_OFF_SET_TO_CENTRE * ISOMETRIC_ARRAY_OF_SET.x;
             const projY = cell.col * RECT_EDGE_SIZE + GRID_OFF_SET_TO_CENTRE * ISOMETRIC_ARRAY_OF_SET.y;
-            drawTheThing(
+            drawFlatenedDiamond(
                 projX - startX - startXhelp,
                 projY + startY - startYhelp,
-                cell.isAcive
+                cell.isActive
             );
             // ctx.fillRect(projX, projY, 5, 5);
             cell.canvasX = projX - startX - startXhelp;
@@ -104,33 +104,33 @@ function drawIsometricProjection() {
     } 
 }
 
-function drawHexagon(x, y, fillColor, strokeColor = "black") {
-    ctx.beginPath();
+// function drawHexagon(x, y, fillColor, strokeColor = "black") {
+//     ctx.beginPath();
     
-    for (let i = 0; i <= 4; i++) {
-        const angle = (Math.PI / 180) * (i * 90); // Rotated hexagon
-        const px = x + HEX_SIZE * Math.cos(angle);
-        const py = y + HEX_SIZE * Math.sin(angle);
+//     for (let i = 0; i <= 4; i++) {
+//         const angle = (Math.PI / 180) * (i * 90); // Rotated hexagon
+//         const px = x + HEX_SIZE * Math.cos(angle);
+//         const py = y + HEX_SIZE * Math.sin(angle);
         
-        if (i === 0) {
-            ctx.moveTo(px, py);
-        } else {
-            ctx.lineTo(px, py);
-        }
-    }
+//         if (i === 0) {
+//             ctx.moveTo(px, py);
+//         } else {
+//             ctx.lineTo(px, py);
+//         }
+//     }
     
-    ctx.closePath();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = strokeColor;
+//     ctx.closePath();
+//     ctx.lineWidth = 2;
+//     ctx.strokeStyle = strokeColor;
     
-    if (fillColor) {
-        ctx.fillStyle = fillColor;
-        ctx.fill();
-    }
-    ctx.stroke();
-}
+//     if (fillColor) {
+//         ctx.fillStyle = fillColor;
+//         ctx.fill();
+//     }
+//     ctx.stroke();
+// }
 
-function drawTheThing(row, col, isActive) {
+function drawFlatenedDiamond(row, col, isActive) {
     ctx.beginPath();
     ctx.moveTo(row + RECT_EDGE_SIZE, col);
     ctx.lineTo(row + RECT_EDGE_SIZE * 2, col + HALF_E_SIZE);
@@ -148,19 +148,21 @@ drawGrid();
 drawIsometricProjection();
 
 window.addEventListener("click", (e) => {
-    ctx.clearRect(0,0,W,H);
     const rect = c.getBoundingClientRect();
     // Calculate the click position relative to the canvas
     let theX = (event.clientX - rect.left) * (c.width / rect.width); // Normalize x
     let theY = (event.clientY - rect.top) * (c.height / rect.height); // Normalize y
+   
+    // === 1. Check regular square grid click ===
     let rowIndxClick = Math.floor((theY - GRID_OFF_SET_TO_CENTRE) / RECT_EDGE_SIZE);
-    let colIndxClick = Math.floor((theX - GRID_OFF_SET_TO_CENTRE)/ RECT_EDGE_SIZE);
+    let colIndxClick = Math.floor((theX - GRID_OFF_SET_TO_CENTRE) / RECT_EDGE_SIZE);
 
     if (rowIndxClick >= 0 && colIndxClick >= 0 && rowIndxClick < ARRAY_H && colIndxClick < ARRAY_W) {
-        theGrid[rowIndxClick][colIndxClick].isAcive = true;
+        theGrid[rowIndxClick][colIndxClick].isActive = true;
+        console.log("Clicked regular square:", rowIndxClick, colIndxClick);
     }
    
-   // Find the clicked isometric cell
+    // === 2. Check isometric projection cell click ===
     for (let col = 0; col < ARRAY_H; col++) {
         for (let row = 0; row < ARRAY_W; row++) {
             const cell = theGrid[col][row];
@@ -168,7 +170,7 @@ window.addEventListener("click", (e) => {
             
             if (isPointInIsometric(theX, theY, vertices)) {
                 console.log("Clicked isometric cell:", cell);
-                cell.isAcive = true;
+                cell.isActive = true;
                 break;
             }
         }
@@ -187,20 +189,14 @@ window.addEventListener("click", (e) => {
  * Matches the shape drawn by drawTheThing()
  */
 function getIsometricCellVertices(cell) {
-    // The rhombus has 4 points relative to the center:
-    // Top:    (RECT_EDGE_SIZE, 0)
-    // Right:  (RECT_EDGE_SIZE*2, HALF_E_SIZE)
-    // Bottom: (RECT_EDGE_SIZE, RECT_EDGE_SIZE)
-    // Left:   (0, HALF_E_SIZE)
-    
     const cx = cell.canvasX + RECT_EDGE_SIZE; // center X
     const cy = cell.canvasY + HALF_E_SIZE;     // center Y
     
     return [
-        { x: cx, y: cy - HALF_E_SIZE },           // Top point
-        { x: cx + HALF_E_SIZE, y: cy },            // Right point
-        { x: cx, y: cy + HALF_E_SIZE },            // Bottom point
-        { x: cx - HALF_E_SIZE, y: cy }             // Left point
+        { x: cx, y: cy - HALF_E_SIZE },           // Top point (row + 30, col)
+        { x: cx + RECT_EDGE_SIZE, y: cy },        // Right point (row + 60, col + 15)
+        { x: cx, y: cy + HALF_E_SIZE },            // Bottom point (row + 30, col + 30)
+        { x: cx - RECT_EDGE_SIZE, y: cy }          // Left point (row, col + 15)
     ];
 }
 
@@ -226,7 +222,6 @@ function isPointInIsometric(pointX, pointY, vertices) {
 function animationLoop() {
     drawGrid();
     drawIsometricProjection();
-    // drawTheThing(20, 20);
     requestAnimationFrame(animationLoop);
 }
 
