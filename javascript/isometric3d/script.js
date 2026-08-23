@@ -13,6 +13,8 @@ const ISOMETRIC_ARRAY_OF_SET = {x:3, y:4};
 c.width = W;
 c.height = H;
 
+const r = (n) => Math.round(n * 100) / 100;
+
 class Cell {
     constructor(row,col){
         this.row = row;
@@ -83,8 +85,15 @@ function drawIsometricProjection() {
                 projY + startY - startYhelp,
                 cell.isAcive
             );
+            // ctx.fillRect(projX, projY, 5, 5);
             cell.canvasX = projX - startX - startXhelp;
             cell.canvasY = projY + startY - startYhelp;
+            /**
+             * DEBUG info
+             */
+            // ctx.font = `12px Comic Sans MS`;
+            // ctx.fillStyle = "red";
+            // ctx.fillText(`${cell.canvasX}-${cell.canvasY}`, cell.canvasX, cell.canvasY);
             startX += RECT_EDGE_SIZE;
             startY += HALF_E_SIZE;
         }
@@ -175,19 +184,93 @@ window.addEventListener("click", (e) => {
    for (let col = 0; col < ARRAY_H; col++) {
         for (let row = 0; row < ARRAY_W; row++) {
             const cell = theGrid[col][row];
-            if (cell.canvasX > theX &&
-                cell.canvasY > theY &&
-                cell.canvasX < theX + RECT_EDGE_SIZE &&
-                cell.canvasY < theY + RECT_EDGE_SIZE
+            // TODO - add code here
+            if (isPointInIsometric(pointX, pointY, vertices)) {
+                console.log(cell);
+                cell.isAcive = true;
+                drawRect(cell.canvasX, cell.canvasY, RECT_EDGE_SIZE * 2, RECT_EDGE_SIZE);
+                break;
+            }
+            if (theX > cell.canvasX &&
+                theY > cell.canvasY &&
+                theX < cell.canvasX + RECT_EDGE_SIZE * 2 &&
+                theY < cell.canvasY + RECT_EDGE_SIZE
             ) {
                 console.log(cell);
-                // cell.isAcive = true;
+                cell.isAcive = true;
                 drawRect(cell.canvasX, cell.canvasY, RECT_EDGE_SIZE * 2, RECT_EDGE_SIZE);
+                break;
             }
         }
     }
-    console.log(theX, theY);
+    /**
+     * DEBUG info
+     */
+    // ctx.font = `italic bold 20px Comic Sans MS`;
+    // ctx.fillStyle = "blue";
+    // ctx.fillText(`${r(theX)}-${r(theY)}`, theX, theY);
+    // console.log(theX, theY);
 })
+
+/**
+ * Get hexagon vertices for point-in-polygon hit detection
+ */
+function getIsometricCellVertices(centerX, centerY) {
+    const numberOfSides = 4;
+    const size = RECT_EDGE_SIZE;
+    const step = (2 * Math.PI) / numberOfSides;
+    const shift = Math.PI / 180.0; // Small rotation to align hexagon
+    
+    const vertices = [];
+    let curStep = 0 * step + shift;
+    vertices.push({
+        x: centerX + size * Math.cos(curStep),
+        y: centerY + size * Math.sin(curStep)
+    });
+    curStep = 1 * step + shift;
+    vertices.push({
+        x: centerX + size * Math.cos(curStep),
+        y: centerY + size * Math.sin(curStep)
+    });
+    curStep = 2 * step + shift;
+    vertices.push({
+        x: centerX + size * Math.cos(curStep),
+        y: centerY + size * Math.sin(curStep)
+    });
+    curStep = 3 * step + shift;
+    vertices.push({
+        x: centerX + size * Math.cos(curStep),
+        y: centerY + size * Math.sin(curStep)
+    });
+
+    for (let i = 0; i < numberOfSides; i++) {
+        const curStep = i * step + shift;
+        vertices.push({
+            x: centerX + size * Math.cos(curStep),
+            y: centerY + size * Math.sin(curStep)
+        });
+    }
+    return vertices;
+}
+
+function isPointInIsometric(pointX, pointY, vertices) {
+    let inside = false;
+    
+    for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+        const xi = vertices[i].x;
+        const yi = vertices[i].y;
+        const xj = vertices[j].x;
+        const yj = vertices[j].y;
+        
+        const intersects = ((yi > pointY) !== (yj > pointY)) &&
+            (pointX < (xj - xi) * (pointY - yi) / (yj - yi) + xi);
+        
+        if (intersects) {
+            inside = !inside;
+        }
+    }
+    return inside;
+}
 
 function animationLoop() {
     drawGrid();
