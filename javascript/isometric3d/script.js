@@ -219,9 +219,17 @@ function isPointInIsometric(pointX, pointY, vertices) {
     return inside;
 }
 
+// let animateIndexForFun = 0;
+
 function animationLoop() {
+    // ctx.clearRect(0,0,W,H);
     drawGrid();
     drawIsometricProjection();
+    // theGrid[animateIndexForFun][0].isActive = true;
+    // animateIndexForFun++;
+    // if (animateIndexForFun >= ARRAY_H){
+    //     animateIndexForFun = 0
+    // }
     requestAnimationFrame(animationLoop);
 }
 
