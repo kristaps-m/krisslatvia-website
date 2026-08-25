@@ -9,7 +9,11 @@ const HALF_E_SIZE = RECT_EDGE_SIZE / 2;
 // const HEX_SIZE = 20;
 const GRID_OFF_SET_TO_CENTRE = 100;
 const ISOMETRIC_ARRAY_OF_SET = {x:3, y:4};
-const ISOMETRIC_ACTION = {"casual": true, "snake": false};
+const ISOMETRIC_ACTION = {
+    "casual": true,
+    "snake": false,
+    "showRegularGrid": true  // Toggle to show/hide the regular square grid
+};
 
 
 // Cell class for grid-based isActive system

@@ -29,7 +29,21 @@ function drawRect(x, y, w, h, isActive, isFood = false) {
     ctx.stroke(); 
 }
 
+/**
+ * Toggle regular grid visibility (used by snake game)
+ */
+function toggleRegularGridVisibility() {
+    ISOMETRIC_ACTION.showRegularGrid = !ISOMETRIC_ACTION.showRegularGrid;
+    const btn = document.getElementById("toggleRegularGrid");
+    btn.textContent = ISOMETRIC_ACTION.showRegularGrid ? "Hide Regular Grid" : "Show Regular Grid";
+}
+
 function drawGrid() {
+    // Only draw if the flag is true (extensible for future features)
+    if (!ISOMETRIC_ACTION.showRegularGrid) {
+        return;
+    }
+    
    for (let col = 0; col < ARRAY_H; col++) {
         for (let row = 0; row < ARRAY_W; row++) {
             const cell = theGrid[col][row];
@@ -258,6 +272,16 @@ function newGame() {
     let isometric3dAction = document.getElementById("isometric3dAction").value;
     ISOMETRIC_ACTION.snake = (isometric3dAction === "snake");
     ISOMETRIC_ACTION.casual = !ISOMETRIC_ACTION.snake;
+    
+    // Show/hide the toggle button based on action
+    const toggleBtn = document.getElementById("toggleRegularGrid");
+    if (ISOMETRIC_ACTION.snake) {
+        toggleBtn.style.display = "inline-block";
+        ISOMETRIC_ACTION.showRegularGrid = true;  // Reset to visible when starting snake game
+        toggleBtn.textContent = "Hide Regular Grid";
+    } else {
+        toggleBtn.style.display = "none";
+    }
     
     if (ISOMETRIC_ACTION.snake) {
         // Reset game state
