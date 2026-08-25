@@ -17,13 +17,13 @@ function addCellsToTheGrid() {
 }
 addCellsToTheGrid();
 
-function drawRect(x,y,w,h, isActive) {
+function drawRect(x, y, w, h, isActive, isFood = false) {
     ctx.beginPath();
-    // ctx.fillStyle = "red";
-    ctx.rect(x,y,w,h);
+    ctx.rect(x, y, w, h);
     ctx.lineWidth = 2;
     if (isActive) {
-        ctx.fillStyle = "blue";
+        // Food shows green, snake body shows blue
+        ctx.fillStyle = isFood ? "#90ee90" : "blue";
         ctx.fill();
     }
     ctx.stroke(); 
@@ -33,12 +33,14 @@ function drawGrid() {
    for (let col = 0; col < ARRAY_H; col++) {
         for (let row = 0; row < ARRAY_W; row++) {
             const cell = theGrid[col][row];
+            const isFood = cell.isFood || false;
             drawRect(
                 cell.row * RECT_EDGE_SIZE + GRID_OFF_SET_TO_CENTRE,
                 cell.col * RECT_EDGE_SIZE + GRID_OFF_SET_TO_CENTRE,
                 RECT_EDGE_SIZE,
                 RECT_EDGE_SIZE,
-                cell.isActive
+                cell.isActive,
+                isFood
             );
         }
     } 
@@ -61,15 +63,18 @@ function drawIsometricProjection() {
             // );
             const projX = cell.row * RECT_EDGE_SIZE * 2 + GRID_OFF_SET_TO_CENTRE * ISOMETRIC_ARRAY_OF_SET.x;
             const projY = cell.col * RECT_EDGE_SIZE + GRID_OFF_SET_TO_CENTRE * ISOMETRIC_ARRAY_OF_SET.y;
+            const isFood = cell.isFood || false;
+            
             if (!cell.isActive) {
                 drawFlatenedDiamond(
                     projX - startX - startXhelp,
                     projY + startY - startYhelp,
-                    cell.isActive
+                    cell.isActive,
+                    isFood
                 );
             }
             if (cell.isActive) {
-                drawIsometricCube(projX - startX - startXhelp, projY + startY - startYhelp, cell.isActive);
+                drawIsometricCube(projX - startX - startXhelp, projY + startY - startYhelp, cell.isActive, isFood);
             }
             // ctx.fillRect(projX, projY, 5, 5);
             cell.canvasX = projX - startX - startXhelp;
@@ -116,52 +121,57 @@ function drawIsometricProjection() {
 //     ctx.stroke();
 // }
 
-function drawFlatenedDiamond(row, col, isActive, color = "#d9d9d9") {
+function drawFlatenedDiamond(cellX, cellY, isActive, isFood = false, color = "#d9d9d9") {
     ctx.beginPath();
-    ctx.moveTo(row + RECT_EDGE_SIZE, col);
-    ctx.lineTo(row + RECT_EDGE_SIZE * 2, col + HALF_E_SIZE);
-    ctx.lineTo(row + RECT_EDGE_SIZE, col + RECT_EDGE_SIZE);
-    ctx.lineTo(row, col + HALF_E_SIZE);
-    ctx.lineTo(row + RECT_EDGE_SIZE, col);
+    ctx.moveTo(cellX + RECT_EDGE_SIZE, cellY);
+    ctx.lineTo(cellX + RECT_EDGE_SIZE * 2, cellY + HALF_E_SIZE);
+    ctx.lineTo(cellX + RECT_EDGE_SIZE, cellY + RECT_EDGE_SIZE);
+    ctx.lineTo(cellX, cellY + HALF_E_SIZE);
+    ctx.lineTo(cellX + RECT_EDGE_SIZE, cellY);
     if (isActive) {
-        ctx.fillStyle = color === "red" ? "red" : color;
+        // Food gets green tint, snake body gets blue tint
+        ctx.fillStyle = isFood ? "#90ee90" : color;
         ctx.fill();
     }
     ctx.stroke();
 }
 
-function drawLeftSide(row, col, isActive) {
+function drawLeftSideCell(cellX, cellY, isActive, color = "#7c7d7c") {
     ctx.beginPath();
-    ctx.moveTo(row , col);
-    ctx.lineTo(row + RECT_EDGE_SIZE, col + HALF_E_SIZE);
-    ctx.lineTo(row + RECT_EDGE_SIZE, col + RECT_EDGE_SIZE);
-    ctx.lineTo(row, col + HALF_E_SIZE);
-    ctx.lineTo(row , col);
+    ctx.moveTo(cellX , cellY);
+    ctx.lineTo(cellX + RECT_EDGE_SIZE, cellY + HALF_E_SIZE);
+    ctx.lineTo(cellX + RECT_EDGE_SIZE, cellY + RECT_EDGE_SIZE);
+    ctx.lineTo(cellX, cellY + HALF_E_SIZE);
+    ctx.lineTo(cellX , cellY);
     if (isActive) {
-        ctx.fillStyle = "#7c7d7c"; // red
+        ctx.fillStyle = color;
         ctx.fill();
     }
     ctx.stroke();
 }
 
-function drawRightSide(row, col, isActive) {
+function drawRightSideCell(cellX, cellY, isActive, color = "#ababab") {
     ctx.beginPath();
-    ctx.moveTo(row + RECT_EDGE_SIZE * 2, col);
-    ctx.lineTo(row + RECT_EDGE_SIZE * 2, col + HALF_E_SIZE);
-    ctx.lineTo(row + RECT_EDGE_SIZE, col + RECT_EDGE_SIZE);
-    ctx.lineTo(row + RECT_EDGE_SIZE, col + HALF_E_SIZE);
-    ctx.lineTo(row + RECT_EDGE_SIZE * 2, col);
+    ctx.moveTo(cellX + RECT_EDGE_SIZE * 2, cellY);
+    ctx.lineTo(cellX + RECT_EDGE_SIZE * 2, cellY + HALF_E_SIZE);
+    ctx.lineTo(cellX + RECT_EDGE_SIZE, cellY + RECT_EDGE_SIZE);
+    ctx.lineTo(cellX + RECT_EDGE_SIZE, cellY + HALF_E_SIZE);
+    ctx.lineTo(cellX + RECT_EDGE_SIZE * 2, cellY);
     if (isActive) {
-        ctx.fillStyle = "#ababab"; // red
+        ctx.fillStyle = color;
         ctx.fill();
     }
     ctx.stroke();
 }
 
-function drawIsometricCube(row, col, isActive) {
-    const top = drawFlatenedDiamond(row, col - HALF_E_SIZE, isActive);
-    const left = drawLeftSide(row, col, isActive);
-    const right = drawRightSide(row, col, isActive);
+function drawIsometricCube(cellX, cellY, isActive, isFood = false) {
+    const topColor = isFood ? "#90ee90" : "#d9d9d9";
+    const leftColor = isFood ? "#7cdd7c" : "#7c7d7c";
+    const rightColor = isFood ? "#a8e6a8" : "#ababab";
+    
+    drawFlatenedDiamond(cellX, cellY - HALF_E_SIZE, isActive, false, topColor);
+    drawLeftSideCell(cellX, cellY, isActive, leftColor);
+    drawRightSideCell(cellX, cellY, isActive, rightColor);
 }
 
 drawGrid();
@@ -246,73 +256,46 @@ function newGame() {
     addCellsToTheGrid();
     
     let isometric3dAction = document.getElementById("isometric3dAction").value;
+    ISOMETRIC_ACTION.snake = (isometric3dAction === "snake");
+    ISOMETRIC_ACTION.casual = !ISOMETRIC_ACTION.snake;
     
-    if (isometric3dAction === "snake"){
-        ISOMETRIC_ACTION.snake = true;
-        ISOMETRIC_ACTION.casual = false;
+    if (ISOMETRIC_ACTION.snake) {
+        // Reset game state
+        isGameOver = false;
+        direction = 'right';
+        coutFrames = 0;
+        document.getElementById("theTitle").textContent = "Da Snake - Start!";
         
-        // for (let col = 0; col < ARRAY_H; col++) {
-        //     const t = [];
-        //     for (let row = 0; row < ARRAY_W; row++) {
-        //         t.push(new SnakeCell(row, col));
-        //     }
-        //     theGrid.push(t);
-        // }
-        
-        tail = [[1,1], [1,2], [1,3], [1,4], [1,5]];
-        // theGrid[1,1].isActive = true;
-        // theGrid[1,2].isActive = true;
-        // theGrid[1,3].isActive = true;
-        // theGrid[1,4].isActive = true;
-        // theGrid[1,5].isActive = true;
-        // theGrid[1,6].isActive = true;
-        
-        head = tail[tail.length -1];
-        
-        drawGrid();
-        drawIsometricProjection();
+        // Initialize snake game with grid-based coordinates
+        initSnakeGame();
     }
 }
 
 function animationLoop() {
-    // ctx.clearRect(0,0,W,H);
-    drawGrid();
-    drawIsometricProjection();
-    // theGrid[animateIndexForFun][0].isActive = true;
-    // animateIndexForFun++;
-    // if (animateIndexForFun >= ARRAY_H){
-    //     animateIndexForFun = 0
-    // }
-
     /** Da Snake */
-    // console.log(ISOMETRIC_ACTION.snake);
-    if (ISOMETRIC_ACTION.snake) {
-        if (!isGameOver) {
-            if (coutFrames % 25 == 0) {
-                ctx.clearRect(0,0,W,H);
-                tail.shift();
-                head = tail[tail.length - 1];
-                // console.log(head);
-                head.update(ctx);
-                tail.push(new SnakeCell(head.x, head.y));
-                
-                drawGame();
-                head.draw(ctx, "black", "lightgray");
-                
-                if (head.x === food.x && head.y === food.y) {
-                    food = gerateFood();
-                    tail.push(new SnakeCell(head.x, head.y));
-                }
-    
-                runInSelfCheck();
-            }
+    if (ISOMETRIC_ACTION.snake && !isGameOver) {
+        // Update snake every 25 frames (~10 moves per second at 60fps)
+        if (coutFrames % 25 === 0) {
+            updateSnake();
         }
         
         coutFrames++;
-        if (coutFrames >= 10000){
+        if (coutFrames >= 10000) {
             coutFrames = 0;
         }
     }
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, W, H);
+    
+    // Update grid isActive based on snake position and food
+    if (ISOMETRIC_ACTION.snake) {
+        updateGridFromSnake();
+    }
+    
+    // Draw both grids
+    drawGrid();
+    drawIsometricProjection();
 
     requestAnimationFrame(animationLoop);
 }
