@@ -80,11 +80,16 @@ function drawIsometricProjection() {
             // );
             const projX = cell.row * RECT_EDGE_SIZE * 2 + GRID_OFF_SET_TO_CENTRE * ISOMETRIC_ARRAY_OF_SET.x;
             const projY = cell.col * RECT_EDGE_SIZE + GRID_OFF_SET_TO_CENTRE * ISOMETRIC_ARRAY_OF_SET.y;
-            drawFlatenedDiamond(
-                projX - startX - startXhelp,
-                projY + startY - startYhelp,
-                cell.isActive
-            );
+            if (!cell.isActive) {
+                drawFlatenedDiamond(
+                    projX - startX - startXhelp,
+                    projY + startY - startYhelp,
+                    cell.isActive
+                );
+            }
+            if (cell.isActive) {
+                drawIsometricCube(projX - startX - startXhelp, projY + startY - startYhelp, cell.isActive);
+            }
             // ctx.fillRect(projX, projY, 5, 5);
             cell.canvasX = projX - startX - startXhelp;
             cell.canvasY = projY + startY - startYhelp;
@@ -130,7 +135,7 @@ function drawIsometricProjection() {
 //     ctx.stroke();
 // }
 
-function drawFlatenedDiamond(row, col, isActive) {
+function drawFlatenedDiamond(row, col, isActive, color = "#d9d9d9") {
     ctx.beginPath();
     ctx.moveTo(row + RECT_EDGE_SIZE, col);
     ctx.lineTo(row + RECT_EDGE_SIZE * 2, col + HALF_E_SIZE);
@@ -138,14 +143,49 @@ function drawFlatenedDiamond(row, col, isActive) {
     ctx.lineTo(row, col + HALF_E_SIZE);
     ctx.lineTo(row + RECT_EDGE_SIZE, col);
     if (isActive) {
-        ctx.fillStyle = "red";
+        ctx.fillStyle = color === "red" ? "red" : color;
         ctx.fill();
     }
     ctx.stroke();
 }
 
+function drawLeftSide(row, col, isActive) {
+    ctx.beginPath();
+    ctx.moveTo(row , col);
+    ctx.lineTo(row + RECT_EDGE_SIZE, col + HALF_E_SIZE);
+    ctx.lineTo(row + RECT_EDGE_SIZE, col + RECT_EDGE_SIZE);
+    ctx.lineTo(row, col + HALF_E_SIZE);
+    ctx.lineTo(row , col);
+    if (isActive) {
+        ctx.fillStyle = "#7c7d7c"; // red
+        ctx.fill();
+    }
+    ctx.stroke();
+}
+
+function drawRightSide(row, col, isActive) {
+    ctx.beginPath();
+    ctx.moveTo(row + RECT_EDGE_SIZE * 2, col);
+    ctx.lineTo(row + RECT_EDGE_SIZE * 2, col + HALF_E_SIZE);
+    ctx.lineTo(row + RECT_EDGE_SIZE, col + RECT_EDGE_SIZE);
+    ctx.lineTo(row + RECT_EDGE_SIZE, col + HALF_E_SIZE);
+    ctx.lineTo(row + RECT_EDGE_SIZE * 2, col);
+    if (isActive) {
+        ctx.fillStyle = "#ababab"; // red
+        ctx.fill();
+    }
+    ctx.stroke();
+}
+
+function drawIsometricCube(row, col, isActive) {
+    const top = drawFlatenedDiamond(row, col - HALF_E_SIZE, isActive);
+    const left = drawLeftSide(row, col, isActive);
+    const right = drawRightSide(row, col, isActive);
+}
+
 drawGrid();
 drawIsometricProjection();
+theGrid[0][0].isActive = true;
 
 window.addEventListener("click", (e) => {
     const rect = c.getBoundingClientRect();
