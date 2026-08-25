@@ -13,8 +13,8 @@ let coutFrames = 0;
  */
 function initSnakeGame() {
     // Start with 5 segments in the middle area of the grid
-    const startRow = Math.floor(ARRAY_H / 2);
-    const startCol = Math.floor(ARRAY_W / 2);
+    const startRow = 1;//Math.floor(ARRAY_H / 2);
+    const startCol = 0;//Math.floor(ARRAY_W / 2);
     
     snakeTail = [
         [startRow, startCol],
@@ -98,10 +98,11 @@ function updateSnake() {
  * Call this at start of each frame to clear all, then mark active cells
  */
 function updateGridFromSnake() {
-    // Clear all cells first
+    // Clear ALL properties first (isActive, isFood)
     for (let col = 0; col < ARRAY_H; col++) {
         for (let row = 0; row < ARRAY_W; row++) {
             theGrid[col][row].isActive = false;
+            theGrid[col][row].isFood = false;
         }
     }
     
@@ -112,14 +113,13 @@ function updateGridFromSnake() {
         }
     }
     
-    // Mark food as active (use a different visual - you can add logic in draw functions)
+    // Mark food as active and set isFood flag
     if (foodCell) {
         const r = foodCell.row;
         const c = foodCell.col;
         if (r >= 0 && r < ARRAY_H && c >= 0 && c < ARRAY_W) {
             theGrid[r][c].isActive = true;
-            // Store food marker on cell for visual distinction
-            theGrid[r][c].isFood = true;
+            theGrid[r][c].isFood = true; // Only this cell is green
         }
     }
 }
