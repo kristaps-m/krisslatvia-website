@@ -25,11 +25,32 @@
 
   <body>
     <h1>Isometric 3d</h1>
+    <p id="theTitle">Snake?</p>
+    <div style="margin-right: 20px; white-space: nowrap">
+      <label for="isometric3dAction">Select action:</label>
+      <select
+        name="isometric3dAction"
+        id="isometric3dAction"
+        onchange="newGame()"
+      >
+        <option value="casual" selected>Casual</option>
+        <option value="snake">Snake</option>
+        <!-- <option value="16 16 40">Intermediate</option>
+        <option value="16 30 99" class="doNotShowInMobile">Expert</option>
+        <option value="20 20 50" class="doNotShowInMobile">Challenging</option>
+        <option value="30 30 150" class="doNotShowInMobile">Insane</option> -->
+      </select>
+      <button style="background-color: greenyellow; display: inline-block; margin-left: 1rem;" onclick="newGame()">
+        NEW GAME!
+      </button>
+    </div>
     <canvas
       id="myCanvas5"
       style="border: 4px solid #000000; background-color: white"
     ></canvas>
 
+    <script src="constants.js"></script>
+    <script src="theSnake.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
