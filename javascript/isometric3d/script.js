@@ -274,10 +274,10 @@ function newGame() {
     ISOMETRIC_ACTION.casual = !ISOMETRIC_ACTION.snake;
     
     // Show/hide the toggle button based on action
+    ISOMETRIC_ACTION.showRegularGrid = true;  // Reset to visible when starting new action
     const toggleBtn = document.getElementById("toggleRegularGrid");
     if (ISOMETRIC_ACTION.snake) {
         toggleBtn.style.display = "inline-block";
-        ISOMETRIC_ACTION.showRegularGrid = true;  // Reset to visible when starting snake game
         toggleBtn.textContent = "Hide Regular Grid";
     } else {
         toggleBtn.style.display = "none";
