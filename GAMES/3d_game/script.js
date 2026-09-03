@@ -33,7 +33,7 @@ function drawScreen() {
     ctx.stroke();
 }
 
-function drawHelpers() {
+function drawCenterGrid() {
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
     // Draw vertical grid lines
@@ -53,12 +53,81 @@ function drawHelpers() {
     }
 }
 
-// drawScreen();
+function drawHelpers2() {
+    ctx.strokeStyle = "gray";
+    ctx.lineWidth = 1;
+    // Draw vertical grid lines
+    let daBottomHelper = W / 3;
+    let leftSideHelper = H / 3;
+    for (let x = theDepthMakerDist + squareInDistanceW / 3; x < theDepthMakerDist + squareInDistanceW; x += squareInDistanceW / 3) {
+        if (daBottomHelper > W) {
+            break;
+        }
+        ctx.beginPath();
+        ctx.moveTo(x, theDepthMakerDist + squareInDistanceH);
+        ctx.lineTo(daBottomHelper, H);
+        ctx.stroke();
+        daBottomHelper += daBottomHelper;
+    }
+
+    // Draw horizontal grid lines
+    for (let y = theDepthMakerDist + squareInDistanceH / 3; y <= theDepthMakerDist + squareInDistanceH; y += squareInDistanceW / 3) {
+        if (leftSideHelper > H) {
+            break;
+        }
+        ctx.beginPath();
+        ctx.moveTo(0, leftSideHelper);
+        ctx.lineTo(theDepthMakerDist, y);
+        ctx.stroke();
+        leftSideHelper += leftSideHelper;
+    }
+}
+
+class OneLittleSquare extends Position{
+    constructor(x,y) {
+        super(x,y);
+        this.w = squareInDistanceW / 3;
+        this.h = squareInDistanceH / 3;      
+    }
+
+    draw(){
+        ctx.fillStyle = "rgba(255,0,0, 0.8)";
+        // ctx.fillStyle = "red";
+        ctx.fillRect(this.x, this.y, this.w, this.h);
+    }
+
+    update(){
+        this.x-=3;
+        this.y++;
+        this.w += 2;
+        this.h += 2;
+        if (this.x < 10) {
+            this.x = theDepthMakerDist;
+            this.y = theDepthMakerDist + 68;
+            this.w = squareInDistanceW / 3;
+            this.h = squareInDistanceH / 3;
+        }
+    }
+}
+
+const oneSquareSize = new OneLittleSquare(theDepthMakerDist, theDepthMakerDist + 68);
+
+let frameCount = 0;
 
 function animate() {
-    drawScreen();
-    drawHelpers();
+    if (frameCount % 5 === 0) {
+        ctx.clearRect(0,0,W,H);
+        drawScreen();
+        drawCenterGrid();
+        drawHelpers2();
+        oneSquareSize.update();
+        oneSquareSize.draw();
+    }
+    if (frameCount >= 100000) {
+        frameCount = 0;
+    }
     requestAnimationFrame(animate);
+    frameCount++;
 }
 
 animate();
