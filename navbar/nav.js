@@ -31,6 +31,7 @@
       '<div class="dropdown">' +
         '<button class="dropbtn">Games <i class="fa fa-caret-down"></i></button>' +
         '<div class="dropdown-content">' +
+        '<a href="/GAMES/3d_game/index.html">3d</a>' +
           '<a href="/GAMES/HexMines/index.html">Canvas HexMines</a>' +
           '<a href="/GAMES/ConnectFour/conn4.html">Connect Four (p5.js)</a>' +
           '<a href="/GAMES/FlappyThing/flappy.html" class="doNotShowInMobile">Canvas Flappy Thing</a>' +

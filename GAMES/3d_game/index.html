@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connected Files</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/mobileScreen.css" />
+    <body>
+      <script id="replace_with_navbar" src="/navbar/nav.js"></script>
+    </body>
+  </head>
+
+  <body style="background-color: gray;">
+    <h1 style="margin-top: 2px; margin-bottom: 0;">3d</h1>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        align-items: center;
+        text-align: center;
+        align-content: center;
+      }
+
+      #gameLike3d {
+        border: 2px solid black;
+      }
+    </style>
+    <br />
+      <div style="white-space: nowrap">
+        <div style="display: inline-block">
+          <h3>H</h3>
+          <input type="number" id="theHeight" value="10" style="width: 2rem" min="5" max="10" onchange="toggleWidthAndHeightChange(this)"/>
+        </div>
+        <div style="display: inline-block">
+          <h3>W</h3>
+          <input type="number" id="theWidth" value="10" style="width: 2rem" min="5" max="10" onchange="toggleWidthAndHeightChange(this)"/>
+        </div>
+        <div style="display: inline-block">
+          <h3>M</h3>
+          <input type="number" id="minesCount" value="14" style="width: 2.5rem"/>
+        </div>
+        <button onclick="startNewGame();">New Game!</button>
+      </div>
+    <button onclick="toggleShowDebugInfo();">Debug Info?</button>
+    <br>
+    <canvas id="gameLike3d" style="background-color: black;"></canvas>
+    <script src="../Global Helper Classes/Position.js"></script>
+    <script src="../Global Helper Classes/getRndInteger.js"></script>
+    <script src="../Global Helper Classes/displayGrid.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
