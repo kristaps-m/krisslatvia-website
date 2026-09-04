@@ -23,145 +23,300 @@ function project(point) {
     const nearPlane = 0.5;
     const scale = nearPlane / (point.z + nearPlane);
     return {
-        x: VPX + point.x * W * scale * 0.8,
-        y: VPY - point.y * H * scale * 0.5
+        x: VPX + point.x * W * scale,
+        y: VPY - point.y * H * scale
     };
 }
 
 // ==================== CORRIDOR DRAWING ====================
 const NEAR = 0.5;
 const FAR = 12; // distance to far wall
-const HW = 1.8; // half-width of corridor (in world units)
-const HH = 1.8; // half-height of corridor
+const HW = 1.5; // half-width of corridor (world units)
+const HH = 1.5; // half-height of corridor
 
 function drawCorridor() {
-    const numSlices = 40;
-    const sliceDepth = (FAR - NEAR) / numSlices;
-
-    for (let i = 0; i < numSlices; i++) {
-        let z1 = NEAR + i * sliceDepth;
-        let z2 = z1 + sliceDepth;
-
-        // Calculate scale at this depth
-        const s1 = NEAR / (z1 + NEAR);
-        const s2 = NEAR / (z2 + NEAR);
-
-        // Draw floor, walls, and ceiling slices with checkerboard pattern
-        drawFloorSlice(z1, z2, s1, s2);
-        drawWallSlice(z1, z2, s1, s2, -1);  // left wall
-        drawWallSlice(z1, z2, s1, s2, 1);   // right wall
-    }
-
-    // Draw the far wall (end of corridor)
+    // Draw all surfaces from near plane to far end
+    drawLeftWall();
+    drawRightWall();
+    drawCeiling();
+    drawFloor();
     drawFarWall();
-
-    // Draw perspective frame lines
     drawPerspectiveLines();
-
-    // Draw grid lines for depth illusion
-    drawGridLines(numSlices, sliceDepth);
 }
 
-function drawFloorSlice(z1, z2, s1, s2) {
-    const hw1 = HW * W * s1 * 0.8;
-    const hh1 = HH * H * s1 * 0.5;
-    const hw2 = HW * W * s2 * 0.8;
-    const hh2 = HH * H * s2 * 0.5;
+// ==================== LEFT WALL - CHECKERBOARD PATTERN ====================
+function drawLeftWall() {
+    const numDepthTiles = 20; // number of tiles along depth (z-axis)
+    const tileLength = (FAR - NEAR) / numDepthTiles;
 
-    // Checkerboard pattern based on position and depth
-    const checkerSize = 0.35;
-    const gridZ1 = Math.floor(z1 / checkerSize);
-    const gridZ2 = Math.floor(z2 / checkerSize);
+    for (let i = 0; i < numDepthTiles; i++) {
+        let z1 = NEAR + i * tileLength;
+        let z2 = z1 + tileLength;
 
-    // Left half of floor
-    let colorL = ((gridZ1 + gridZ2) % 2 === 0) ? '#1a1a1a' : '#d8d8d8';
-    ctx.fillStyle = colorL;
+        // Checkerboard: alternate based on which row we're in along the wall
+        const isBlack = (i % 2 === 0) ? '#1a1a1a' : '#d8d8d8';
+
+        ctx.fillStyle = isBlack;
+
+        // Left wall trapezoid for this tile segment
+        const pTopLeft = project(new Vec3(-HW, HH, z1));      // top of left wall (positive y)
+        const pBotLeft = project(new Vec3(-HW, -HH, z1));     // bottom of left wall (negative y)
+        const pBotRight = project(new Vec3(-HW, -HH, z2));    // bottom at next depth
+        const pTopRight = project(new Vec3(-HW, HH, z2));     // top at next depth
+
+        ctx.beginPath();
+        ctx.moveTo(pTopLeft.x, pTopLeft.y);
+        ctx.lineTo(pBotLeft.x, pBotLeft.y);
+        ctx.lineTo(pBotRight.x, pBotRight.y);
+        ctx.lineTo(pTopRight.x, pTopRight.y);
+        ctx.closePath();
+        ctx.fill();
+
+        // Add tile edge lines for checkerboard effect on wall
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1;
+
+        // Horizontal line at this depth (around the middle of wall)
+        const pLeft = project(new Vec3(-HW, -HH * 0.8, z1));
+        const pRight = project(new Vec3(-HW, HH * 0.8, z1));
+        ctx.beginPath();
+        ctx.moveTo(pLeft.x, pLeft.y);
+        ctx.lineTo(pRight.x, pRight.y);
+        ctx.stroke();
+
+        // Vertical line down the center of left wall (at x=0 on wall)
+        const pTop = project(new Vec3(-HW, HH, z1));
+        const pBot = project(new Vec3(-HW, -HH, z2));
+        ctx.beginPath();
+        ctx.moveTo(pTop.x, pTop.y);
+        ctx.lineTo(pBot.x, pBot.y);
+        ctx.stroke();
+    }
+
+    // Draw horizontal divider line on left wall (middle height)
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 2;
+    const midLeftNear = project(new Vec3(-HW, 0, NEAR));
+    const midLeftFar = project(new Vec3(-HW, 0, FAR));
     ctx.beginPath();
-    const p1 = project(new Vec3(-hw1, -HH * H * 0.5, z1));
-    const p2 = project(new Vec3(0, -HH * H * 0.5, z1));
-    const p3 = project(new Vec3(0, -HH * H * 0.5, z2));
-    const p4 = project(new Vec3(-hw2, -HH * H * 0.5, z2));
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.lineTo(p3.x, p3.y);
-    ctx.lineTo(p4.x, p4.y);
-    ctx.closePath();
-    ctx.fill();
-
-    // Right half of floor (opposite color)
-    colorL = ((gridZ1 + gridZ2) % 2 === 0) ? '#d8d8d8' : '#1a1a1a';
-    ctx.fillStyle = colorL;
-    ctx.beginPath();
-    const p5 = project(new Vec3(0, -HH * H * 0.5, z1));
-    const p6 = project(new Vec3(hw1, -HH * H * 0.5, z1));
-    const p7 = project(new Vec3(hw2, -HH * H * 0.5, z2));
-    const p8 = project(new Vec3(0, -HH * H * 0.5, z2));
-    ctx.moveTo(p5.x, p5.y);
-    ctx.lineTo(p6.x, p6.y);
-    ctx.lineTo(p7.x, p7.y);
-    ctx.lineTo(p8.x, p8.y);
-    ctx.closePath();
-    ctx.fill();
-
-    // Floor edge line
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.lineWidth = 1;
-    const pLeft = project(new Vec3(-hw1, -HH * H * 0.5, z1));
-    const pRight = project(new Vec3(hw1, -HH * H * 0.5, z1));
-    ctx.beginPath();
-    ctx.moveTo(pLeft.x, pLeft.y);
-    ctx.lineTo(pRight.x, pRight.y);
+    ctx.moveTo(midLeftNear.x, midLeftNear.y);
+    ctx.lineTo(midLeftFar.x, midLeftFar.y);
     ctx.stroke();
 }
 
-function drawWallSlice(z1, z2, s1, s2, side) {
-    const hh1 = HH * H * s1 * 0.5;
-    const hh2 = HH * H * s2 * 0.5;
+// ==================== RIGHT WALL - CHECKERBOARD PATTERN ====================
+function drawRightWall() {
+    const numDepthTiles = 20; // number of tiles along depth (z-axis)
+    const tileLength = (FAR - NEAR) / numDepthTiles;
 
-    // Checkerboard pattern for walls
-    const checkerSize = 0.35;
-    const gridZ1 = Math.floor(z1 / checkerSize);
-    const gridZ2 = Math.floor(z2 / checkerSize);
-    const isBlack = ((gridZ1 + gridZ2) % 2 === 0);
+    for (let i = 0; i < numDepthTiles; i++) {
+        let z1 = NEAR + i * tileLength;
+        let z2 = z1 + tileLength;
 
-    ctx.fillStyle = isBlack ? '#1a1a1a' : '#d8d8d8';
-    ctx.beginPath();
+        // Checkerboard: alternate based on which row we're in along the wall
+        const isBlack = (i % 2 === 0) ? '#1a1a1a' : '#d8d8d8';
 
-    if (side === -1) {
-        // Left wall
-        const p1 = project(new Vec3(-HW * W * s1 * 0.8, -hh1, z1));
-        const p2 = project(new Vec3(-HW * W * s1 * 0.8, hh1, z1));
-        const p3 = project(new Vec3(-HW * W * s2 * 0.8, hh2, z2));
-        const p4 = project(new Vec3(-HW * W * s2 * 0.8, -hh2, z2));
+        ctx.fillStyle = isBlack;
 
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.lineTo(p3.x, p3.y);
-        ctx.lineTo(p4.x, p4.y);
-    } else {
-        // Right wall
-        const p1 = project(new Vec3(HW * W * s1 * 0.8, -hh1, z1));
-        const p2 = project(new Vec3(HW * W * s1 * 0.8, hh1, z1));
-        const p3 = project(new Vec3(HW * W * s2 * 0.8, hh2, z2));
-        const p4 = project(new Vec3(HW * W * s2 * 0.8, -hh2, z2));
+        // Right wall trapezoid for this tile segment
+        const pTopLeft = project(new Vec3(HW, HH, z1));       // top of right wall (positive y)
+        const pBotLeft = project(new Vec3(HW, -HH, z1));      // bottom of right wall (negative y)
+        const pBotRight = project(new Vec3(HW, -HH, z2));     // bottom at next depth
+        const pTopRight = project(new Vec3(HW, HH, z2));      // top at next depth
 
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.lineTo(p3.x, p3.y);
-        ctx.lineTo(p4.x, p4.y);
+        ctx.beginPath();
+        ctx.moveTo(pTopLeft.x, pTopLeft.y);
+        ctx.lineTo(pBotLeft.x, pBotLeft.y);
+        ctx.lineTo(pBotRight.x, pBotRight.y);
+        ctx.lineTo(pTopRight.x, pTopRight.y);
+        ctx.closePath();
+        ctx.fill();
+
+        // Add tile edge lines for checkerboard effect on wall
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1;
+
+        // Horizontal line at this depth (around the middle of wall)
+        const pLeft = project(new Vec3(HW, -HH * 0.8, z1));
+        const pRight = project(new Vec3(HW, HH * 0.8, z1));
+        ctx.beginPath();
+        ctx.moveTo(pLeft.x, pLeft.y);
+        ctx.lineTo(pRight.x, pRight.y);
+        ctx.stroke();
+
+        // Vertical line down the center of right wall (at x=0 on wall)
+        const pTop = project(new Vec3(HW, HH, z1));
+        const pBot = project(new Vec3(HW, -HH, z2));
+        ctx.beginPath();
+        ctx.moveTo(pTop.x, pTop.y);
+        ctx.lineTo(pBot.x, pBot.y);
+        ctx.stroke();
     }
-    ctx.closePath();
-    ctx.fill();
 
-    // Marble-like texture lines on walls
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.lineWidth = 1;
+    // Draw horizontal divider line on right wall (middle height)
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 2;
+    const midRightNear = project(new Vec3(HW, 0, NEAR));
+    const midRightFar = project(new Vec3(HW, 0, FAR));
+    ctx.beginPath();
+    ctx.moveTo(midRightNear.x, midRightNear.y);
+    ctx.lineTo(midRightFar.x, midRightFar.y);
+    ctx.stroke();
 }
 
+// ==================== CEILING - CHECKERBOARD PATTERN ====================
+function drawCeiling() {
+    const numDepthTiles = 20; // number of tiles along the ceiling (depth)
+    const tileLength = (FAR - NEAR) / numDepthTiles;
+
+    for (let i = 0; i < numDepthTiles; i++) {
+        let z1 = NEAR + i * tileLength;
+        let z2 = z1 + tileLength;
+
+        // Checkerboard: alternate based on which row we're in along the ceiling
+        const isBlack = (i % 2 === 0) ? '#1a1a1a' : '#d8d8d8';
+
+        ctx.fillStyle = isBlack;
+
+        // Ceiling trapezoid for this tile segment
+        const pLeftNear = project(new Vec3(-HW, HH, z1));     // top-left of ceiling (positive y)
+        const pRightNear = project(new Vec3(HW, HH, z1));     // top-right of ceiling (positive y)
+        const pRightFar = project(new Vec3(HW, HH, z2));      // top-right at next depth
+        const pLeftFar = project(new Vec3(-HW, HH, z2));      // top-left at next depth
+
+        ctx.beginPath();
+        ctx.moveTo(pLeftNear.x, pLeftNear.y);
+        ctx.lineTo(pRightNear.x, pRightNear.y);
+        ctx.lineTo(pRightFar.x, pRightFar.y);
+        ctx.lineTo(pLeftFar.x, pLeftFar.y);
+        ctx.closePath();
+        ctx.fill();
+
+        // Add tile edge lines for checkerboard effect on ceiling
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1;
+
+        // Vertical line down the center of ceiling (at x=0)
+        const pCenterNear = project(new Vec3(0, HH, z1));
+        const pCenterFar = project(new Vec3(0, HH, z2));
+        ctx.beginPath();
+        ctx.moveTo(pCenterNear.x, pCenterNear.y);
+        ctx.lineTo(pCenterFar.x, pCenterFar.y);
+        ctx.stroke();
+
+        // Vertical lines on left and right halves of ceiling
+        const quarterW = -HW * 0.5;
+        const threeQuarterW = HW * 0.5;
+
+        ctx.beginPath();
+        ctx.moveTo(project(new Vec3(quarterW, HH, z1)).x, project(new Vec3(quarterW, HH, z1)).y);
+        ctx.lineTo(project(new Vec3(quarterW, HH, z2)).x, project(new Vec3(quarterW, HH, z2)).y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(project(new Vec3(threeQuarterW, HH, z1)).x, project(new Vec3(threeQuarterW, HH, z1)).y);
+        ctx.lineTo(project(new Vec3(threeQuarterW, HH, z2)).x, project(new Vec3(threeQuarterW, HH, z2)).y);
+        ctx.stroke();
+
+        // Horizontal line at this depth (around the middle of ceiling)
+        const pLeft = project(new Vec3(-HW * 0.8, HH, z1));
+        const pRight = project(new Vec3(HW * 0.8, HH, z1));
+        ctx.beginPath();
+        ctx.moveTo(pLeft.x, pLeft.y);
+        ctx.lineTo(pRight.x, pRight.y);
+        ctx.stroke();
+    }
+
+    // Draw horizontal divider line on ceiling (middle width)
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 2;
+    const midCeilNear = project(new Vec3(0, HH, NEAR));
+    const midCeilFar = project(new Vec3(0, HH, FAR));
+    ctx.beginPath();
+    ctx.moveTo(midCeilNear.x, midCeilNear.y);
+    ctx.lineTo(midCeilFar.x, midCeilFar.y);
+    ctx.stroke();
+}
+
+// ==================== FLOOR - CHECKERBOARD PATTERN ====================
+function drawFloor() {
+    const numDepthTiles = 20; // number of tiles along the floor (depth)
+    const tileLength = (FAR - NEAR) / numDepthTiles;
+
+    for (let i = 0; i < numDepthTiles; i++) {
+        let z1 = NEAR + i * tileLength;
+        let z2 = z1 + tileLength;
+
+        // Checkerboard: alternate based on which row we're in along the floor
+        const isBlack = (i % 2 === 0) ? '#1a1a1a' : '#d8d8d8';
+
+        ctx.fillStyle = isBlack;
+
+        // Floor trapezoid for this tile segment
+        const pLeftNear = project(new Vec3(-HW, -HH, z1));    // bottom-left of floor (negative y)
+        const pRightNear = project(new Vec3(HW, -HH, z1));    // bottom-right of floor (negative y)
+        const pRightFar = project(new Vec3(HW, -HH, z2));     // bottom-right at next depth
+        const pLeftFar = project(new Vec3(-HW, -HH, z2));     // bottom-left at next depth
+
+        ctx.beginPath();
+        ctx.moveTo(pLeftNear.x, pLeftNear.y);
+        ctx.lineTo(pRightNear.x, pRightNear.y);
+        ctx.lineTo(pRightFar.x, pRightFar.y);
+        ctx.lineTo(pLeftFar.x, pLeftFar.y);
+        ctx.closePath();
+        ctx.fill();
+
+        // Add tile edge lines for checkerboard effect on floor
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1;
+
+        // Vertical line down the center of floor (at x=0)
+        const pCenterNear = project(new Vec3(0, -HH, z1));
+        const pCenterFar = project(new Vec3(0, -HH, z2));
+        ctx.beginPath();
+        ctx.moveTo(pCenterNear.x, pCenterNear.y);
+        ctx.lineTo(pCenterFar.x, pCenterFar.y);
+        ctx.stroke();
+
+        // Vertical lines on left and right halves of floor
+        const quarterW = -HW * 0.5;
+        const threeQuarterW = HW * 0.5;
+
+        ctx.beginPath();
+        ctx.moveTo(project(new Vec3(quarterW, -HH, z1)).x, project(new Vec3(quarterW, -HH, z1)).y);
+        ctx.lineTo(project(new Vec3(quarterW, -HH, z2)).x, project(new Vec3(quarterW, -HH, z2)).y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(project(new Vec3(threeQuarterW, -HH, z1)).x, project(new Vec3(threeQuarterW, -HH, z1)).y);
+        ctx.lineTo(project(new Vec3(threeQuarterW, -HH, z2)).x, project(new Vec3(threeQuarterW, -HH, z2)).y);
+        ctx.stroke();
+
+        // Horizontal line at this depth (around the middle of floor)
+        const pLeft = project(new Vec3(-HW * 0.8, -HH, z1));
+        const pRight = project(new Vec3(HW * 0.8, -HH, z1));
+        ctx.beginPath();
+        ctx.moveTo(pLeft.x, pLeft.y);
+        ctx.lineTo(pRight.x, pRight.y);
+        ctx.stroke();
+    }
+
+    // Draw horizontal divider line on floor (middle width)
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 2;
+    const midFloorNear = project(new Vec3(0, -HH, NEAR));
+    const midFloorFar = project(new Vec3(0, -HH, FAR));
+    ctx.beginPath();
+    ctx.moveTo(midFloorNear.x, midFloorNear.y);
+    ctx.lineTo(midFloorFar.x, midFloorFar.y);
+    ctx.stroke();
+}
+
+// ==================== FAR WALL (END OF CORRIDOR) ====================
 function drawFarWall() {
     const farScale = NEAR / (FAR + NEAR);
-    const farW = HW * W * farScale * 0.8;
-    const farH = HH * H * farScale * 0.5;
+    const farW = HW * farScale;
+    const farH = HH * farScale;
 
     // Draw the far wall with a grid pattern (3x3 or more)
     const gridSize = 3; // 3 rows x 3 columns
@@ -192,21 +347,22 @@ function drawFarWall() {
     ctx.fillRect(VPX - farW * 1.5, VPY - farH * 1.5, farW * 3, farH * 3);
 }
 
+// ==================== PERSPECTIVE LINES ====================
 function drawPerspectiveLines() {
     const nearScale = NEAR / (NEAR + NEAR);
     const farScale = NEAR / (FAR + NEAR);
 
     // Near plane corners
-    const nearTL = project(new Vec3(-HW * W * 0.8, -HH * H * 0.5, NEAR));
-    const nearTR = project(new Vec3(HW * W * 0.8, -HH * H * 0.5, NEAR));
-    const nearBR = project(new Vec3(HW * W * 0.8, HH * H * 0.5, NEAR));
-    const nearBL = project(new Vec3(-HW * W * 0.8, HH * H * 0.5, NEAR));
+    const nearTL = project(new Vec3(-HW, HH, NEAR));       // top-left of near opening
+    const nearTR = project(new Vec3(HW, HH, NEAR));        // top-right of near opening
+    const nearBR = project(new Vec3(HW, -HH, NEAR));       // bottom-right of near opening
+    const nearBL = project(new Vec3(-HW, -HH, NEAR));      // bottom-left of near opening
 
     // Far plane corners (very small)
-    const farTL = project(new Vec3(-HW * W * farScale * 0.8, -HH * H * farScale * 0.5, FAR));
-    const farTR = project(new Vec3(HW * W * farScale * 0.8, -HH * H * farScale * 0.5, FAR));
-    const farBR = project(new Vec3(HW * W * farScale * 0.8, HH * H * farScale * 0.5, FAR));
-    const farBL = project(new Vec3(-HW * W * farScale * 0.8, HH * H * farScale * 0.5, FAR));
+    const farTL = project(new Vec3(-HW * farScale / nearScale, HH * farScale / nearScale, FAR));
+    const farTR = project(new Vec3(HW * farScale / nearScale, HH * farScale / nearScale, FAR));
+    const farBR = project(new Vec3(HW * farScale / nearScale, -HH * farScale / nearScale, FAR));
+    const farBL = project(new Vec3(-HW * farScale / nearScale, -HH * farScale / nearScale, FAR));
 
     // Draw strong white lines for corridor frame
     ctx.strokeStyle = '#ffffff';
@@ -247,70 +403,6 @@ function drawPerspectiveLines() {
     ctx.stroke();
 }
 
-function drawGridLines(numSlices, sliceDepth) {
-    // Horizontal lines on floor and walls at each depth slice
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.lineWidth = 1;
-
-    for (let i = 0; i <= numSlices; i++) {
-        let z = NEAR + i * sliceDepth;
-        const scale = NEAR / (z + NEAR);
-        const hw = HW * W * scale * 0.8;
-        const hh = HH * H * scale * 0.5;
-
-        // Floor horizontal line
-        ctx.beginPath();
-        const p1 = project(new Vec3(-hw, -HH * H * 0.5, z));
-        const p2 = project(new Vec3(hw, -HH * H * 0.5, z));
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.stroke();
-
-        // Left wall horizontal line (middle)
-        ctx.beginPath();
-        const l1 = project(new Vec3(-HW * W * scale * 0.8, 0, z));
-        const l2 = project(new Vec3(-HW * W * scale * 0.8, -hh, z));
-        ctx.moveTo(l1.x, l1.y);
-        ctx.lineTo(l2.x, l2.y);
-        ctx.stroke();
-
-        // Right wall horizontal line (middle)
-        ctx.beginPath();
-        const r1 = project(new Vec3(HW * W * scale * 0.8, 0, z));
-        const r2 = project(new Vec3(HW * W * scale * 0.8, -hh, z));
-        ctx.moveTo(r1.x, r1.y);
-        ctx.lineTo(r2.x, r2.y);
-        ctx.stroke();
-    }
-
-    // Vertical lines on floor (running toward vanishing point)
-    for (let i = -4; i <= 4; i++) {
-        const xOff = i * HW * 0.35;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.beginPath();
-        const p1 = project(new Vec3(xOff, -HH * H * 0.5, NEAR));
-        const p2 = project(new Vec3(xOff * 0.1, -HH * H * 0.5, FAR)); // converge toward center
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.stroke();
-    }
-
-    // Vertical lines on walls (running toward vanishing point)
-    for (let wall of [-1, 1]) {
-        const xWall = wall * HW * W * 0.8;
-        for (let i = -3; i <= 3; i++) {
-            const yOff = i * HH * H * 0.25;
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.beginPath();
-            const p1 = project(new Vec3(xWall, -yOff, NEAR));
-            const p2 = project(new Vec3(wall * HW * W * 0.8 * 0.1, -yOff * 0.1, FAR)); // converge toward center
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
-        }
-    }
-}
-
 // ==================== MOVING CUBES (from far wall toward viewer) ====================
 class MovingCube {
     constructor(gridX, gridY) {
@@ -321,8 +413,8 @@ class MovingCube {
 
         // Calculate starting position on the far wall
         const gridSize = 3;
-        const cellW = (HW * W * NEAR / (FAR + NEAR) * 0.8 * 2) / gridSize;
-        const cellH = (HH * H * NEAR / (FAR + NEAR) * 0.5 * 2) / gridSize;
+        const cellW = (HW * NEAR / (FAR + NEAR)) * 2 / gridSize;
+        const cellH = (HH * NEAR / (FAR + NEAR)) * 2 / gridSize;
 
         // World position at far wall
         this.x = -HW + (gridX + 0.5) * (2 * HW / gridSize);
@@ -347,9 +439,9 @@ class MovingCube {
 
     draw() {
         const scale = NEAR / (this.z + NEAR);
-        const screenX = VPX + this.x * W * scale * 0.8;
-        const screenY = VPY - this.y * H * scale * 0.5;
-        const screenSize = this.size * W * scale * 0.8;
+        const screenX = VPX + this.x * W * scale;
+        const screenY = VPY - this.y * H * scale;
+        const screenSize = this.size * W * scale;
 
         // Draw cube as a simple rectangle (no rotation, just moving toward viewer)
         ctx.fillStyle = 'rgba(255, 100, 100, 0.9)';
