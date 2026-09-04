@@ -7,8 +7,8 @@ canvas.height = 600;
 
 const W = canvas.width;
 const H = canvas.height;
-const VPX = W / 2; // vanishing point x
-const VPY = H / 2; // vanishing point y
+const VPX = W / 2; // vanishing point x (center)
+const VPY = H / 2; // vanishing point y (center)
 
 // ==================== 3D MATH HELPERS ====================
 class Vec3 {
@@ -30,12 +30,12 @@ function project(point) {
 
 // ==================== CORRIDOR DRAWING ====================
 const NEAR = 0.5;
-const FAR = 12;
-const HW = 1.5; // half-width of corridor
-const HH = 1.5; // half-height of corridor
+const FAR = 12; // distance to far wall
+const HW = 1.8; // half-width of corridor (in world units)
+const HH = 1.8; // half-height of corridor
 
 function drawCorridor() {
-    const numSlices = 30;
+    const numSlices = 40;
     const sliceDepth = (FAR - NEAR) / numSlices;
 
     for (let i = 0; i < numSlices; i++) {
@@ -46,40 +46,19 @@ function drawCorridor() {
         const s1 = NEAR / (z1 + NEAR);
         const s2 = NEAR / (z2 + NEAR);
 
-        // Floor
+        // Draw floor, walls, and ceiling slices with checkerboard pattern
         drawFloorSlice(z1, z2, s1, s2);
-
-        // Left wall
-        drawWallSlice(z1, z2, s1, s2, -1);
-
-        // Right wall
-        drawWallSlice(z1, z2, s1, s2, 1);
+        drawWallSlice(z1, z2, s1, s2, -1);  // left wall
+        drawWallSlice(z1, z2, s1, s2, 1);   // right wall
     }
 
-    // Ceiling (dark gradient)
-    const ceilGrad = ctx.createLinearGradient(0, 0, 0, H * 0.35);
-    ceilGrad.addColorStop(0, '#0a0a0a');
-    ceilGrad.addColorStop(1, '#2a2a2a');
-    ctx.fillStyle = ceilGrad;
-    ctx.fillRect(0, 0, W, H * 0.35);
+    // Draw the far wall (end of corridor)
+    drawFarWall();
 
-    // Far end light glow
-    const farScale = NEAR / (FAR + NEAR);
-    const farW = HW * W * farScale * 0.8;
-    const farH = HH * H * farScale * 0.5;
-
-    const lightGrad = ctx.createRadialGradient(VPX, VPY, 0, VPX, VPY, Math.max(farW, farH) * 3);
-    lightGrad.addColorStop(0, 'rgba(255, 255, 240, 1.0)');
-    lightGrad.addColorStop(0.3, 'rgba(200, 200, 180, 0.6)');
-    lightGrad.addColorStop(1, 'rgba(80, 80, 70, 0)');
-
-    ctx.fillStyle = lightGrad;
-    ctx.fillRect(VPX - farW * 3, VPY - farH * 3, farW * 6, farH * 6);
-
-    // Draw strong perspective lines (corridor frame)
+    // Draw perspective frame lines
     drawPerspectiveLines();
 
-    // Draw grid lines on surfaces for more depth illusion
+    // Draw grid lines for depth illusion
     drawGridLines(numSlices, sliceDepth);
 }
 
@@ -90,7 +69,7 @@ function drawFloorSlice(z1, z2, s1, s2) {
     const hh2 = HH * H * s2 * 0.5;
 
     // Checkerboard pattern based on position and depth
-    const checkerSize = 0.4;
+    const checkerSize = 0.35;
     const gridZ1 = Math.floor(z1 / checkerSize);
     const gridZ2 = Math.floor(z2 / checkerSize);
 
@@ -109,7 +88,7 @@ function drawFloorSlice(z1, z2, s1, s2) {
     ctx.closePath();
     ctx.fill();
 
-    // Right half of floor
+    // Right half of floor (opposite color)
     colorL = ((gridZ1 + gridZ2) % 2 === 0) ? '#d8d8d8' : '#1a1a1a';
     ctx.fillStyle = colorL;
     ctx.beginPath();
@@ -124,7 +103,7 @@ function drawFloorSlice(z1, z2, s1, s2) {
     ctx.closePath();
     ctx.fill();
 
-    // Add subtle marble-like texture overlay (lighter lines)
+    // Floor edge line
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
     ctx.lineWidth = 1;
     const pLeft = project(new Vec3(-hw1, -HH * H * 0.5, z1));
@@ -140,7 +119,7 @@ function drawWallSlice(z1, z2, s1, s2, side) {
     const hh2 = HH * H * s2 * 0.5;
 
     // Checkerboard pattern for walls
-    const checkerSize = 0.4;
+    const checkerSize = 0.35;
     const gridZ1 = Math.floor(z1 / checkerSize);
     const gridZ2 = Math.floor(z2 / checkerSize);
     const isBlack = ((gridZ1 + gridZ2) % 2 === 0);
@@ -174,9 +153,43 @@ function drawWallSlice(z1, z2, s1, s2, side) {
     ctx.closePath();
     ctx.fill();
 
-    // Add marble-like texture lines
+    // Marble-like texture lines on walls
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
     ctx.lineWidth = 1;
+}
+
+function drawFarWall() {
+    const farScale = NEAR / (FAR + NEAR);
+    const farW = HW * W * farScale * 0.8;
+    const farH = HH * H * farScale * 0.5;
+
+    // Draw the far wall with a grid pattern (3x3 or more)
+    const gridSize = 3; // 3 rows x 3 columns
+    const cellW = (farW * 2) / gridSize;
+    const cellH = (farH * 2) / gridSize;
+
+    for (let row = 0; row < gridSize; row++) {
+        for (let col = 0; col < gridSize; col++) {
+            // Checkerboard pattern on far wall
+            const isBlack = ((row + col) % 2 === 0);
+            ctx.fillStyle = isBlack ? '#1a1a1a' : '#d8d8d8';
+
+            const x = VPX - farW + col * cellW;
+            const y = VPY - farH + row * cellH;
+
+            // Draw each cell as a small rectangle on the far wall
+            ctx.fillRect(x, y, cellW, cellH);
+        }
+    }
+
+    // Add bright light glow at center of far wall (where cubes spawn)
+    const lightGrad = ctx.createRadialGradient(VPX, VPY, 0, VPX, VPY, Math.max(farW, farH) * 1.5);
+    lightGrad.addColorStop(0, 'rgba(255, 255, 240, 0.8)');
+    lightGrad.addColorStop(0.5, 'rgba(200, 200, 180, 0.3)');
+    lightGrad.addColorStop(1, 'rgba(80, 80, 70, 0)');
+
+    ctx.fillStyle = lightGrad;
+    ctx.fillRect(VPX - farW * 1.5, VPY - farH * 1.5, farW * 3, farH * 3);
 }
 
 function drawPerspectiveLines() {
@@ -298,147 +311,111 @@ function drawGridLines(numSlices, sliceDepth) {
     }
 }
 
-// ==================== MOVING 3D CUBE ====================
-class Cube {
-    constructor() {
-        this.x = 0;
-        this.y = 0;
-        this.z = FAR; // starts far away
-        this.size = 0.6;
-        this.rotationX = 0;
-        this.rotationY = 0;
-        this.speedZ = -0.04; // moves toward camera
-        this.wobbleX = Math.random() * 2 - 1; // slight horizontal movement
-        this.wobbleY = Math.random() * 2 - 1;
+// ==================== MOVING CUBES (from far wall toward viewer) ====================
+class MovingCube {
+    constructor(gridX, gridY) {
+        // gridX: 0-2 (left to right on far wall)
+        // gridY: 0-2 (top to bottom on far wall)
+        this.gridX = gridX;
+        this.gridY = gridY;
+
+        // Calculate starting position on the far wall
+        const gridSize = 3;
+        const cellW = (HW * W * NEAR / (FAR + NEAR) * 0.8 * 2) / gridSize;
+        const cellH = (HH * H * NEAR / (FAR + NEAR) * 0.5 * 2) / gridSize;
+
+        // World position at far wall
+        this.x = -HW + (gridX + 0.5) * (2 * HW / gridSize);
+        this.y = HH - (gridY + 0.5) * (2 * HH / gridSize);
+        this.z = FAR; // starts at far end
+
+        this.size = 0.4; // cube size in world units
+        this.speedZ = -0.03; // moves toward camera (negative z direction)
+
+        // For drawing: calculate projected positions as it approaches
+        this.alive = true;
     }
 
     update() {
         this.z += this.speedZ;
-        this.rotationX += 0.025;
-        this.rotationY += 0.035;
 
-        // Add slight wobble for more interesting movement
-        this.x = Math.sin(Date.now() * 0.001) * 0.3 * this.wobbleX;
-        this.y = Math.cos(Date.now() * 0.0013) * 0.2 * this.wobbleY;
-
-        // Reset when cube passes the screen
+        // Remove cube when it passes the viewer
         if (this.z < NEAR - 1) {
-            this.z = FAR;
-            this.x = (Math.random() - 0.5) * 1.5;
-            this.y = (Math.random() - 0.5) * 1.5;
-            this.wobbleX = Math.random() * 2 - 1;
-            this.wobbleY = Math.random() * 2 - 1;
+            this.alive = false;
         }
     }
 
-    getCorners() {
-        const s = this.size;
-        const cosX = Math.cos(this.rotationX);
-        const sinX = Math.sin(this.rotationX);
-        const cosY = Math.cos(this.rotationY);
-        const sinY = Math.sin(this.rotationY);
-
-        // Original cube corners (before rotation)
-        const corners = [
-            new Vec3(-s, -s, -s), new Vec3(s, -s, -s),
-            new Vec3(s, s, -s),   new Vec3(-s, s, -s),
-            new Vec3(-s, -s, s),  new Vec3(s, -s, s),
-            new Vec3(s, s, s),    new Vec3(-s, s, s)
-        ];
-
-        // Apply rotation and translation
-        return corners.map(c => {
-            let x = c.x * cosY + c.z * sinY;
-            let z = -c.x * sinY + c.z * cosY;
-            let y = c.y * cosX - z * sinX;
-            z = c.y * sinX + z * cosX;
-
-            return new Vec3(
-                this.x + x,
-                this.y + y,
-                this.z + z
-            );
-        });
-    }
-
     draw() {
-        const corners = this.getCorners();
-        const projected = corners.map(c => project(c));
+        const scale = NEAR / (this.z + NEAR);
+        const screenX = VPX + this.x * W * scale * 0.8;
+        const screenY = VPY - this.y * H * scale * 0.5;
+        const screenSize = this.size * W * scale * 0.8;
 
-        // Define cube faces with indices and colors
-        const faces = [
-            { indices: [0, 1, 2, 3], color: 'rgba(255, 80, 80, 0.75)' },   // front - red
-            { indices: [4, 5, 6, 7], color: 'rgba(80, 255, 80, 0.75)' },    // back - green
-            { indices: [0, 1, 5, 4], color: 'rgba(80, 80, 255, 0.75)' },   // bottom - blue
-            { indices: [3, 2, 6, 7], color: 'rgba(255, 255, 80, 0.75)' },  // top - yellow
-            { indices: [0, 3, 7, 4], color: 'rgba(255, 150, 200, 0.75)' }, // left - pink
-            { indices: [1, 2, 6, 5], color: 'rgba(150, 200, 255, 0.75)' }  // right - cyan
-        ];
+        // Draw cube as a simple rectangle (no rotation, just moving toward viewer)
+        ctx.fillStyle = 'rgba(255, 100, 100, 0.9)';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
 
-        // Sort faces by depth (painters algorithm)
-        const sortedFaces = faces.map(f => {
-            const avgZ = f.indices.reduce((sum, idx) => sum + corners[idx].z, 0) / 4;
-            return { ...f, avgZ };
-        }).sort((a, b) => b.avgZ - a.avgZ); // far to near
+        const x = screenX - screenSize / 2;
+        const y = screenY - screenSize / 2;
 
-        sortedFaces.forEach(face => {
-            ctx.fillStyle = face.color;
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
+        // Draw front face (the one facing us as it approaches)
+        ctx.fillRect(x, y, screenSize, screenSize);
+        ctx.strokeRect(x, y, screenSize, screenSize);
 
-            const p0 = projected[face.indices[0]];
-            const p1 = projected[face.indices[1]];
-            const p2 = projected[face.indices[2]];
-            const p3 = projected[face.indices[3]];
-
-            ctx.moveTo(p0.x, p0.y);
-            ctx.lineTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.lineTo(p3.x, p3.y);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-        });
-
-        // Draw edges for extra 3D definition
-        const edges = [
-            [0, 1], [1, 2], [2, 3], [3, 0], // front face
-            [4, 5], [5, 6], [6, 7], [7, 4], // back face
-            [0, 4], [1, 5], [2, 6], [3, 7]  // connecting edges
-        ];
-
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-        ctx.lineWidth = 1;
-        edges.forEach(([a, b]) => {
-            const pa = projected[a];
-            const pb = projected[b];
-            ctx.beginPath();
-            ctx.moveTo(pa.x, pa.y);
-            ctx.lineTo(pb.x, pb.y);
-            ctx.stroke();
-        });
-
-        // Add a glow effect when cube is close to camera
-        if (this.z < 3) {
-            const glowScale = (3 - this.z) / 3;
-            const center = project(new Vec3(this.x, this.y, this.z));
-            const radius = this.size * W * (NEAR / (this.z + NEAR)) * 0.8 * glowScale;
-
-            const glowGrad = ctx.createRadialGradient(center.x, center.y, 0, center.x, center.y, radius * 2);
-            glowGrad.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
-            glowGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        // Add glow effect when close to camera
+        if (this.z < 4) {
+            const glowIntensity = (4 - this.z) / 4;
+            const glowGrad = ctx.createRadialGradient(screenX, screenY, 0, screenX, screenY, screenSize * 3);
+            glowGrad.addColorStop(0, `rgba(255, 100, 100, ${glowIntensity * 0.4})`);
+            glowGrad.addColorStop(1, 'rgba(255, 100, 100, 0)');
 
             ctx.fillStyle = glowGrad;
             ctx.beginPath();
-            ctx.arc(center.x, center.y, radius * 2, 0, Math.PI * 2);
+            ctx.arc(screenX, screenY, screenSize * 3, 0, Math.PI * 2);
             ctx.fill();
         }
     }
 }
 
+// ==================== CUBE SPAWNER ====================
+const cubes = []; // array of active cubes
+let spawnTimer = 0;
+const spawnInterval = 60; // frames between spawns (adjust for speed)
+
+function spawnCube() {
+    // Pick a random grid position on the far wall
+    const gridSize = 3; // 3x3 grid
+    const gridX = Math.floor(Math.random() * gridSize);
+    const gridY = Math.floor(Math.random() * gridSize);
+
+    cubes.push(new MovingCube(gridX, gridY));
+}
+
+function updateCubes() {
+    spawnTimer++;
+    if (spawnTimer >= spawnInterval) {
+        spawnCube();
+        spawnTimer = 0;
+    }
+
+    // Update and remove dead cubes
+    for (let i = cubes.length - 1; i >= 0; i--) {
+        cubes[i].update();
+        if (!cubes[i].alive) {
+            cubes.splice(i, 1);
+        }
+    }
+}
+
+function drawCubes() {
+    // Sort by z-depth for proper rendering (far to near)
+    const sorted = [...cubes].sort((a, b) => b.z - a.z);
+    sorted.forEach(cube => cube.draw());
+}
+
 // ==================== ANIMATION LOOP ====================
-const cube = new Cube();
+let frameCount = 0;
 
 function animate() {
     // Clear canvas with dark background
@@ -448,10 +425,11 @@ function animate() {
     // Draw the corridor
     drawCorridor();
 
-    // Update and draw cube
-    cube.update();
-    cube.draw();
+    // Update and draw cubes
+    updateCubes();
+    drawCubes();
 
+    frameCount++;
     requestAnimationFrame(animate);
 }
 
