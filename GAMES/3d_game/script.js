@@ -53,14 +53,15 @@ function drawCenterGrid() {
     }
 }
 
-function drawHelpers2() {
+function drawAllSideLines() {
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
-    // Draw vertical grid lines
     let daBottomHelper = W / 3;
     let leftSideHelper = H / 3;
+    // Draw vertical grid bottom lines
     for (let x = theDepthMakerDist + squareInDistanceW / 3; x < theDepthMakerDist + squareInDistanceW; x += squareInDistanceW / 3) {
         if (daBottomHelper > W) {
+            daBottomHelper = W / 3;
             break;
         }
         ctx.beginPath();
@@ -70,14 +71,40 @@ function drawHelpers2() {
         daBottomHelper += daBottomHelper;
     }
 
-    // Draw horizontal grid lines
+    // Draw vertical top lines
+    for (let x = theDepthMakerDist + squareInDistanceW / 3; x < theDepthMakerDist + squareInDistanceW; x += squareInDistanceW / 3) {
+        if (daBottomHelper > W) {
+            daBottomHelper = W / 3;
+            break;
+        }
+        ctx.beginPath();
+        ctx.moveTo(daBottomHelper, 0);
+        ctx.lineTo(x, theDepthMakerDist);
+        ctx.stroke();
+        daBottomHelper += daBottomHelper;
+    }
+    // -------------------------------------
+    // Draw horizontal left grid lines
     for (let y = theDepthMakerDist + squareInDistanceH / 3; y <= theDepthMakerDist + squareInDistanceH; y += squareInDistanceW / 3) {
         if (leftSideHelper > H) {
+            leftSideHelper = H / 3;
             break;
         }
         ctx.beginPath();
         ctx.moveTo(0, leftSideHelper);
         ctx.lineTo(theDepthMakerDist, y);
+        ctx.stroke();
+        leftSideHelper += leftSideHelper;
+    }
+    // Draw horizontal right grid lines
+    for (let y = theDepthMakerDist + squareInDistanceH / 3; y <= theDepthMakerDist + squareInDistanceH; y += squareInDistanceH / 3) {
+        if (leftSideHelper > H) {
+            leftSideHelper = H / 3;
+            break;
+        }
+        ctx.beginPath();
+        ctx.moveTo(theDepthMakerDist + squareInDistanceW, y);
+        ctx.lineTo(W, leftSideHelper);
         ctx.stroke();
         leftSideHelper += leftSideHelper;
     }
@@ -119,7 +146,7 @@ function animate() {
         ctx.clearRect(0,0,W,H);
         drawScreen();
         drawCenterGrid();
-        drawHelpers2();
+        drawAllSideLines();
         oneSquareSize.update();
         oneSquareSize.draw();
     }
