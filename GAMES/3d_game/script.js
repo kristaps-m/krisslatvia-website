@@ -123,21 +123,40 @@ class OneLittleSquare extends Position{
         ctx.fillRect(this.x, this.y, this.w, this.h);
     }
 
-    update(){
+    update(position = "bottomleft"){
         this.x-=3;
-        this.y++;
+        switch (position) {
+            case "topleft": this.y -= 3; break;  
+            case "left": this.y -= 1; break;    
+
+                default:
+                this.y++;
+                break;
+        }
         this.w += 2;
         this.h += 2;
         if (this.x < 10) {
             this.x = theDepthMakerDist;
-            this.y = theDepthMakerDist + 68;
             this.w = squareInDistanceW / 3;
             this.h = squareInDistanceH / 3;
+            switch (position) {
+                case "topleft":
+                    this.y = theDepthMakerDist;
+                    break;
+                case "left":
+                    this.y = theDepthMakerDist + 34;
+                    break;              
+                    default:
+                    this.y = theDepthMakerDist + 68;
+                    break;
+            }
         }
     }
 }
 
 const oneSquareSize = new OneLittleSquare(theDepthMakerDist, theDepthMakerDist + 68);
+const oneSquareSize2 = new OneLittleSquare(theDepthMakerDist, theDepthMakerDist);
+const oneSquareSize3 = new OneLittleSquare(theDepthMakerDist, theDepthMakerDist + 34);
 
 let frameCount = 0;
 
@@ -149,6 +168,12 @@ function animate() {
         drawAllSideLines();
         oneSquareSize.update();
         oneSquareSize.draw();
+        // -------- 
+        oneSquareSize2.update("topleft");
+        oneSquareSize2.draw();
+        // --------
+        oneSquareSize3.update("left");
+        oneSquareSize3.draw();
     }
     if (frameCount >= 100000) {
         frameCount = 0;
@@ -158,3 +183,19 @@ function animate() {
 }
 
 animate();
+
+document.addEventListener("keydown",(e) => {
+    const k = e.key;
+    switch (k) {
+        case 'w':
+            oneSquareSize.y -= oneSquareSize.h;
+            break;
+        case 's':
+            oneSquareSize.y += oneSquareSize.h;
+            break;    
+        default:
+            break;
+    }
+    console.log(e, oneSquareSize.y);
+    // oneSquareSize.draw();
+});
