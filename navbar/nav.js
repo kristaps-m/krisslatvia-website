@@ -26,6 +26,7 @@
           '<a href="/javascript/goat/goat.html">Goat Problem</a>' +
           '<a href="/javascript/elipes/index.html">Elipse</a>' +
           '<a href="/javascript/isometric3d/index.html">isometric 3d</a>' +
+          '<a href="/javascript/3d_game/index.html">3D Corridor</a>' +
         '</div>' +
       '</div>' +
       '<div class="dropdown">' +
